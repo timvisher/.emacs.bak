@@ -8,8 +8,6 @@
                        "c:/cygwin/home/tvishe01/emacs.d/")
                        "The root of my personal emacs configuration.")
 
-(setq emacs-root "c:/cygwin/home/tvishe01/emacs.d/")
-
 (add-to-list 'load-path (concat emacs-root "lisp")) ; My own ELisp
 (add-to-list 'load-path (concat emacs-root "site-lisp")) ; Interweb ELisp
 (add-to-list 'load-path (concat emacs-root "color-theme")) ; Theming support
