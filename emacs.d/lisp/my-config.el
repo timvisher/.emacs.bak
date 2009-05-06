@@ -3,17 +3,18 @@
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 
-;; Frame Geometry
-(setq default-frame-alist '(
-        (top . 20) 
-	(left . 70) 
-	(width . 120) 
-	(height . 50)))
+(if (string-match ".*-window" (emacs-type))
+  ;; Frame Geometry
+  (setq default-frame-alist '(
+                              (top . 20) 
+                              (left . 70) 
+                              (width . 120) 
+                              (height . 50)))
 
-;; Frame Colors
-(require 'color-theme)
-(color-theme-initialize)
-(color-theme-simple-1)
+  ;; Frame Colors
+  (require 'color-theme)
+  (color-theme-initialize)
+  (color-theme-simple-1))
 
 ;; Set default ispell program
 (setq-default ispell-program-name "aspell")
