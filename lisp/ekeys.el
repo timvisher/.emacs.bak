@@ -18,3 +18,10 @@
 ;; Fill Commands (Yegge)
 (global-set-key "\M-p" 'fill-paragraph)
 (global-set-key "\M-q" 'fill-region)
+
+;; Key Sequence Annoyances (Emacs-Fu: Bill)
+(global-set-key "\C-x\C-u" 'advertised-undo)
+(if window-system
+    (progn
+      (global-unset-key "\C-x\C-z")
+      (global-unset-key "\C-z")))

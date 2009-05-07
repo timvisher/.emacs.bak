@@ -1,3 +1,13 @@
+;; Minors
+
+(savehist-mode t) ;; Emacs-Fu: valvo
+
+(autoload 'longlines-mode
+"longlines.el"
+"Minor mode for automatically wrapping long lines." t)
+
+(display-time)
+
 ;; Markdown... Hurray!
 (autoload 'markdown-mode "markdown-mode.elc" "Major mode for editing Markdown files" t)
 (setq auto-mode-alist (cons '("\\.mdwn\\.txt" . markdown-mode) auto-mode-alist))
