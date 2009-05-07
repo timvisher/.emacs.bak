@@ -1,0 +1,1 @@
+cp deploy.emacs ~/.emacs
