@@ -6,7 +6,8 @@
 
 ;; Prefer backward-kill-word to backspace (Yegge)
 (global-set-key "\C-w" 'backward-kill-word)
-(global-set-key "\C-x\C-k" 'kill-region)
+(global-set-key "\M-w" 'kill-region)
+(global-set-key "\M-\C-w" 'kill-ring-save)
 
 ;; Bind isearch-*-regexp to easier keys (Yegge)
 (global-set-key "\M-s" 'isearch-forward-regexp)
