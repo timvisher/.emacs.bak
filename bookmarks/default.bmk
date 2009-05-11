@@ -1,0 +1,22 @@
+;;;; Emacs Bookmark Format Version 1 ;;;;
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("CPos ELisp Intro"
+  ((filename . "c:/cygwin/home/tvishe01/bin/emacs/info/eintr")
+   (front-context-string . "File: eintr,  No")
+   (rear-context-string)
+   (position . 139377)
+   (info-node . "Counting Words")))
+ ("CPos Little Brother"
+  ((filename . "c:/cygwin/home/tvishe01/Downloads/Cory_Doctorow_-_Little_Brother.info")
+   (front-context-string . "File: little-bro")
+   (rear-context-string)
+   (position . 271436)
+   (info-node . "Chapter 10")))
+ ("CPos Little Brother<2>"
+  ((filename . "c:/cygwin/home/tvishe01/.emacs.d/info/Cory_Doctorow_-_Little_Brother.info")
+   (front-context-string . "File: little-bro")
+   (rear-context-string)
+   (position . 377909)
+   (info-node . "Chapter 14"))))

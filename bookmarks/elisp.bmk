@@ -1,0 +1,10 @@
+;;;; Emacs Bookmark Format Version 1 ;;;;
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("CPos ELisp Intro"
+  ((filename . "c:/cygwin/home/tvishe01/bin/emacs/info/eintr")
+   (front-context-string . "File: eintr,  No")
+   (rear-context-string)
+   (position . 139377)
+   (info-node . "Counting Words"))))
