@@ -20,7 +20,10 @@
  '(query-replace-highlight t)
  '(require-final-newline (quote visit-save))
  '(search-highlight t)
+ '(paren-match-face (quote paren-face-match-light))
+ '(paren-sexp-mode t)
  '(show-paren-mode t)
+ '(transient-mark-mode nil)
  '(uniquify-buffer-name-style (quote post-forward) nil (uniquify)))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
