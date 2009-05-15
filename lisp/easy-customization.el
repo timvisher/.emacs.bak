@@ -32,4 +32,5 @@
   ;; If there is more than one, they won't work right.
  '(default ((t (:stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :family "outline-lucida console"))))
  '(fringe ((((class color) (background dark)) (:background "#333333"))))
- '(hl-line ((t (:inherit highlight :background "#002233")))))
+ '(hl-line ((t (:inherit highlight :background "#002233"))))
+ '(paren-face-match-light ((t (:background "#222222")))))
