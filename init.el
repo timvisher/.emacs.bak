@@ -1,14 +1,8 @@
 ;; Tim's .emacs file
 
 ;; Set up Load Path
-(defvar emacs-root (if (or (eq system-type 'cygwin)
-                           (eq system-type 'gnu/linux)
-                           (eq system-type 'linux))
-                       "/home/tim/.emacs.d/"
-                       (if (eq system-type 'darwin)
-                           "/Users/tim/.emacs.d/"
-                           "c:/cygwin/home/tvishe01/.emacs.d/"))
-                       "The root of my personal emacs configuration.")
+(defvar emacs-root (expand-file-name "~/.emacs.d/")
+                   "The root of my personal emacs configuration.")
 
 (add-to-list 'load-path (concat emacs-root "lisp")) ; My own ELisp
 (add-to-list 'load-path (concat emacs-root "site-lisp")) ; Interweb ELisp
