@@ -26,3 +26,6 @@
     (progn
       (global-unset-key "\C-x\C-z")
       (global-unset-key "\C-z")))
+
+;; Count Words (Intro To Elisp)
+(global-set-key "\C-c=" 'count-words-region)
