@@ -2,7 +2,13 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("CPos ELisp Intro"
+(("Display Feature Testing"
+  ((filename . "c:/cygwin/home/tvishe01/bin/emacs/info/elisp")
+   (front-context-string . "File: elisp,  No")
+   (rear-context-string)
+   (position . 149746)
+   (info-node . "Display Feature Testing")))
+ ("CPos ELisp Intro"
   ((filename . "c:/cygwin/home/tvishe01/bin/emacs/info/eintr")
    (front-context-string . "File: eintr,  No")
    (rear-context-string)
