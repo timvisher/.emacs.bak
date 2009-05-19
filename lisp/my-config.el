@@ -47,6 +47,17 @@
 
 (require 'uniquify) ;; Emacs-Fu: p4abl0
 
+(defun dot-emacs-reload ()
+(interactive)
+(load-file "~/.emacs.d/init.el"))
+
+(defun dot-emacs-edit ()
+(interactive)
+(find-file "~/.emacs.d/init.el"))
+
+(global-set-key "\C-c\C-r" 'dot-emacs-reload)
+(global-set-key "\C-c\C-e" 'dot-emacs-edit)
+
 (push '("." . "~/.emacs-backups") backup-directory-alist)
 
 (setq display-time-day-and-date t)
