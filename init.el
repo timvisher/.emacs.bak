@@ -13,6 +13,7 @@
 (add-to-list 'load-path (concat emacs-root "cedet/speedbar"))
 (add-to-list 'load-path (concat emacs-root "cedet/eieio"))
 (add-to-list 'load-path (concat emacs-root "elib"))
+(add-to-list 'load-path (concat emacs-root "nxml-mode"))
 
 ; Emacs Flavor Specific Setup
 (require 'emacs-type)

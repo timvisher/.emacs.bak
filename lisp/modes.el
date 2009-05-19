@@ -37,3 +37,6 @@
 
 (add-hook 'jde-mode-hook 'my-jde-mode-hook)
 
+;; NXML Mode
+
+(load-library "rng-auto")
