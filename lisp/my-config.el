@@ -47,12 +47,6 @@
 
 (require 'uniquify) ;; Emacs-Fu: p4abl0
 
-(setq initial-scratch-message (purecopy "\
-;; Lisp Interaction Buffer:
-
-
-")) ;; Emacs-Fu
-
 (push '("." . "~/.emacs-backups") backup-directory-alist)
 
 (setq display-time-day-and-date t)
