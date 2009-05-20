@@ -5,10 +5,11 @@
 (autoload 'longlines-mode
 "longlines.el"
 "Minor mode for automatically wrapping long lines." t)
-
-(add-to-list 'auto-mode-alist '("\\.txt" . longline-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown\\|\\.txt" . longline-mode))
 
 (display-time)
+
+(require 'uniquify) ;; Emacs-Fu: p4abl0
 
 ;; Markdown... Hurray!
 (autoload 'markdown-mode "markdown-mode.elc" "Major mode for editing Markdown files" t)
@@ -40,8 +41,11 @@
 
 ;; NXML Mode
 
-(load-library "rng-auto")
+(autoload 'nxml-mode "rng-auto" "nXML Mode.")
 (add-to-list 'auto-mode-alist
 	     '("\\.xml" . nxml-mode))
 
-(require 'uniquify) ;; Emacs-Fu: p4abl0
+;; PHP Mode
+(autoload 'php-mode "php-mode" "PHP Mode." )
+(add-to-list 'auto-mode-alist
+	     '("\\.php[345]?\\|\\.phtml" . php-mode))
