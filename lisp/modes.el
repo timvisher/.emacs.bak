@@ -6,15 +6,17 @@
 "longlines.el"
 "Minor mode for automatically wrapping long lines." t)
 
+(add-to-list 'auto-mode-alist '("\\.txt" . longline-mode))
+
 (display-time)
 
 ;; Markdown... Hurray!
 (autoload 'markdown-mode "markdown-mode.elc" "Major mode for editing Markdown files" t)
-(setq auto-mode-alist (cons '("\\.mdwn\\.txt" . markdown-mode) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.markdown" . markdown-mode))
 
 ;; VB Mode - ech!
 (autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
-(setq auto-mode-alist (append '(("\\.\\(frm\\|bas\\|cls\\)$" . visual-basic-mode)) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.\\(frm\\|bas\\|cls\\)$" . visual-basic-mode))
 
 ;; JDEE
 
@@ -27,16 +29,19 @@
 (if defer-loading-jde
     (progn
         (autoload 'jde-mode "jde" "JDE mode." t)
-        (setq auto-mode-alist
-            (append '(("\\.java\\'" . jde-mode))
-            auto-mode-alist)))
+        (add-to-list 'auto-mode-alist
+                     '("\\.java\\'" . jde-mode)))
     (require 'jde))
 
-(defun my-jde-mode-hook ()
+(defun tab-config-jde-mode-hook ()
     (setq c-basic-offset 4))
 
-(add-hook 'jde-mode-hook 'my-jde-mode-hook)
+(add-hook 'jde-mode-hook 'tab-config-jde-mode-hook)
 
 ;; NXML Mode
 
 (load-library "rng-auto")
+(add-to-list 'auto-mode-alist
+	     '("\\.xml" . nxml-mode))
+
+(require 'uniquify) ;; Emacs-Fu: p4abl0

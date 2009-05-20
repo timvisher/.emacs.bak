@@ -28,6 +28,8 @@
 ; Emacs Flavor Specific Setup
 (require 'emacs-type)
 
-(load-library "ekeys") ; Key Bindings and Aliases
-(load-library "modes") ; Mode Configuration
-(load-library "my-config") ; one-off variable settings
+(load-library "functions")      ;; Personal one-off functions
+(load-library "ekeys")          ;; Key bindings and aliases
+(load-library "modes")          ;; Mode configuration
+(load-library "my-config")      ;; one-off variable settings
+(load-library "enabled")        ;; Place to store the functionality I have restored
