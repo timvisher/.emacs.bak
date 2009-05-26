@@ -33,3 +33,5 @@
 ;; Emacs-Fu
 (global-set-key (kbd "C-c C-r") 'dot-emacs-reload)
 (global-set-key (kbd "C-c C-e") 'dot-emacs-edit)
+
+(defalias 'll 'longlines-mode)
