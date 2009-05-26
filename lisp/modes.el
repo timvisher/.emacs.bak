@@ -5,7 +5,7 @@
 (autoload 'longlines-mode
 "longlines.el"
 "Minor mode for automatically wrapping long lines." t)
-(add-to-list 'auto-mode-alist '("\\.markdown\\|\\.txt" . longline-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown\\|\\.txt" . longlines-mode))
 
 (display-time)
 
