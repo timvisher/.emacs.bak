@@ -3,17 +3,6 @@
 (if (not (string-equal "emacs-mac-window" (emacs-type)))
     (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))) ;; Yegge/Emacs-Fu: ieure
 
-(if (string-match ".*-window" (emacs-type))
-  (progn
-    (setq default-frame-alist '(
-                                (left . 70) 
-                                (width . 150) 
-                               ))
-
-    (require 'color-theme)
-    (color-theme-initialize)
-    (color-theme-simple-1)))
-
 ;; Shell Config
 ;; TODO Move to Easy Customization
   (setq shell-file-name "bash")
@@ -28,3 +17,14 @@
 (load custom-file)
 
 (defalias 'yes-or-no-p 'y-or-n-p) ;; Emacs-Fu: valvo
+
+(if (string-match ".*-window" (emacs-type))
+  (progn
+    (setq default-frame-alist '(
+                                (left . 70) 
+                                (width . 150) 
+                               ))
+
+    (require 'color-theme)
+    (color-theme-initialize)
+    (color-theme-simple-1)))
