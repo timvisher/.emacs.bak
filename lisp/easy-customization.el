@@ -17,11 +17,11 @@
  '(ispell-program-name "aspell")
  '(mouse-avoidance-animation-delay 0)
  '(mouse-avoidance-mode (quote banish) nil (avoid))
+ '(paren-match-face (quote paren-face-match-light))
+ '(paren-sexp-mode t)
  '(query-replace-highlight t)
  '(require-final-newline (quote visit-save))
  '(search-highlight t)
- '(paren-match-face (quote paren-face-match-light))
- '(paren-sexp-mode t)
  '(show-paren-mode t)
  '(transient-mark-mode nil)
  '(uniquify-buffer-name-style (quote post-forward) nil (uniquify)))
@@ -30,7 +30,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal))))
+ '(default ((t (:stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 85 :width normal :family "outline-inconsolata"))))
  '(fringe ((((class color) (background dark)) (:background "#333333"))))
  '(hl-line ((t (:inherit highlight :background "#002233"))))
  '(paren-face-match-light ((t (:background "#222222")))))
