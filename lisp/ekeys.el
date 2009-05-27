@@ -35,3 +35,6 @@
 (global-set-key (kbd "C-c C-e") 'dot-emacs-edit)
 
 (defalias 'll 'longlines-mode)
+
+;; http://www.emacswiki.org/emacs/column-marker.el
+(global-set-key (kbd "C-c m") 'column-marker-1)

@@ -97,3 +97,6 @@ determines which characters these are."
 "Inserts a time stamp 'YYYY-MM-DD HH:MM AM/PM'"
 (interactive)
 (insert (format-time-string "%Y-%m-%d - %I:%M %p")))
+
+;; http://www.emacswiki.org/emacs/column-marker.el
+(require 'column-marker)
