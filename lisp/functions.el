@@ -91,3 +91,9 @@ determines which characters these are."
          (set-visited-file-name newname)
          (set-buffer-modified-p nil)
          t))))
+
+;; http://www.ftrain.com/util_emacs_hints.html
+(defun insert-time-stamp ()
+"Inserts a time stamp 'YYYY-MM-DD HH:MM AM/PM'"
+(interactive)
+(insert (format-time-string "%Y-%m-%d - %I:%M %p")))
