@@ -100,3 +100,16 @@ determines which characters these are."
 
 ;; http://www.emacswiki.org/emacs/column-marker.el
 (require 'column-marker)
+
+(defun mail-buffer ()
+"Create a buffer to edit e-mail."
+(interactive)
+(if (get-buffer "mail")
+    (kill-buffer "mail"))
+(get-buffer-create "mail")
+(switch-to-buffer "mail")
+(text-mode)
+(longlines-mode)
+(yank)
+(goto-char (point-min)))
+

@@ -1,5 +1,5 @@
 ;; Emacs-Fu
-(global-set-key (kbd "<C-tab>") 'bury-buffer)
+(global-set-key (kbd "C-<tab>") 'bury-buffer)
 
 ;; Yegge
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
@@ -38,3 +38,5 @@
 
 ;; http://www.emacswiki.org/emacs/column-marker.el
 (global-set-key (kbd "C-c m") 'column-marker-1)
+
+(global-set-key (kbd "<f2>") 'mail-buffer)
