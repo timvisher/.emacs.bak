@@ -110,6 +110,5 @@ determines which characters these are."
 (switch-to-buffer "mail")
 (text-mode)
 (longlines-mode)
-(yank)
-(goto-char (point-min)))
+(yank))
 
