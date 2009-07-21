@@ -7,22 +7,22 @@
 (require 'cl)
 
 (labels ((add-path (p)
-	 (when p
-	       (add-to-list 'load-path (concat emacs-root (car p)))
-	       (add-path (cdr p)))))
+        (when p
+              (add-to-list 'load-path (concat emacs-root (car p)))
+              (add-path (cdr p)))))
 
-  (add-path '("lisp"            ;; My own ELisp
-	      "site-lisp"       ;; Interweb ELisp
-	      "color-theme"     ;; Theming Support
-	      "jde/lisp"        ;; Java Development
-	      "cedet" 
-	      "cedet/semantic" 
-	      "cedet/speedbar" 
-	      "cedet/eieio" 
-	      "elib" 
-	      "nxml-mode"       ;; XML Support
-	     )
-           )
+    (add-path '("lisp"            ;; My own ELisp
+                "site-lisp"       ;; Interweb ELisp
+                "color-theme"     ;; Theming Support
+                "jde/lisp"        ;; Java Development
+                "cedet"
+                "cedet/semantic"
+                "cedet/speedbar"
+                "cedet/eieio"
+                "elib"
+                "nxml-mode"       ;; XML Support
+               )
+    )
 )
 
 ; Emacs Flavor Specific Setup
