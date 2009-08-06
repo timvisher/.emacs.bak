@@ -33,3 +33,5 @@
 (load-library "modes")          ;; Mode configuration
 (load-library "my-config")      ;; one-off variable settings
 (load-library "enabled")        ;; Place to store the functionality I have restored
+
+(put 'scroll-left 'disabled nil)
