@@ -7,6 +7,8 @@
 "Minor mode for automatically wrapping long lines." t)
 (add-to-list 'auto-mode-alist '("\\.markdown\\|\\.txt" . longlines-mode))
 
+(add-to-list 'auto-mode-alist '("\\.txt" . text-mode))
+
 (display-time)
 
 (require 'uniquify) ;; Emacs-Fu: p4abl0
@@ -23,7 +25,13 @@
 
 (setq debug-on-error t)
 
+
+;; CEDET
+
 (load-file (expand-file-name (concat emacs-root "cedet/common/cedet.el")))
+
+(semantic-load-enable-excessive-code-helpers)
+(require 'semantic-ia)
 
 (setq defer-loading-jde t)
 
@@ -49,3 +57,6 @@
 (autoload 'php-mode "php-mode" "PHP Mode." )
 (add-to-list 'auto-mode-alist
 	     '("\\.php[345]?\\|\\.phtml" . php-mode))
+
+;; ECB Mode
+(require 'ecb-autoloads)

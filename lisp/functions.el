@@ -108,7 +108,7 @@ determines which characters these are."
     (kill-buffer "mail"))
 (get-buffer-create "mail")
 (switch-to-buffer "mail")
-(text-mode)
+(markdown-mode)
 (longlines-mode)
 (yank))
 
