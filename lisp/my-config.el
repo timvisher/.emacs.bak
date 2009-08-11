@@ -25,8 +25,8 @@
 (if (string-match ".*-window" (emacs-type))
   (progn
     (setq default-frame-alist '(
-                                (left . 70) 
-                                (width . 150) 
+                                (left . 70)
+                                (width . 150)
                                ))
 
     (require 'color-theme)
