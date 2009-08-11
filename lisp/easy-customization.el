@@ -12,6 +12,7 @@
  '(fill-column 80)
  '(global-hl-line-mode t)
  '(hl-line-sticky-flag nil)
+ '(indent-tabs-mode nil)
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(ispell-program-name "aspell")

@@ -21,6 +21,7 @@
                 "cedet/eieio"
                 "elib"
                 "nxml-mode"       ;; XML Support
+                "ecb"
                )
     )
 )
@@ -33,3 +34,5 @@
 (load-library "modes")          ;; Mode configuration
 (load-library "my-config")      ;; one-off variable settings
 (load-library "enabled")        ;; Place to store the functionality I have restored
+
+(server-start)

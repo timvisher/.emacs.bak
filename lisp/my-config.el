@@ -18,6 +18,8 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p) ;; Emacs-Fu: valvo
 
+(setq visible-bell t)
+
 (if (string-match ".*-window" (emacs-type))
   (progn
     (setq default-frame-alist '(

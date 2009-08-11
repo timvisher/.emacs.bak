@@ -112,3 +112,28 @@ determines which characters these are."
 (longlines-mode)
 (yank))
 
+(defadvice yank (after indent-region activate)
+  (if (member major-mode
+              '(emacs-lisp-mode scheme-mode lisp-mode
+                                c-mode c++-mode objc-mode
+                                latex-mode plain-tex-mode))
+      (let ((mark-even-if-inactive t))
+        (indent-region (region-beginning) (region-end) nil))))
+ 
+(defadvice yank-pop (after indent-region activate)
+  (if (member major-mode
+              '(emacs-lisp-mode scheme-mode lisp-mode
+                                c-mode c++-mode objc-mode
+                                latex-mode plain-tex-mode))
+      (let ((mark-even-if-inactive t))
+        (indent-region (region-beginning) (region-end) nil))))
+
+(defun kill-and-join-forward (&optional arg)
+  "If at end of line, join with following; otherwise kill line.
+    Deletes whitespace at join."
+  (interactive "P")
+  (if (and (eolp) (not (bolp)))
+      (delete-indentation t)
+    (kill-line arg)))
+(global-set-key (kbd "C-k") 'kill-and-join-forward)
+

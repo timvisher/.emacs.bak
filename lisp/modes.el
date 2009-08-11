@@ -13,6 +13,24 @@
 
 (require 'uniquify) ;; Emacs-Fu: p4abl0
 
+;; Predictive-Expansion from Nathanial Flath @ http://nflath.com/2009/04/predictive-expansion-for-emacs/
+(defun pabbrev-expand-maybe-no-buffer()
+  "Expand abbreviation, or run previous command.
+If there is no expansion the command returned by
+`pabbrev-get-previous-binding' will be run instead."
+  (interactive)
+    (if pabbrev-expansion
+        (pabbrev-expand)
+      (let ((prev-binding
+             (pabbrev-get-previous-binding)))
+        (if (and (fboundp prev-binding)
+		 (not (eq prev-binding 'pabbrev-expand-maybe)))
+	    (funcall prev-binding)))))
+
+(require 'pabbrev )
+(global-pabbrev-mode)
+(setq pabbrev-read-only-error nil)
+
 ;; Markdown... Hurray!
 (autoload 'markdown-mode "markdown-mode.elc" "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.markdown" . markdown-mode))
