@@ -24,8 +24,11 @@
  '(require-final-newline (quote visit-save))
  '(search-highlight t)
  '(show-paren-mode t)
+ '(show-trailing-whitespace t)
+ '(tab-width 4)
  '(transient-mark-mode nil)
- '(uniquify-buffer-name-style (quote post-forward) nil (uniquify)))
+ '(uniquify-buffer-name-style (quote post-forward) nil (uniquify))
+ '(x-stretch-cursor t))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -34,4 +37,9 @@
  '(default ((t (:stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 85 :width normal :family "outline-inconsolata"))))
  '(fringe ((((class color) (background dark)) (:background "#333333"))))
  '(hl-line ((t (:inherit highlight :background "#002233"))))
- '(paren-face-match-light ((t (:background "#222222")))))
+ '(isearch ((((class color) (min-colors 88) (background dark)) (:background "#ffff00" :foreground "black"))))
+ '(lazy-highlight ((((class color) (min-colors 88) (background dark)) (:background "#006666" :foreground "white"))))
+ '(mode-line ((t (:background "#333333" :foreground "white" :box (:line-width 2 :color "grey75")))))
+ '(mode-line-buffer-id ((t (:foreground "white"))))
+ '(paren-face-match-light ((t (:background "#222222"))))
+ '(region ((t (:background "grey" :foreground "black")))))

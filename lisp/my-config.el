@@ -3,6 +3,8 @@
 (if (not (string-equal "emacs-mac-window" (emacs-type)))
     (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))) ;; Yegge/Emacs-Fu: ieure
 
+(standard-display-ascii ?\t "    ")
+
 ;; Shell Config
 ;; TODO Move to Easy Customization
   (setq shell-file-name "bash")
