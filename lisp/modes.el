@@ -15,6 +15,10 @@
 
 (require 'uniquify) ;; Emacs-Fu: p4abl0
 
+;; Groovy Mode
+(require 'groovy-mode)
+(add-to-list 'auto-mode-alist '("\\.groovy" . groovy-mode))
+
 ;; Predictive-Expansion from Nathanial Flath @ http://nflath.com/2009/04/predictive-expansion-for-emacs/
 (defun pabbrev-expand-maybe-no-buffer()
   "Expand abbreviation, or run previous command.
