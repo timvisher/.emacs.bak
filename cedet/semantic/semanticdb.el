@@ -1,10 +1,10 @@
 ;;; semanticdb.el --- Semantic tag database manager
 
-;;; Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Eric M. Ludlam
+;;; Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: tags
-;; X-RCS: $Id: semanticdb.el,v 1.84 2007/05/20 15:56:43 zappo Exp $
+;; X-RCS: $Id: semanticdb.el,v 1.132 2009/01/31 18:09:26 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -33,50 +33,20 @@
 
 (require 'inversion)
 (eval-and-compile
-  (inversion-require 'eieio "0.18beta1"))
+  (inversion-require 'eieio "1.0"))
 (require 'eieio-base)
 (require 'semantic)
+(eval-when-compile
+  (require 'semantic-lex-spp))
 
 ;;; Variables:
 (defgroup semanticdb nil
   "Parser Generator Persistent Database interface."
   :group 'semantic
   )
-
-;;;###autoload
-(defcustom semanticdb-global-mode nil
-  "*If non-nil enable the use of `semanticdb-minor-mode'."
-  :group 'semantic
-  :type 'boolean
-  :require 'semanticdb
-  :initialize 'custom-initialize-default
-  :set (lambda (sym val)
-         (global-semanticdb-minor-mode (if val 1 -1))
-         (custom-set-default sym val)))
-
-(defcustom semanticdb-mode-hooks nil
-  "*Hooks run whenever `global-semanticdb-minor-mode' is run.
-Use `semanticdb-minor-mode-p' to determine if the mode has been turned
-on or off."
-  :group 'semanticdb
-  :type 'hook)
-
+;;; Code:
 (defvar semanticdb-database-list nil
   "List of all active databases.")
-
-(defvar semanticdb-semantic-init-hook-overload nil
-  "Semantic init hook overload.
-Tools wanting to specify the file names of the semantic database
-use this.")
-
-;;;###autoload
-(defvar semanticdb-current-database nil
-  "For a given buffer, this is the currently active database.")
-(make-variable-buffer-local 'semanticdb-current-database)
-
-(defvar semanticdb-current-table nil
-  "For a given buffer, this is the currently active database table.")
-(make-variable-buffer-local 'semanticdb-current-table)
 
 (defvar semanticdb-new-database-class 'semanticdb-project-database-file
   "The default type of database created for new files.
@@ -85,7 +55,14 @@ are saved using one mechanism, and some directories via a different
 mechanism.")
 (make-variable-buffer-local 'semanticdb-new-database-class)
 
-;;; Classes:
+(defvar semanticdb-default-find-index-class 'semanticdb-find-search-index
+  "The default type of search index to use for a `semanticdb-table's.
+This can be changed to try out new types of search indicies.")
+(make-variable-buffer-local 'semanticdb-default-find=index-class)
+
+
+;;; ABSTRACT CLASSES
+;;
 (defclass semanticdb-abstract-table ()
   ((parent-db ;; :initarg :parent-db
     ;; Do not set an initarg, or you get circular writes to disk.
@@ -97,39 +74,212 @@ Sometimes it is important for a program to know if a given table has the
 same major mode as the current buffer.")
    (tags :initarg :tags
 	 :accessor semanticdb-get-tags
+	 :printer semantic-tag-write-list-slot-value
 	 :documentation "The tags belonging to this table.")
+   (index :type semanticdb-abstract-search-index
+	  :documentation "The search index.
+Used by semanticdb-find to store additional information about
+this table for searching purposes.
+
+Note: This index will not be saved in a persistent file.")
+   (cache :type list
+	  :initform nil
+	  :documentation "List of cache information for tools.
+Any particular tool can cache data to a database at runtime
+with `semanticdb-cache-get'.
+
+Using a semanticdb cache does not save any information to a file,
+so your cache will need to be recalculated at runtime.  Caches can be
+referenced even when the file is not in a buffer.
+
+Note: This index will not be saved in a persistent file.")
    )
   "A simple table for semantic tags.
 This table is the root of tables, and contains the minimum needed
 for a new table not associated with a buffer."
   :abstract t)
 
+(defmethod semanticdb-in-buffer-p ((obj semanticdb-abstract-table))
+  "Return a nil, meaning abstract table OBJ is not in a buffer."
+  nil)
+
 (defmethod semanticdb-get-buffer ((obj semanticdb-abstract-table))
   "Return a buffer associated with OBJ.
 If the buffer is not in memory, load it with `find-file-noselect'."
   nil)
 
+(defmethod semanticdb-full-filename ((obj semanticdb-abstract-table))
+  "Fetch the full filename that OBJ refers to.
+Abstract tables do not have file names associated with them."
+  nil)
+
+(defmethod semanticdb-dirty-p ((obj semanticdb-abstract-table))
+  "Return non-nil if OBJ is 'dirty'."
+  nil)
+
+(defmethod semanticdb-set-dirty ((obj semanticdb-abstract-table))
+  "Mark the abstract table OBJ dirty.
+Abstract tables can not be marked dirty, as there is nothing
+for them to synchronize against."
+  ;; The abstract table can not be dirty.
+  nil)
+
+(defmethod semanticdb-normalize-tags ((obj semanticdb-abstract-table) tags)
+  "For the table OBJ, convert a list of TAGS, into standardized form.
+The default is to return TAGS.
+Some databases may default to searching and providing simplified tags
+based on whichever technique used.  This method provides a hook for
+them to convert TAG into a more complete form."
+  tags)
+
+(defmethod semanticdb-normalize-one-tag ((obj semanticdb-abstract-table) tag)
+  "For the table OBJ, convert a TAG, into standardized form.
+This method returns a list of the form (DATABASE . NEWTAG).
+
+The default is to just return (OBJ TAG).
+
+Some databases may default to searching and providing simplified tags
+based on whichever technique used.  This method provides a hook for
+them to convert TAG into a more complete form."
+  (cons obj tag))
+
+(defmethod object-print ((obj semanticdb-abstract-table) &rest strings)
+  "Pretty printer extension for `semanticdb-table'.
+Adds the number of tags in this file to the object print name."
+  (apply 'call-next-method obj
+	 (cons (format " (%d tags)"
+		       (length (semanticdb-get-tags obj))
+		       )
+	       strings)))
+
+;;; Index Cache
+;;
+(defclass semanticdb-abstract-search-index ()
+  ((table :initarg :table
+	  :type semanticdb-abstract-table
+	  :documentation "XRef to the table this belongs to.")
+   )
+  "A place where semanticdb-find can store search index information.
+The search index will store data about which other tables might be
+needed, or perhaps create hash or index tables for the current buffer."
+  :abstract t)
+
+(defmethod semanticdb-get-table-index ((obj semanticdb-abstract-table))
+  "Return the search index for the table OBJ.
+If one doesn't exist, create it."
+  (if (slot-boundp obj 'index)
+      (oref obj index)
+    (let ((idx nil))
+      (setq idx (funcall semanticdb-default-find-index-class
+			 (concat (object-name obj) " index")
+			 ;; Fill in the defaults
+		         :table obj
+			 ))
+      (oset obj index idx)
+      idx)))
+
+(defmethod semanticdb-synchronize ((idx semanticdb-abstract-search-index)
+				   new-tags)
+  "Synchronize the search index IDX with some NEW-TAGS."
+  ;; The abstract class will do... NOTHING!
+  )
+
+(defmethod semanticdb-partial-synchronize ((idx semanticdb-abstract-search-index)
+					   new-tags)
+  "Synchronize the search index IDX with some changed NEW-TAGS."
+  ;; The abstract class will do... NOTHING!
+  )
+
+
+;;; CONCRETE TABLE CLASSES
+;;
 (defclass semanticdb-table (semanticdb-abstract-table)
   ((file :initarg :file
 	 :documentation "File name relative to the parent database.
 This is for the file whose tags are stored in this TABLE object.")
+   (buffer :initform nil
+	   :documentation "The buffer associated with this table.
+If nil, the table's buffer is no in Emacs.  If it has a value, then
+it is in Emacs.")
+   (dirty :initform nil
+	  :documentation
+	  "Non nil if this table needs to be `Saved'.")
+   (db-refs :initform nil
+	    :documentation
+	    "List of `semanticdb-table' objects refering to this one.
+These aren't saved, but are instead recalculated after load.
+See the file semanticdb-ref.el for how this slot is used.")
    (pointmax :initarg :pointmax
 	     :initform nil
 	     :documentation "Size of buffer when written to disk.
 Checked on retrieval to make sure the file is the same.")
+   (fsize :initarg :fsize
+	  :initform nil
+	  :documentation "Size of the file when it was last referenced.
+Checked when deciding if a loaded table needs updating from changes
+outside of Semantic's control.")
+   (lastmodtime :initarg :lastmodtime
+		:initform nil
+		:documentation "Last modification time of the file referenced.
+Checked when deciding if a loaded table needs updating from changes outside of
+Semantic's control.")
+   ;; @todo - need to add `last parsed time', so we can also have
+   ;; refresh checks if spp tables or the parser gets rebuilt.
    (unmatched-syntax :initarg :unmatched-syntax
 		     :documentation
 		     "List of vectors specifying unmatched syntax.")
+
+   (lexical-table :initarg :lexical-table
+		  :initform nil
+		  :printer semantic-lex-spp-table-write-slot-value
+		  :documentation
+		  "Table that might be needed by the lexical analyzer.
+For C/C++, the C preprocessor macros can be saved here.")
    )
   "A single table of tags derived from file.")
 
+(defmethod semanticdb-in-buffer-p ((obj semanticdb-table))
+  "Return a buffer associated with OBJ.
+If the buffer is in memory, return that buffer."
+  (let ((buff (oref obj buffer)))
+    (if (buffer-live-p buff)
+	buff
+      (oset obj buffer nil))))
+
+(defmethod semanticdb-get-buffer ((obj semanticdb-table))
+  "Return a buffer associated with OBJ.
+If the buffer is in memory, return that buffer.
+If the buffer is not in memory, load it with `find-file-noselect'."
+  (or (semanticdb-in-buffer-p obj)
+      (find-file-noselect (semanticdb-full-filename obj) t)))
+
+(defmethod semanticdb-set-buffer ((obj semanticdb-table))
+  "Set the current buffer to be a buffer owned by OBJ.
+If OBJ's file is not loaded, read it in first."
+  (set-buffer (semanticdb-get-buffer obj)))
+
+(defmethod semanticdb-full-filename ((obj semanticdb-table))
+  "Fetch the full filename that OBJ refers to."
+  (expand-file-name (oref obj file)
+		    (oref (oref obj parent-db) reference-directory)))
+
+(defmethod semanticdb-dirty-p ((obj semanticdb-table))
+  "Return non-nil if OBJ is 'dirty'."
+  (oref obj dirty))
+
+(defmethod semanticdb-set-dirty ((obj semanticdb-table))
+  "Mark the abstract table OBJ dirty."
+  (oset obj dirty t)
+  )
+
 (defmethod object-print ((obj semanticdb-table) &rest strings)
-  "Pretty printer extension for `semanticdb-abstract-table'.
+  "Pretty printer extension for `semanticdb-table'.
 Adds the number of tags in this file to the object print name."
   (apply 'call-next-method obj
-	 (cons (format " (%d tags)" (length (semanticdb-get-tags obj)))
-	       strings)))
+	 (cons (if (oref obj dirty) ", DIRTY" "") strings)))
 
+;;; DATABASE BASE CLASS
+;;
 (defclass semanticdb-project-database (eieio-instance-tracker)
   ((tracking-symbol :initform semanticdb-database-list)
    (reference-directory :type string
@@ -140,6 +290,16 @@ this database contains symbols for.")
 		    :type class
 		    :documentation
 		    "New tables created for this database are of this class.")
+   (cache :type list
+	  :initform nil
+	  :documentation "List of cache information for tools.
+Any particular tool can cache data to a database at runtime
+with `semanticdb-cache-get'.
+
+Using a semanticdb cache does not save any information to a file,
+so your cache will need to be recalculated at runtime.
+
+Note: This index will not be saved in a persistent file.")
    (tables :initarg :tables
 	   :type list
 	   ;; Need this protection so apps don't try to access
@@ -149,7 +309,33 @@ this database contains symbols for.")
 	   :documentation "List of `semantic-db-table' objects."))
   "Database of file tables.")
 
-;;; Code:
+(defmethod semanticdb-full-filename ((obj semanticdb-project-database))
+  "Fetch the full filename that OBJ refers to.
+Abstract tables do not have file names associated with them."
+  nil)
+
+(defmethod semanticdb-dirty-p ((DB semanticdb-project-database))
+  "Return non-nil if DB is 'dirty'.
+A database is dirty if the state of the database changed in a way
+where it may need to resynchronize with some persistent storage."
+  (let ((dirty nil)
+	(tabs (oref DB tables)))
+    (while (and (not dirty) tabs)
+      (setq dirty (semanticdb-dirty-p (car tabs)))
+      (setq tabs (cdr tabs)))
+    dirty))
+
+(defmethod object-print ((obj semanticdb-project-database) &rest strings)
+  "Pretty printer extension for `semanticdb-project-database'.
+Adds the number of tables in this file to the object print name."
+  (apply 'call-next-method obj
+	 (cons (format " (%d tables%s)"
+		       (length (semanticdb-get-database-tables obj))
+		       (if (semanticdb-dirty-p obj)
+			   " DIRTY" "")
+		       )
+	       strings)))
+
 (defmethod semanticdb-create-database :STATIC ((dbc semanticdb-project-database) directory)
   "Create a new semantic database of class DBC for DIRECTORY and return it.
 If a database for DIRECTORY has already been created, return it.
@@ -157,11 +343,11 @@ If DIRECTORY doesn't exist, create a new one."
   (let ((db (semanticdb-directory-loaded-p directory)))
     (unless db
       (setq db (semanticdb-project-database
-		(file-name-nondirectory filename)
+		(file-name-nondirectory directory)
 		:tables nil))
       ;; Set this up here.   We can't put it in the constructor because it
       ;; would be saved, and we want DB files to be portable.
-      (oset db reference-directory directory))
+      (oset db reference-directory (file-truename directory)))
     db))
 
 (defmethod semanticdb-flush-database-tables ((db semanticdb-project-database))
@@ -185,53 +371,159 @@ If the table for FILE does not exist, create one."
       (object-add-to-list db 'tables newtab t))
     newtab))
 
+(defmethod semanticdb-file-table ((obj semanticdb-project-database) filename)
+  "From OBJ, return FILENAME's associated table object."
+  (object-assoc (file-relative-name (file-truename filename)
+  				    (oref obj reference-directory))
+		'file (oref obj tables)))
+
+;; DATABASE FUNCTIONS
 (defun semanticdb-get-database (filename)
   "Get a database for FILENAME.
 If one isn't found, create one."
-  (semanticdb-create-database semanticdb-new-database-class filename))
+  (semanticdb-create-database semanticdb-new-database-class (file-truename filename)))
 
 (defun semanticdb-directory-loaded-p (path)
   "Return the project belonging to PATH if it was already loaded."
   (eieio-instance-tracker-find path 'reference-directory 'semanticdb-database-list))
 
-(defmethod semanticdb-file-table ((obj semanticdb-project-database) filename)
-  "From OBJ, return FILENAME's associated table object."
-  (object-assoc (file-relative-name (expand-file-name filename)
-  				    (oref obj reference-directory))
-		'file (oref obj tables)))
+(defun semanticdb-create-table-for-file (filename)
+  "Initialize a database table for FILENAME, and return it.
+If FILENAME exists in the database already, return that.
+If there is no database for the table to live in, create one."
+  (let ((cdb nil)
+	(tbl nil)
+	(dd (file-name-directory filename))
+	)
+    ;; Allow a database override function
+    (setq cdb (semanticdb-create-database semanticdb-new-database-class
+					  dd))
+    ;; Get a table for this file.
+    (setq tbl (semanticdb-create-table cdb filename))
 
-(defmethod semanticdb-get-buffer ((obj semanticdb-table))
-  "Return a buffer associated with OBJ.
-If the buffer is not in memory, load it with `find-file-noselect'."
-  (find-file-noselect (semanticdb-full-filename obj) t))
+    ;; Return the pair.
+    (cons cdb tbl)
+    ))
 
-(defmethod semanticdb-set-buffer ((obj semanticdb-table))
-  "Set the current buffer to be a buffer owned by OBJ.
-If OBJ's file is not loaded, read it in first."
-  (set-buffer (semanticdb-get-buffer obj)))
+;;; Cache Cache.
+;;
+(defclass semanticdb-abstract-cache ()
+  ((table :initarg :table
+	  :type semanticdb-abstract-table
+	  :documentation
+	  "Cross reference to the table this belongs to.")
+   )
+  "Abstract baseclass for tools to use to cache information in semanticdb.
+Tools needing a per-file cache must subclass this, and then get one as
+needed.  Cache objects are identified in semanticdb by subclass.
+In order to keep your cache up to date, be sure to implement
+`semanticdb-synchronize', and `semanticdb-partial-synchronize'.
+See the file semantic-scope.el for an example."
+  :abstract t)
 
-(defmethod semanticdb-normalize-tags ((obj semanticdb-abstract-table) tags)
-  "For the table OBJ, convert a list of TAGS, into standardized form.
-The default is to return TAGS.
-Some databases may default to searching and providing simplified tags
-based on whichever technique used.  This method provides a hook for
-them to convert TAG into a more complete form."
-  tags)
+(defmethod semanticdb-cache-get ((table semanticdb-abstract-table)
+				 desired-class)
+  "Get a cache object on TABLE of class DESIRED-CLASS.
+This method will create one if none exists with no init arguments
+other than :table."
+  (assert (child-of-class-p desired-class 'semanticdb-abstract-cache))
+  (let ((cache (oref table cache))
+	(obj nil))
+    (while (and (not obj) cache)
+      (if (eq (object-class-fast (car cache)) desired-class)
+	  (setq obj (car cache)))
+      (setq cache (cdr cache)))
+    (if obj
+	obj ;; Just return it.
+      ;; No object, lets create a new one and return that.
+      (setq obj (funcall desired-class "Cache" :table table))
+      (object-add-to-list table 'cache obj)
+      obj)))
+
+(defmethod semanticdb-cache-remove ((table semanticdb-abstract-table)
+				    cache)
+  "Remove from TABLE the cache object CACHE."
+  (object-remove-from-list table 'cache cache))
+
+(defmethod semanticdb-synchronize ((cache semanticdb-abstract-cache)
+				   new-tags)
+  "Synchronize a CACHE with some NEW-TAGS."
+  ;; The abstract class will do... NOTHING!
+  )
+
+(defmethod semanticdb-partial-synchronize ((cache semanticdb-abstract-cache)
+					   new-tags)
+  "Synchronize a CACHE with some changed NEW-TAGS."
+  ;; The abstract class will do... NOTHING!
+  )
+
+(defclass semanticdb-abstract-db-cache ()
+  ((db :initarg :db
+       :type semanticdb-project-database
+       :documentation
+       "Cross reference to the database this belongs to.")
+   )
+  "Abstract baseclass for tools to use to cache information in semanticdb.
+Tools needing a database cache must subclass this, and then get one as
+needed.  Cache objects are identified in semanticdb by subclass.
+In order to keep your cache up to date, be sure to implement
+`semanticdb-synchronize', and `semanticdb-partial-synchronize'.
+See the file semantic-scope.el for an example."
+  :abstract t)
+
+(defmethod semanticdb-cache-get ((db semanticdb-project-database)
+				 desired-class)
+  "Get a cache object on DB of class DESIRED-CLASS.
+This method will create one if none exists with no init arguments
+other than :table."
+  (assert (child-of-class-p desired-class 'semanticdb-abstract-db-cache))
+  (let ((cache (oref db cache))
+	(obj nil))
+    (while (and (not obj) cache)
+      (if (eq (object-class-fast (car cache)) desired-class)
+	  (setq obj (car cache)))
+      (setq cache (cdr cache)))
+    (if obj
+	obj ;; Just return it.
+      ;; No object, lets create a new one and return that.
+      (setq obj (funcall desired-class "Cache" :db db))
+      (object-add-to-list db 'cache obj)
+      obj)))
+
+(defmethod semanticdb-cache-remove ((db semanticdb-project-database)
+				    cache)
+  "Remove from TABLE the cache object CACHE."
+  (object-remove-from-list db 'cache cache))
+
+
+(defmethod semanticdb-synchronize ((cache semanticdb-abstract-db-cache)
+				   new-tags)
+  "Synchronize a CACHE with some NEW-TAGS."
+  ;; The abstract class will do... NOTHING!
+  )
+
+(defmethod semanticdb-partial-synchronize ((cache semanticdb-abstract-db-cache)
+					   new-tags)
+  "Synchronize a CACHE with some changed NEW-TAGS."
+  ;; The abstract class will do... NOTHING!
+  )
+
+;;; REFRESH
 
 (defmethod semanticdb-refresh-table ((obj semanticdb-table))
   "If the tag list associated with OBJ is loaded, refresh it.
 This will call `semantic-fetch-tags' if that file is in memory."
-  (let ((ff (semanticdb-full-filename obj)))
-    (if (get-file-buffer ff)
-	(save-excursion
-	  (semanticdb-set-buffer obj)
-	  (semantic-fetch-tags)))))
+  (when (semanticdb-in-buffer-p obj)
+    (save-excursion
+      (semanticdb-set-buffer obj)
+      (semantic-fetch-tags))))
 
 (defmethod semanticdb-needs-refresh-p ((obj semanticdb-table))
   "Return non-nil of OBJ's tag list is out of date.
 The file associated with OBJ does not need to be in a buffer."
-  (let ((buff (get-file-buffer (semanticdb-full-filename obj)))
-	)
+  (let* ((ff (semanticdb-full-filename obj))
+	 (buff (semanticdb-in-buffer-p obj))
+	 )
     (if buff
 	(save-excursion
 	  (set-buffer buff)
@@ -243,16 +535,83 @@ The file associated with OBJ does not need to be in a buffer."
 	  )
       ;; Buffer isn't loaded.  The only clue we have is if the file
       ;; is somehow different from our mark in the semanticdb table.
-      (let* ((stats (file-attributes (semanticdb-full-filename obj)))
-	     (actualmax (aref stats 7)))
+      (let* ((stats (file-attributes ff))
+	     (actualsize (nth 7 stats))
+	     (actualmod (nth 5 stats))
+	     )
 
 	(or (not (slot-boundp obj 'tags))
-	    (not (oref obj tags))
-	    (/= (or (oref obj pointmax) 0) actualmax)
+	    ;; (not (oref obj tags)) -->  not needed anymore?
+	    (/= (or (oref obj fsize) 0) actualsize)
+	    (not (equal (oref obj lastmodtime) actualmod))
 	    )
 	))))
 
-(defmethod semanticdb-save-db ((DB semanticdb-project-database))
+
+;;; Synchronization
+;;
+(defmethod semanticdb-synchronize ((table semanticdb-abstract-table)
+				   new-tags)
+  "Synchronize the table TABLE with some NEW-TAGS."
+  (oset table tags new-tags)
+  (oset table pointmax (point-max))
+  (let ((fattr (file-attributes (semanticdb-full-filename table))))
+    (oset table fsize (nth 7 fattr))
+    (oset table lastmodtime (nth 5 fattr))
+    )
+  ;; Assume it is now up to date.
+  (oset table unmatched-syntax semantic-unmatched-syntax-cache)
+  ;; The lexical table should be good too.
+  (when (featurep 'semantic-lex-spp)
+    (oset table lexical-table (semantic-lex-spp-save-table)))
+  ;; this implies dirtyness
+  (semanticdb-set-dirty table)
+
+  ;; Synchronize the index
+  (when (slot-boundp table 'index)
+    (let ((idx (oref table index)))
+      (when idx (semanticdb-synchronize idx new-tags))))
+
+  ;; Synchronize application caches.
+  (dolist (C (oref table cache))
+    (semanticdb-synchronize C new-tags)
+    )
+
+  ;; Update cross references
+  ;; (semanticdb-refresh-references table)
+  )
+
+(defmethod semanticdb-partial-synchronize ((table semanticdb-abstract-table)
+					   new-tags)
+  "Synchronize the table TABLE where some NEW-TAGS changed."
+  ;; You might think we need to reset the tags, but since the partial
+  ;; parser splices the lists, we don't need to do anything
+  ;;(oset table tags new-tags)
+  ;; We do need to mark ourselves dirty.
+  (semanticdb-set-dirty table)
+
+  ;; Incremental parser doesn't mokey around with this.
+  (oset table unmatched-syntax semantic-unmatched-syntax-cache)
+
+  ;; Synchronize the index
+  (when (slot-boundp table 'index)
+    (let ((idx (oref table index)))
+      (when idx (semanticdb-partial-synchronize idx new-tags))))
+
+  ;; Synchronize application caches.
+  (dolist (C (oref table cache))
+    (semanticdb-synchronize C new-tags)
+    )
+
+  ;; Update cross references
+  ;;(when (semantic-find-tags-by-class 'include new-tags)
+  ;;  (semanticdb-refresh-references table))
+  )
+
+;;; SAVE/LOAD
+;;
+(defmethod semanticdb-save-db ((DB semanticdb-project-database)
+			       &optional supress-questions)
   "Cause a database to save itself.
 The database base class does not save itself persistently.
 Subclasses could save themselves to a file, or to a database, or other
@@ -270,8 +629,19 @@ form."
   "Save all semantic tag databases."
   (interactive)
   (message "Saving tag summaries...")
-  (mapcar 'semanticdb-save-db semanticdb-database-list)
+  (mapc 'semanticdb-save-db semanticdb-database-list)
   (message "Saving tag summaries...done"))
+
+(defun semanticdb-save-all-db-idle ()
+  "Save all semantic tag databases from idle time.
+Exit the save between databases if there is user input."
+  (semantic-safe "Auto-DB Save: %S"
+    (semantic-exit-on-input 'semanticdb-idle-save
+      (mapc (lambda (db)
+	      (semantic-throw-on-input 'semanticdb-idle-save)
+	      (semanticdb-save-db db t))
+	    semanticdb-database-list))
+    ))
 
 ;;; Directory Project support
 ;;
@@ -340,24 +710,16 @@ local variable."
   (save-excursion
     (if buffer (set-buffer buffer))
     (or
+     ;; nil major mode in table means we don't know yet.  Assume yes for now?
+     (null (oref table major-mode))
      ;; nil means the same as major-mode
      (and (not semantic-equivalent-major-modes)
-	  (eq major-mode (oref table major-mode)))
+	  (mode-local-use-bindings-p major-mode (oref table major-mode)))
      (and semantic-equivalent-major-modes
 	  (member (oref table major-mode) semantic-equivalent-major-modes))
      )
     ))
 
-
-(defmethod semanticdb-printable-name ((table semanticdb-table))
-  "Return a string which is a short and logical printable name for TABLE.
-Use this instead of getting the :file slot of the table, which can
-sometimes be unbound."
-  ;; I know I said that the above is sometimes unbound.
-  ;; Not that if this line throws an error, you should go to
-  ;; the subclass, and override this method.
-  (file-name-nondirectory (file-name-sans-extension (oref table file)))
-  )
 
 ;;; Associations
 ;;
@@ -404,7 +766,7 @@ Always append `semanticdb-project-system-databases' if
   (let ((root nil)			; found root directory
 	(dbs nil)			; collected databases
 	(roots semanticdb-project-roots) ;all user roots
-	(dir (or dir default-directory))
+	(dir (file-truename (or dir default-directory)))
 	)
     ;; Find the root based on project functions.
     (setq root (run-hook-with-args-until-success
@@ -412,11 +774,9 @@ Always append `semanticdb-project-system-databases' if
 		dir))
     ;; Find roots based on strings
     (while (and roots (not root))
-      (if (string-match (concat "^"
-				(regexp-quote
-				 (expand-file-name (car roots))))
-			(expand-file-name dir))
-	  (setq root (car roots)))
+      (let ((r (file-truename (car roots))))
+	(if (string-match (concat "^" (regexp-quote r)) dir)
+	    (setq root r)))
       (setq roots (cdr roots)))
 
     ;; If no roots are found, use this directory.
@@ -427,243 +787,187 @@ Always append `semanticdb-project-system-databases' if
       ;; The rootlist allows the root functions to possibly
       ;; return several roots which are in different areas but
       ;; all apart of the same system.
-      (let ((rootlist (if (listp root) root (list root))))
-	(while rootlist
-	  (setq root (car rootlist))
-	  (let ((regexp (concat "^" (regexp-quote (expand-file-name root))))
-		(adb semanticdb-database-list) ; all databases
-		)
-	    (while adb
-	      ;; I don't like this part, but close enough.
-	      (if (and ;; (slot-exists-p (car adb) 'file) <-- What was that for? 2/15/07
-		       (slot-boundp (car adb) 'reference-directory)
-		       (string-match regexp (oref (car adb) reference-directory)))
-		  (setq dbs (cons (car adb) dbs)))
-	      (setq adb (cdr adb))))
-	  (setq rootlist (cdr rootlist)))))
+      (let ((regexp (concat "^" (regexp-quote root)))
+	    (adb semanticdb-database-list) ; all databases
+	    )
+	(while adb
+	  ;; I don't like this part, but close enough.
+	  (if (and (slot-boundp (car adb) 'reference-directory)
+		   (string-match regexp (oref (car adb) reference-directory)))
+	      (setq dbs (cons (car adb) dbs)))
+	  (setq adb (cdr adb))))
+      )
     ;; Add in system databases
     (when semanticdb-search-system-databases
-      (setq dbs (append dbs semanticdb-project-system-databases)))
+      (setq dbs (nconc dbs semanticdb-project-system-databases)))
     ;; Return
     dbs))
 
 
-;;; Hooks:
-;;
-(defun semanticdb-semantic-init-hook-fcn ()
-  "Function saved in `find-file-hooks'.
-Sets up the semanticdb environment."
-  (let ((cdb nil)
-	(ctbl nil))
-    ;; Allow a database override function
-    (when (not (and semanticdb-semantic-init-hook-overload
-		    (setq cdb (run-hooks 'semanticdb-semantic-init-hook-overload))))
-      (setq cdb (semanticdb-create-database semanticdb-new-database-class
-					    default-directory))
-      )
-    ;; Get the current DB for this directory
-    (setq semanticdb-current-database cdb)
-    ;; Get a table for this file.
-    (setq ctbl (semanticdb-create-table cdb (buffer-file-name)))
-    ;; We set the major mode because we know what it is.
-    (oset ctbl major-mode major-mode)
-    ;; Local state
-    (setq semanticdb-current-table ctbl)
-    ;; Try to swap in saved tags
-    (if (or (not (slot-boundp ctbl 'tags)) (not (oref ctbl tags))
-	    (/= (or (oref ctbl pointmax) 0) (point-max))
-	    )
-	(semantic-clear-toplevel-cache)
-      (condition-case nil
-          (semantic-set-unmatched-syntax-cache
-           (oref ctbl unmatched-syntax))
-        (unbound-slot
-         ;; Old version of the semanticdb table can miss the unmatched
-         ;; syntax slot.  If so, just clear the unmatched syntax cache.
-         (semantic-clear-unmatched-syntax-cache)
-	 ;; Make sure it has a value.
-	 (oset ctbl unmatched-syntax nil)
-	 ))
-      (semantic--set-buffer-cache (oref ctbl tags))
-      (semantic--tag-link-cache-to-buffer)
-      )
-    ))
-
-(defun semanticdb-synchronize-table (new-table)
-  "Function run after parsing.
-Argument NEW-TABLE is the new table of tags."
-  (if semanticdb-current-table
-      (oset semanticdb-current-table tags new-table)))
-
-(defun semanticdb-kill-hook ()
-  "Function run when a buffer is killed.
-If there is a semantic cache, slurp out the overlays, and store
-it in our database.  If that buffer has no cache, ignore it, we'll
-handle it later if need be."
-  (if (and (semantic-active-p)
-	   semantic--buffer-cache
-	   semanticdb-current-table)
-      (progn
-	(oset semanticdb-current-table pointmax (point-max))
-	(condition-case nil
-	    (semantic--tag-unlink-cache-from-buffer)
-	  ;; If this messes up, just clear the system
-	  (error
-	   (semantic-clear-toplevel-cache)
-	   (message "semanticdb: Failed to deoverlay tag cache."))))
-    ))
-
-(defun semanticdb-kill-emacs-hook ()
-  "Function called when Emacs is killed.
-Save all the databases."
-  (semanticdb-save-all-db))
-
-;;; Start/Stop database use
-;;
-(defvar semanticdb-hooks
-  '((semanticdb-semantic-init-hook-fcn semantic-init-db-hooks)
-    (semanticdb-synchronize-table semantic-after-toplevel-cache-change-hook)
-    (semanticdb-kill-hook kill-buffer-hook)
-    (semanticdb-kill-emacs-hook kill-emacs-hook)
-    )
-  "List of hooks and values to add/remove when configuring semanticdb.")
-
-;;;###autoload
-(defun semanticdb-minor-mode-p ()
-  "Return non-nil if `semanticdb-minor-mode' is active."
-  (member (car (car semanticdb-hooks))
-	  (symbol-value (car (cdr (car semanticdb-hooks))))))
-
-;;;###autoload
-(defun global-semanticdb-minor-mode (&optional arg)
-  "Toggle the use of `semanticdb-minor-mode'.
-If ARG is positive, enable, if it is negative, disable.
-If ARG is nil, then toggle."
-  (interactive "P")
-  (if (not arg)
-      (if (semanticdb-minor-mode-p)
-	  (setq arg -1)
-	(setq arg 1)))
-  (let ((fn 'add-hook)
-	(h semanticdb-hooks))
-    (if (< arg 0)
-	(setq semanticdb-global-mode nil
-              fn 'remove-hook)
-      (setq semanticdb-global-mode t))
-    ;(message "ARG = %d" arg)
-    (while h
-      (funcall fn (car (cdr (car h))) (car (car h)))
-      (setq h (cdr h)))
-    ;; Call a hook
-    (run-hooks 'semanticdb-mode-hooks)
-    ))
-
-(defun semanticdb-toggle-global-mode ()
-  "Toggle use of the Semantic Database feature.
-Update the environment of Semantic enabled buffers accordingly."
-  (interactive)
-  (if (semanticdb-minor-mode-p)
-      ;; Save databases before disabling semanticdb.
-      (semanticdb-save-all-db))
-  ;; Toggle semanticdb minor mode.
-  (global-semanticdb-minor-mode))
-
-
-;;; Validate the semantic database
-;;
-(defun semanticdb-table-oob-sanity-check (cache)
-  "Validate that CACHE tags do not have any overlays in them."
-  (while cache
-    (when (semantic-overlay-p (semantic-tag-overlay cache))
-      (message "Tag %s has an erroneous overlay!"
-	       (semantic-format-tag-summarize (car cache))))
-    (semanticdb-table-oob-sanity-check
-     (semantic-tag-components-with-overlays (car cache)))
-    (setq cache (cdr cache))))
-
-(defun semanticdb-table-sanity-check (&optional table)
-  "Validate the current semanticdb TABLE."
-  (interactive)
-  (if (not table) (setq table semanticdb-current-table))
-  (let* ((full-filename (semanticdb-full-filename table))
-	 (buff (get-file-buffer full-filename)))
-    (if buff
-	(save-excursion
-	  (set-buffer buff)
-	  (semantic-sanity-check))
-      ;; We can't use the usual semantic validity check, so hack our own.
-      (semanticdb-table-oob-sanity-check (semanticdb-get-tags table)))))
-
-(defun semanticdb-database-sanity-check ()
-  "Validate the current semantic database."
-  (interactive)
-  (let ((tables (semanticdb-get-database-tables
-		 semanticdb-current-database)))
-    (while tables
-      (semanticdb-table-sanity-check (car tables))
-      (setq tables (cdr tables)))
-    ))
-
-(defun semanticdb-dump-all-table-summary ()
-  "Dump a list of all databases in Emacs memory."
-  (interactive)
-  (require 'semantic-adebug)
-  (let ((ab (semantic-adebug-new-buffer "*SEMANTICDB*"))
-	(db semanticdb-database-list))
-    (semantic-adebug-insert-stuff-list db "*")))
-
-
-;;    (with-output-to-temp-buffer "*SEMANTICDB*"
-;;      (while db
-;;	(princ (object-name (car db)))
-;;	(princ ": ")
-;;	(if (slot-boundp (car db) 'reference-directory)
-;;	    (princ (oref (car db) reference-directory))
-;;	  (princ "System DB"))
-;;	(princ "\n")
-;;	(setq db (cdr db))))
-;;    ))
-
 ;;; Generic Accessor Routines
 ;;
 ;; These routines can be used to get at tags in files w/out
 ;; having to know a lot about semanticDB.
+(defvar semanticdb-file-table-hash (make-hash-table :test 'equal)
+  "Hash table mapping file names to database tables.")
+
+(defun semanticdb-file-table-object-from-hash (file)
+  "Retrieve a DB table from the hash for FILE.
+Does not use `file-truename'."
+  (gethash file semanticdb-file-table-hash 'no-hit))
+
+(defun semanticdb-file-table-object-put-hash (file dbtable)
+  "For FILE, associate DBTABLE in the hash table."
+  (puthash file dbtable semanticdb-file-table-hash))
 
 ;;;###autoload
 (defun semanticdb-file-table-object (file &optional dontload)
-  "Return a semanticdb table belonging to FILE.
+  "Return a semanticdb table belonging to FILE, make it up to date.
 If file has database tags available in the database, return it.
 If file does not have tags available, and DONTLOAD is nil,
 then load the tags for FILE, and create a new table object for it.
 DONTLOAD does not affect the creation of new database objects."
-  (setq file (expand-file-name file))
+  ;; (message "Object Translate: %s" file)
   (when (file-exists-p file)
     (let* ((default-directory (file-name-directory file))
-	   (db (or
-		;; This line will pick up system databases.
-		(semanticdb-directory-loaded-p default-directory)
-		;; this line will make a new one if needed.
-		(semanticdb-get-database default-directory)))
-	   )
-      (or (semanticdb-file-table db file)
-	  ;; We must load the file.
-	  (if (not dontload)
-	      (save-excursion
-		(set-buffer (find-file-noselect file t))
-		;; Find file should automatically do this for us.
-		;; Sometimes the DB table doesn't contains tags and needs
-		;; a refresh.  For example, when the file is loaded for
-		;; the first time, and the idle scheduler didn't get a
-		;; chance to trigger a parse before the file buffer is
-		;; killed.
-		(when (semanticdb-needs-refresh-p semanticdb-current-table)
-		  (semanticdb-refresh-table semanticdb-current-table))
-		(prog1
-		    semanticdb-current-table
-		  ;; If we had to find the file, then we should kill it
-		  ;; to keep the master buffer list clean.
-		  (kill-buffer (current-buffer))))))
+	   (tab (semanticdb-file-table-object-from-hash file))
+	   (fullfile nil))
+
+      ;; If it is not in the cache, then extract the more traditional
+      ;; way by getting the database, and finding a table in that database.
+      ;; Once we have a table, add it to the hash.
+      (when (eq tab 'no-hit)
+	(setq fullfile (file-truename file))
+	(let ((db (or ;; This line will pick up system databases.
+		   (semanticdb-directory-loaded-p default-directory)
+		   ;; this line will make a new one if needed.
+		   (semanticdb-get-database default-directory))))
+	  (setq tab (semanticdb-file-table db fullfile))
+	  (when tab
+	    (semanticdb-file-table-object-put-hash file tab)
+	    (when (not (string= fullfile file))
+	      (semanticdb-file-table-object-put-hash fullfile tab)
+	    ))
+	  ))
+
+      (cond
+       ((and tab
+	     ;; Is this in a buffer?
+	     ;;(find-buffer-visiting (semanticdb-full-filename tab))
+	     (semanticdb-in-buffer-p tab)
+	     )
+	(save-excursion
+	  ;;(set-buffer (find-buffer-visiting (semanticdb-full-filename tab)))
+	  (semanticdb-set-buffer tab)
+	  (semantic-fetch-tags)
+	  ;; Return the table.
+	  tab))
+       ((and tab dontload)
+	;; If we have table, and we don't want to load it, just return it.
+	tab)
+       ((and tab
+	     ;; Is table fully loaded, or just a proxy?
+	     (number-or-marker-p (oref tab pointmax))
+	     ;; Is this table up to date with the file?
+	     (not (semanticdb-needs-refresh-p tab)))
+	;; A-ok!
+	tab)
+       ((or (and fullfile (get-file-buffer fullfile))
+	    (get-file-buffer file))
+	;; are these two calls this faster than `find-buffer-visiting'?
+
+	;; If FILE is being visited, but none of the above state is
+	;; true (meaning, there is no table object associated with it)
+	;; then it is a file not supported by Semantic, and can be safely
+	;; ignored.
+	nil)
+       ((not dontload) ;; We must load the file.
+	;; Full file should have been set by now.  Debug why not?
+	(when (and (not tab) (not fullfile))
+	  ;; This case is if a 'nil is erroneously put into the hash table.  This
+	  ;; would need fixing
+	  (setq fullfile (file-truename file))
+	  )
+	
+	;; If we have a table, but no fullfile, that's ok.  Lets get the filename
+	;; from the table which is pre-truenamed.
+	(when (and (not fullfile) tab)
+	  (setq fullfile (semanticdb-full-filename tab)))
+
+	(setq tab (semanticdb-create-table-for-file-not-in-buffer fullfile))
+
+	;; Save the new table.
+	(semanticdb-file-table-object-put-hash file tab)
+	(when (not (string= fullfile file))
+	  (semanticdb-file-table-object-put-hash fullfile tab)
+	  )
+	;; Done!
+	tab)
+       (t
+	;; Full file should have been set by now.  Debug why not?
+	;; One person found this.  Is it a file that failed to parse
+	;; in the past?
+	(when (not fullfile)
+	  (setq fullfile (file-truename file)))
+
+	;; We were asked not to load the file in and parse it.
+	;; Instead just create a database table with no tags
+	;; and a claim of being empty.
+	;;
+	;; This will give us a starting point for storing
+	;; database cross-references so when it is loaded,
+	;; the cross-references will fire and caches will
+	;; be cleaned.
+	(let ((ans (semanticdb-create-table-for-file file)))
+	  (setq tab (cdr ans))
+
+	  ;; Save the new table.
+	  (semanticdb-file-table-object-put-hash file tab)
+	  (when (not (string= fullfile file))
+	    (semanticdb-file-table-object-put-hash fullfile tab)
+	    )
+	  ;; Done!
+	  tab))
+       )
       )))
+
+(defvar semanticdb-out-of-buffer-create-table-fcn nil
+  "When non-nil, a function for creating a semanticdb table.
+This should take a filename to be parsed.")
+(make-variable-buffer-local 'semanticdb-out-of-buffer-create-table-fcn)
+
+(defun semanticdb-create-table-for-file-not-in-buffer (filename)
+  "Create a table for the file FILENAME.
+If there are no language specific configurations, this
+function will read in the buffer, parse it, and kill the buffer."
+  (if semanticdb-out-of-buffer-create-table-fcn
+      (funcall semanticdb-out-of-buffer-create-table-fcn filename)
+    (save-excursion
+      (let* ( ;; Remember the buffer to kill
+	     (kill-buffer-flag (find-buffer-visiting filename))
+	     (buffer-to-kill (or kill-buffer-flag
+				 (semantic-find-file-noselect filename t))))
+
+	;; This shouldn't ever be set.  Debug some issue here?
+	;; (when kill-buffer-flag (debug))
+
+	(set-buffer buffer-to-kill)
+	;; Find file should automatically do this for us.
+	;; Sometimes the DB table doesn't contains tags and needs
+	;; a refresh.  For example, when the file is loaded for
+	;; the first time, and the idle scheduler didn't get a
+	;; chance to trigger a parse before the file buffer is
+	;; killed.
+	(when semanticdb-current-table
+	  (semantic-fetch-tags))
+	(prog1
+	    semanticdb-current-table
+	  (when (not kill-buffer-flag)
+	    ;; If we had to find the file, then we should kill it
+	    ;; to keep the master buffer list clean.
+	    (kill-buffer buffer-to-kill)
+	    )))))
+  )
 
 ;;;###autoload
 (defun semanticdb-file-stream (file)

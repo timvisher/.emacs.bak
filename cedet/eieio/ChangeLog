@@ -1,3 +1,548 @@
+2009-02-24  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (EMACSFLAGS): New variable.
+	(init,eieio,examples,test): Use above.
+
+2009-02-01  Jan Moringen <scymtym@users.sourceforge.net>
+
+	* eieio-tests.el (virtual-slot-class):
+	New class; used in tests for `slot-missing'
+	(virtual-slot-class::slot-missing): New method; simulates a virtual
+	slot
+	(vsca): Object of class virtual-slot-class; used in basic
+	`slot-missing' tests
+	(vscb): Another object of class virtual-slot-class; used to test calls
+	to `slot-missing' from constructor
+
+	* eieio.el (shared-initialize):
+	When setting slot values, dispatch missing slots
+	to `slot-missing', but do not try to set them with `eieio-oset' after
+	that
+
+2009-01-29  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Project.ede (eieio): Updated to 1.0pre6.
+
+	* Makefile (VERSION): Updated to 1.2
+
+	* eieio.el (eieio-version): Updated to 1.2
+
+2009-01-20  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio-datadebug.el (data-debug-insert-object-slots-from-point):
+	(data-debug-show):
+	Eliminate unused variable bindings.
+
+2009-01-18  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio-tests.el (intarag warning):
+	Make optional if framwork for getting last warnigs works.
+	(eieio-test-methodinvoke): New loading techinique
+
+2009-01-14  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (examples_LISP): Remove tree.el and call-tree.el
+
+	* Project.ede ("examples"): Remove tree.el and call-tree.el
+
+	* eieio.texi (Slot Options):
+	Add warnings about obsoleting bogus initform behavior
+	(Class Values): Remove refs to tree.el
+
+2009-01-13  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (lambda-default): Add TODO
+	(eieio-default-eval-maybe)
+	(eieio-default-superclass::initialize-instance):
+	Add warnings about using functions to initialize slots.
+
+2009-01-10  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.texi (Quick Start, Introduction, Generics, Signals, Wish List):
+	Misc spelling fixes.
+
+2009-01-09  Eric M. Ludlam  <zappo@gnu.org>
+
+	* lmcompile.el (lmcompile-do-highlight):
+	Fix unused var bytcomp warning.
+
+	* linemark.el (linemark-next-in-buffer):
+	Fix unused var bytcomp warning.
+
+	* eieio.el (call-next-method): Fix unused var bytcomp warning.
+
+	* eieio-opt.el (eieio-display-method-list, eieio-help-mode-augmentation-maybee):
+	Fix unused var bytcomp warning.
+
+	* eieio-datadebug.el (eieio): New require
+
+	* eieio-custom.el (eieio-default-superclass::eieio-customize-object):
+	Fix unused var bytcomp warning.
+
+2009-01-04  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (eieio-defgeneric-form-primary-only-one):
+	Fix insertion of class into generated code so it will be quoted in,
+	and not depend on the symbol-value which could be erroneously overriden.
+
+2008-12-29  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (eieio-describe-constructor): New autoload.
+
+	* eieio.el (eieio-defclass): Fix byte-comp warnings about mapcar.
+	(eieio-generic-call-primary-only): Fix byte-comp warning
+	that found a typo.
+	(describe-function): If an eieio constructor is passed in,
+	describe it as a constructor.
+
+	* eieio-custom.el (eieio-default-superclass::eieio-customize-object):
+	Fix byte-comp warnings about mapcar.
+
+	* linemark.el: (linemark-group::linemark-display)
+	(linemark-group::linemark-delete):
+	Fix byte-comp warnings about mapcar.
+
+	* eieio-opt.el (eieio-describe-class): Support a header fcn.
+	(eieio-describe-constructor):
+	Describe a function that is a constructor to some class.
+
+2008-12-22  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (eieio-defclass-autoload): Fix child-p name.
+	(eieio-generic-call-primary-only): Better error messages.
+
+2008-12-15  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (eieio-defgeneric-form-primary-only-one):
+	Set byte-compile-warnings to
+	nil to fix Emacs 21 compile issue.
+
+	* eieio-perftest.el: (eieio-perftest-methodcall)
+	(eieio-perftest-onemethodcall): Change how percents are calc'd.
+
+2008-12-14  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (eieio-defgeneric-reset-generic-form-primary-only):
+	Byte compile the generated body.
+	Optimize the body a little more.
+	(eieio-defgeneric-form-primary-only-one):
+	Don't need to pass in classpredicate anymore.
+	(eieio-generic-call-primary-only): Fix doc typo.
+
+	* eieio-opt.el (eieio-describe-generic): Fix typo.
+
+	* eieio-opt.el (eieio-describe-generic):
+	Mention if there is only 1 primary method here.
+	(eieio-display-method-list): Add stats on how many methods have only
+	one primary method.
+
+	* eieio-perftest.el (eieio-perftest-onemethodcall): New
+
+	* eieio.el (generic-primary-only-one-p: New predicate. (eieio-defclass-autoload):
+	Fix typo for child-p
+	(eieio-defgeneric-form-primary-only-one)
+	(eieio-defgeneric-reset-generic-form-primary-only-one): New.
+	(eieio-defmethod): When optimizing method forms, if there is only
+	one primary method, setup this method using the form for only one
+	primary (new above.)
+	(eieio-generic-call-primary-only): Add missing local variable.
+
+2008-12-13  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (test_LISP): Add eieio-perftest.el
+
+	* Project.ede (test): Add eieio-perftest.el
+
+	* eieio-perftest.el: Performance testing setup.
+
+	* eieio.el (eieio-optimize-primary-methods-flag): New option.
+	(generic-primary-only-p): New predicate.
+	(eieio-defgeneric-reset-generic-form)
+	(eieio-defgeneric-form-primary-only)
+	(eieio-defgeneric-reset-generic-form-primary-only): New fcns.
+	(eieio-defgeneric): Move where the method's function is set.
+	(eieio-defmethod): Add optimizer at the end to choose primary-only
+	fast path.
+	(eieio-generic-call-primary-only): New fcn.
+
+	* eieio-opt.el (eieio-describe-generic):
+	Mention if a method is primary only.
+	(eieio-display-method-list): Add info about how many methods are
+	primary only.
+
+	* eieio-opt.el (eieio-display-method-list): New command.
+
+2008-12-09  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (eieiomt-method-list): Add comments.
+
+2008-12-07  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (toplevel):
+	Do not allow eieio to be loaded or byte-compiled twice.
+	(eieio-generic-call): error check the mclass value.
+	(eieiomt-method-list): Add a little more doc.
+
+2008-10-10  Eric M. Ludlam  <zappo@gnu.org>
+
+	* chart.el (chart-test-it-all): Add autoload cookie.
+
+2008-09-29  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.texi (Top): Remove CLOS refs.
+	(Quick Start, Introduction): Various updates.
+	(Building Classes): Added "inheritance" submenu
+	(Inheritance): New.
+	(Slot Options, Making New Objects)
+	(Accessing Slots): Various updates.
+	(Writing Methods, Static Methods): Add "Static Methods" submenu.
+	(Methods): Downcase method keys like :before, and various updates.
+	(Predicates): Updated doc from code.
+	Added TODO features.
+	(Association Lists): Updated doc from code.
+	(Base Classes, eieio-instance-tracker, Documentation): Various updates.
+	(Default Superclass): Break into sections.
+	(Initialization, Basic Methods,  Signal Handling):
+	New created from old content.  Various updates.
+	(Signals): Various updates.
+
+	* eieio-xml.el: (eieio-xml-override-prin1)
+	(eieio-xml-list-prin1): Use eieio-object-p.
+
+	* eieio-tests.el (static-method-class::static-method-class-method):
+	(static-method-class-2::static-method-class-method):
+	(obj1): Use eieio-object-p for tests.
+
+	* eieio-speedbar.el: (eieio-speedbar-menu, eieio-speedbar-buttons)
+	(eieio-speedbar::eieio-speedbar-expand)
+	(eieio-speedbar-item-info)
+	(eieio-speedbar-find-nearest-object)
+	(eieio-speedbar-line-path): Use eieio-object-p.
+
+	* eieio-custom.el (eieio-object-value-to-abstract): Use eieio-object-p.
+
+	* eieio-comp.el (byte-compile-file-form-defmethod):
+	Support upper and lowercase
+	method keys.
+
+	* eieio.el:
+	(method-static, method-before, method-primary, method-after)
+	(geneirc-method-static, method-geneirc-before)
+	(method-geneirc-primary, method-geneirc-after): Downcase key symbol in doc.
+	(class-v)
+	(eieio-object-p): Renamed from object-p.  Add alias.
+	(eieio-defclass): eieio-object-p, downcase :static.
+	(make-instance): doc fix.
+	(defmethod): Downcase method doc key symbols.
+	(eieio-defmethod): Support upper and lowercase key symbols, like :primary.
+	(eieio-oref, eieio-oref-default, eieio-oset, with-slots):
+	Use eieio-object-p. Doc fix.
+	(object-name, object-name-string, object-set-name-string, object-class)
+	(same-class-p, object-of-class-p, object-slots, slot-boundp, slot-exists-p):
+	Use eieio-object-p.
+	(find-class): Doc fix.
+	(object-assoc, object-add-to-list, object-remove-from-list)
+	(eieio-slot-name-index): Doc fix.
+	(eieio-generic-call-key): Downcase method keys, like :primary.
+	(eieio-generic-call): Use eieio-object-p.
+	(eieiomt-method-list, next-method-p, eieiomt-add):
+	Downcase method keys.  Doc fixes.
+	(eieio-default-superclass): Doc fix, downcase method keys.
+	(constructor, shared-initialize, initialize-instance): Doc fix.
+	(eieio-default-superclass::slot-missing)
+	(eieio-default-superclass::no-applicable-method)
+	(eieio-default-superclass::clone)
+	(destructor):
+	(eieio-default-superclass::object-print):
+	Add a generic with doc for each method.  Doc fixes.
+	(eieio-override-prin1, eieio-list-prin1)
+	(eieio-edebug-prin1-to-string): Use eieio-object-p.
+	(edebug-setup-hook): Downcase method keys.
+	("cedet-edebug"): Use eieio-object-p.
+
+2008-09-17  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio-xml.el (object-write-xml): Replace 'field' with 'slot'.
+
+	* eieio-base.el (eieio-instance-tracker::initialize-instance, eieio-instance-tracker-find):
+	(eieio-singleton::constructor): Replace occurances of the word 'field'
+	with 'slot'.
+
+	* eieio-custom.el (eieio-custom-ignore-eieio-co,eieio-object-value-create,eieio-object-value-get):
+	Replace occurances of the world 'field' with 'slot'
+
+	* eieio-datadebug.el (data-debug-insert-object-slots,data-debug-insert-object-slots-from-point):
+	(data-debug-insert-object-button,eieio-default-superclass::data-debug/eieio-insert-slots):
+	(eieio-default-superclass::data-debug-show):
+	Replaced occurances of the word 'field' with 'slot'.
+
+	* eieio.el:
+	(this, class-parent, class-children, class-num-slots, method-num-slots)
+	(defclass, eieio-defclass-autoload, eieio-defclass,eieio-perform-slot-validation-for-default)
+	(eieio-add-new-slot,eieio-copy-parents-into-subclass,eieio-validate-slot-value)
+	(oref,oref-default,oset,object-assoc,eieio-slot-originating-class-p,eieio-slot-name-index)
+	(eieiomt-install,eieiomt-add,slot-value,eieio-default-superclass,eieio-default-superclass::constructor)
+	(eieio-default-superclass::initialize-instance,eieio-default-superclass::object-write):
+	Replace occurance of the work 'field' with 'slot'.
+	(eieio-field-originating-class-p,eieio-class-field-name-index)
+	(eieio-field-name-index,eieio-add-new-field): Renamed to have 'slot'
+	in the name instead of 'field'
+
+2008-09-15  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.texi (Class Options): Add method-invocation-order.
+	(Making New Objects): Remove some examples that don't fit anymore.
+
+	* eieio-speedbar.el (eieio-speedbar): Method invocation is depth-first.
+
+	* eieio-test-methodinvoke.el (Diamond Test):
+	Two new sections on diamond shaped class trees and
+	method invocation.
+
+	* eieio-datadebug.el (eieio-debug-methodinvoke): New fcn.
+
+	* eieio.el (class-method-invocation-order): New function.
+	(defclass): Add :method-invocation-order doc
+	(eieio-defclass): Add :method-invocation-order error checing.
+	(eieio-pre-method-execution-hooks): New
+	(eieio-generic-call): Run above hooks.
+	(eieiomt-method-list, eieiomt-sym-optimize):
+	Support :method-invocation-order use.
+
+2008-09-14  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.texi (Top): Move naming conventions.
+	Add method invocation.
+	Eliminate Demo programs.
+	Add wish list.
+	(Quick Start, Introduction, Slot Options): Various small fixes
+	suggested by RMS.
+	(Writing Methods): Add subnodes
+	(Generics, Methods): New subnodes from a bove.
+
+2008-09-06  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (eieiomt-sym-optimize):
+	Convert search to be depth-first, not breadth first.
+	This enables a more predictable method invocation preference order.
+
+2008-09-03  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio-tests.el (class-c test):
+	setf test uses more logical value for debugging.
+	(class-subc): Inheritance of some attributes test.
+
+	* eieio.el (eieio-add-new-field):
+	Do not reset the default value if the incomming
+	value is 'unbound, meaning not specified.
+
+2008-08-23  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (eieio-defclass-autoload):
+	Comment and doc-string formatting.
+
+2008-08-15  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio-opt.el (eieio-help-augment-keymap):
+	Remove this fcn, and the setup code.
+	Both keybindings are now used for other things in Emacs.
+
+2008-07-03  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (eieio-defclass-autoload-map):
+	New obarray for autoload handling.
+	(eieio-defclass-autoload): Create an autoload for a class.
+	(eieio-class-un-autoload): Load in an autoload class
+	(eieio-defclass): Maintain class children and parantage from the class
+	autoload map.
+	(eieio-oref): Load autoload classes if ref'd by the class.
+
+2008-07-02  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (eieiomt-method-list):
+	If intput class is not a class (ie - nil) do
+	not call eieiomt-next on it.  Instead, allow `no-method-definition' to
+	be signaled.
+
+2008-06-26  Eric M. Ludlam  <zappo@gnu.org>
+
+	* NEWS: Note new features for CLOS compatibility.
+
+2008-06-19  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (VERSION): Updated version number.
+
+	* Project.ede ("eieio"): Update version.
+
+	* eieio-tests.el (class-a::no-next-method): Takes extra arguments.
+	(class-b::no-applicable-method): Takes extra args.
+
+	* eieio.el (eieio-version): New version.
+	(defmethod): New doc string.
+	(class-parents, class-children): Update doc string for CLOS.
+	(class-direct-superclasses, class-direct-subclasses): New aliases.
+	(eieio-generic-call): Extra arg passed to `no-applicable-method'.
+	(call-next-method): no next method called with extra args.
+	(eieio-default-superclass::slot-unbound): Update doc for CLOS.
+	(eieio-default-superclass::no-next-method): Doc fix.
+
+	* eieio-xml.el: First revision.
+
+2008-06-11  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio-custom.el: From Michael Reiher:
+	(eieio-overlay-lists): New compat
+	(eieio-default-superclass::eieio-customize-object): Use above.
+
+2008-05-18  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio-opt.el (eieio-describe-class-slots):
+	Support displaying the value of class
+	allocated slots.
+
+2008-05-10  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el: (eieio-default-superclass)
+	(eieio-default-superclass::clone): Fix up doc strings.
+
+2008-05-08  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.texi (Top): Re-arrange topics
+	(Quick Start): Rephrase some things.  Add more about the examples.
+	Discuss constructors.
+	(Naming Conventions): Moved
+	(Building Classes): Add more text for initarg and examples in initform.
+	(Writing Methods): Add examples, and clean up formatting.
+	Re-write arg list description.
+	(Predicates): Formatting.
+	(Association Lists): Better descriptions
+	(Customizing): Remove E20 ref.
+	(Base Classes): Fix descriptions
+	(Default Superclass): Moved.  Better descriptions.
+	(Signals): Moved
+	(CLOS compatibility): Moved
+
+2008-05-04  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio-base.el (eieio-persistent::eieio-persistent-save):
+	Use `write-region'
+	to do the save so I can pass in `visit' of 1, and eliminate
+	the various messages being displayed.
+
+2008-04-14  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (VERSION): Update to 1.0.1
+
+	* Project.ede ("eieio"): Update to version 1.0.1
+
+	* eieio.el (eieio-version): Update to 1.0.1
+
+2008-03-30  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio-opt.el (eieio-build-class-alist): add autoload cookie
+	(eieio-read-class): Pass instantiable-only down to alist builder.
+
+2008-03-29  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (eieio-copy-parents-into-subclass):
+	Inrement printer while copying.
+
+	* eieio-opt.el (eieio-describe-class-slots):
+	Show the printer attribute of slots.
+
+2008-03-27  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (LOADPATH): Added common.
+	(eieio_LISP): Added eieio-datadebug.el
+
+	* Project.ede ("eieio"): Add eieio-datadebug.el
+
+	* eieio.el (object-p): Autoload cookie.
+
+	* eieio-datadebug.el:
+	Data Debugger for Objects support, copied initially from semantic-adebug-eieio.
+
+2008-02-14  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (eieio-defclass):
+	Auto-created accessor is now slot bound robust.
+
+2008-02-13  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio-base.el (eieio-persistent): Add `do-backup' slot.  Default t.
+	(eieio-persistent::eieio-persistent-save): Inhibit backups
+	if do-backup is nil.
+
+2008-02-10  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (object-name): Add autoload cookie.
+
+2008-02-04  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.texi (Accessing Slots, Association Lists):
+	Update doc from source
+
+2008-01-30  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio-base.el (eieio-persistent-read): Doc fix.
+
+	* eieio.el (object-remove-from-list, object-assoc): Update doc string
+
+2008-01-20  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.el (class-v): Change backquoting to eliminate warning.
+
+2008-01-09  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio-tests.el (obj): Add a test when loading test-p.el
+
+2007-09-12  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.texi: Modernize the texinfo @nodes a little.
+	Move the Compatibility section near the end.
+	Use @eieio{} macros throughout.
+
+2007-09-10  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio.texi (Building Classes): Talk about the :printer option.
+
+	* eieio-tests.el (slotattr-base): Test printeres
+	(PO-slot1-printer): Add printer slot.
+	(PO): Use above slot printer.
+	Add test to make sure the printer actually ran.
+
+	* eieio.el (class-public-printer, class-class-allocation-printer):
+	New constant
+	(defclass): Update doc with a :printer slot option
+	(eieio-defclass): Allow :printer for slot attributes.
+	(eieio-add-new-field): Accept a print argument.
+	Set the print argument into the object.
+	(eieio-copy-parents-into-subclass): Copy printer options.
+	(eieio-default-superclass::object-write): If there is a slot :printer
+	attribute, then use it to print the value of the slot.
+
+2007-08-25  Eric M. Ludlam  <zappo@gnu.org>
+
+	* eieio-tests.el (slotattr-class-base):
+	New test class for testing slot overrides of
+	class allocated slots.
+
+	* eieio.el (eieio-add-new-field):
+	Support overriding of custom/doc class slots.
+	Do not allow overriding of class slot protection.
+
+	* eieio-tests.el (slotattr-base):
+	New baseclass for testing overriding of various slot
+	attributes.
+
+	* eieio.el:
+	(class-public-a, class-public-d, class-public-doc, class-public-type)
+	(class-public-custom, class-public-custom-label)
+	(class-public-custom-group): Fix doc.
+	(eieio-add-new-field): From: Pierre Lorenzon (Thanks)
+	Allow overriding of slot attributes :initform, :initarg, :custom, and
+	:docstring.  Throw errors overriding :protection or :type.
+
 2007-06-04  Eric M. Ludlam  <zappo@gnu.org>
 
 	* eieio-base.el (eieio-persistent::eieio-persistent-path-relative):
@@ -12,8 +557,7 @@
 
 	* linemark.el (linemark): Added group to tools.
 
-	* eieio-speedbar.el:
-	(eieio-speedbar-find-nearest-object, eieio-speedbar-line-path):
+	* eieio-speedbar.el (eieio-speedbar-find-nearest-object, eieio-speedbar-line-path):
 	Use string-to-number
 
 	* eieio.el (inversion): Add require.
@@ -241,17 +785,9 @@
 	* eieio.texi (eieio-persistent):
 	Fix typo in `eieio-persistent-save' method name.
 
-2004-04-11  Eric M. Ludlam  <zappo@gnu.org>
-
-	* Makefile (dist): Add autoloads
-
 2004-04-06  Eric M. Ludlam  <zappo@gnu.org>
 
 	* Makefile (dist): Distribute the autoload file
-
-2004-03-30  Eric M. Ludlam  <zappo@gnu.org>
-
-	* Makefile (clean): Update info garbage pattern.
 
 2004-03-28  Eric M. Ludlam  <zappo@gnu.org>
 
@@ -568,8 +1104,7 @@
 	* eieio-tests.el:
 	Added test for `eieio-build-class-alist' & new instantiable flag.
 
-	* eieio-opt.el:
-	(eieio-build-class-alist, eieio-read-class, eieio-read-subclass):
+	* eieio-opt.el (eieio-build-class-alist, eieio-read-class, eieio-read-subclass):
 	Added INSTANTIABLE-ONLY flag.
 
 	* eieio.el (class-abstract-p): New function

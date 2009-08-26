@@ -16,9 +16,6 @@
                 "color-theme"     ;; Theming Support
                 "jde/lisp"        ;; Java Development
                 "cedet"
-                "cedet/semantic"
-                "cedet/speedbar"
-                "cedet/eieio"
                 "elib"
                 "nxml-mode"       ;; XML Support
                 "ecb"
@@ -37,3 +34,4 @@
 
 (server-start)
 (put 'scroll-left 'disabled nil)
+

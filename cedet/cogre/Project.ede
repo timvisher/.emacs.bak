@@ -2,7 +2,7 @@
 ;; EDE project file.
 (ede-proj-project "COGRE"
   :name "COGRE"
-  :version "0.5"
+  :version "0.7"
   :file "Project.ede"
   :targets (list 
    (semantic-ede-proj-target-grammar "wy"
@@ -46,12 +46,17 @@
     :path ""
     :source '("picture-hack.el")
     )
-   (ede-proj-target-elisp "(cogre.el cogre-uml.el uml-create.el)"
+   (ede-proj-target-elisp "COGRE"
     :name "COGRE"
     :path ""
     :source '("cogre.el" "cogre-uml.el" "uml-create.el")
     :versionsource '("cogre.el")
     :aux-packages '("eieio" "semantic" "semantic-el" "inversion" "speedbar")
+    )
+   (ede-proj-target-elisp "tests"
+    :name "tests"
+    :path ""
+    :source '("cogre-utest.el")
     )
    )
   :web-site-url "http://cedet.sourceforge.net/cogre.shtml"

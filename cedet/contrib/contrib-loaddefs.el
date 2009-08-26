@@ -3,9 +3,43 @@
 ;;; Code:
 
 
+;;;### (autoloads (eassist-list-methods eassist-switch-h-cpp) "eassist"
+;;;;;;  "eassist.el" (18857 63845))
+;;; Generated autoloads from eassist.el
+
+(defvar eassist-header-switches (quote (("h" "cpp" "cc" "c") ("hpp" "cpp" "cc") ("cpp" "h" "hpp") ("c" "h") ("C" "H") ("H" "C" "CPP" "CC") ("cc" "h" "hpp"))) "\
+This variable defines possible switches for `eassist-switch-h-cpp' function.
+Its format is list of (from . (to1 to2 to3...)) elements.  From and toN are
+strings which are extentions of the files.")
+
+(autoload (quote eassist-switch-h-cpp) "eassist" "\
+Switch header and body file according to `eassist-header-switches' var.
+The current buffer's file name extention is searched in
+`eassist-header-switches' variable to find out extention for file's counterpart,
+for example *.hpp <--> *.cpp.
+
+\(fn)" t nil)
+
+(autoload (quote eassist-list-methods) "eassist" "\
+Show method/function list of current buffer in a newly created buffer.
+This function is recommended to be bound to some convinient hotkey.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads nil "ede-gnustep" "ede-gnustep.el" (18857 63845))
+;;; Generated autoloads from ede-gnustep.el
+
+(add-to-list (quote ede-project-class-files) (ede-project-autoload "edegnustep" :name "GNUstep-Make" :file (quote ede-gnustep) :proj-file "ProjStep.ede" :load-type (quote ede-step-load) :class-sym (quote ede-step-project)) t)
+
+(add-to-list (quote auto-mode-alist) (quote ("ProjStep\\.ede" . emacs-lisp-mode)))
+
+;;;***
+
 ;;;### (autoloads (semantic-tag-folding-mode global-semantic-tag-folding-mode
 ;;;;;;  global-semantic-tag-folding-mode) "semantic-tag-folding"
-;;;;;;  "semantic-tag-folding.el" (18022 5418))
+;;;;;;  "semantic-tag-folding.el" (18857 63845))
 ;;; Generated autoloads from semantic-tag-folding.el
 
 (defvar global-semantic-tag-folding-mode nil "\
@@ -36,7 +70,7 @@ minor mode is enabled.
 ;;;***
 
 ;;;### (autoloads (wisent-csharp-default-setup) "wisent-csharp" "wisent-csharp.el"
-;;;;;;  (18022 5418))
+;;;;;;  (18857 63845))
 ;;; Generated autoloads from wisent-csharp.el
 
 (autoload (quote wisent-csharp-default-setup) "wisent-csharp" "\
@@ -48,30 +82,31 @@ Not documented
 
 ;;;***
 
-;;;### (autoloads (wisent-javascript-setup-parser) "wisent-javascript"
-;;;;;;  "wisent-javascript.el" (18022 5418))
-;;; Generated autoloads from wisent-javascript.el
+;;;### (autoloads (wisent-php-default-setup) "wisent-php" "wisent-php.el"
+;;;;;;  (18857 63845))
+;;; Generated autoloads from wisent-php.el
 
-(autoload (quote wisent-javascript-setup-parser) "wisent-javascript" "\
-Setup buffer for parse.
+(autoload (quote wisent-php-default-setup) "wisent-php" "\
+Hook run to setup Semantic in `php-mode'.
+Use the alternate LALR(1) parser.
 
 \(fn)" nil nil)
 
-(add-hook (quote javascript-mode-hook) (quote wisent-javascript-setup-parser))
-
-(add-hook (quote ecmascript-mode-hook) (quote wisent-javascript-setup-parser))
+(add-hook (quote php-mode-hook) (function wisent-php-default-setup))
 
 ;;;***
 
 ;;;### (autoloads nil nil ("cedet-contrib-load.el" "cedet-contrib.el"
-;;;;;;  "semanticdb-javascript.el" "wisent-csharp-wy.el" "wisent-javascript-jv-wy.el")
-;;;;;;  (18797 3205 685000))
+;;;;;;  "wisent-csharp-wy.el" "wisent-php-wy.el" "wisent-ruby-wy.el"
+;;;;;;  "wisent-ruby.el") (19093 38086 890000))
 
 ;;;***
 
+(provide 'contrib-loaddefs)
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
+;; coding: utf-8
 ;; End:
 ;;; contrib-loaddefs.el ends here

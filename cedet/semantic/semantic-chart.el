@@ -1,10 +1,10 @@
 ;;; semantic-util.el --- Utilities for use with semantic tag tables
 
-;;; Copyright (C) 1999, 2000, 2001, 2003, 2005 Eric M. Ludlam
+;;; Copyright (C) 1999, 2000, 2001, 2003, 2005, 2008, 2009 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: chart
-;; X-RCS: $Id: semantic-chart.el,v 1.10 2005/09/30 20:18:53 zappo Exp $
+;; X-RCS: $Id: semantic-chart.el,v 1.14 2009/01/20 02:32:10 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -61,27 +61,28 @@ TAGTABLE is passedto `semantic-something-to-tag-table'."
 ;;;###autoload
 (defun semantic-chart-database-size (&optional tagtable)
   "Create a bar chart representing the size of each file in semanticdb.
-Each bar represents how many toplevel nonterminals in TAGTABLE
+Each bar represents how many toplevel tags in TAGTABLE
 exist in each database entry.
-TAGTABLE is passedto `semantic-something-to-tag-table'."
+TAGTABLE is passed to `semantic-something-to-tag-table'."
   (interactive)
   (if (or (not (fboundp 'semanticdb-minor-mode-p))
 	  (not (semanticdb-minor-mode-p)))
       (error "Semanticdb is not enabled"))
-  (let* ((stream (semantic-something-to-tag-table (or tagtable
-						      (current-buffer))))
-	 (db semanticdb-current-database)
+  (let* ((db semanticdb-current-database)
 	 (dbt (semanticdb-get-database-tables db))
 	 (names (mapcar 'car
 			(object-assoc-list
 			 'file
 			 dbt)))
-	 (numnuts (mapcar (lambda (a)
+	 (numnuts (mapcar (lambda (dba)
 			    (prog1
-				(cons (length (car a))
-				      (car names))
+				(cons
+				 (if (slot-boundp dba 'tags)
+				     (length (oref dba tags))
+				   1)
+				 (car names))
 			      (setq names (cdr names))))
-			  (object-assoc-list 'tags dbt)))
+			  dbt))
 	 (nums nil)
 	 (fh (/ (- (frame-height) 7) 4)))
     (setq numnuts (sort numnuts (lambda (a b) (> (car a) (car b)))))
@@ -106,11 +107,11 @@ TAGTABLE is passedto `semantic-something-to-tag-table'."
 ;;;###autoload
 (defun semantic-chart-tag-complexity
   (&optional class tagtable)
-  "Create a bar chart representing the complexity of some tokens.
-Complexity is calculated for tokens with a tag of CLASS.  Each bar
-represents the complexity of some nonterminal in TAGTABLE.
-Only the most complex items are charted.
-TAGTABLE is passedto `semantic-something-to-tag-table'."
+  "Create a bar chart representing the complexity of some tags.
+Complexity is calculated for tags of CLASS.  Each bar represents
+the complexity of some tag in TAGTABLE.  Only the most complex
+items are charted.  TAGTABLE is passedto
+`semantic-something-to-tag-table'."
   (interactive)
   (let* ((sym (if (not class) 'function))
 	 (stream
@@ -143,6 +144,30 @@ TAGTABLE is passedto `semantic-something-to-tag-table'."
 		       names namelabel
 		       nums "Complexity (Lines of code)")
     ))
+
+;;;###autoload
+(defun semantic-chart-analyzer ()
+  "Chart the extent of the context analysis."
+  (interactive)
+  (let* ((p (semanticdb-find-translate-path nil nil))
+	 (plen (length p))
+	 (tab semanticdb-current-table)
+	 (tc (semanticdb-get-typecache tab))
+	 (tclen (+ (length (oref tc filestream))
+		   (length (oref tc includestream))))
+	 (scope (semantic-calculate-scope))
+	 (fslen (length (oref scope fullscope)))
+	 (lvarlen (length (oref scope localvar)))
+	 )
+    (chart-bar-quickie 'vertical
+		       (format "Analyzer Overhead in %s" (buffer-name))
+		       '("includes" "typecache" "scopelen" "localvar")
+		       "Overhead Entries"
+		       (list plen tclen fslen lvarlen)
+		       "Number of tags")
+    ))
+	 
+
 
 (provide 'semantic-chart)
 

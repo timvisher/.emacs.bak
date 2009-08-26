@@ -1,10 +1,10 @@
 ;;; ede-proj-elisp.el --- EDE Generic Project Emacs Lisp support
 
-;;;  Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2007  Eric M. Ludlam
+;;;  Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2007, 2008, 2009  Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: project, make
-;; RCS: $Id: ede-proj-elisp.el,v 1.30 2007/03/18 16:41:25 zappo Exp $
+;; RCS: $Id: ede-proj-elisp.el,v 1.36 2009/02/24 00:46:25 zappo Exp $
 
 ;; This software is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -59,14 +59,15 @@ A lisp target may be one general program with many separate lisp files in it.")
   (ede-compiler
    "ede-emacs-compiler"
    :name "emacs"
-   :variables '(("EMACS" . "emacs"))
+   :variables '(("EMACS" . "emacs")
+		("EMACSFLAGS" . "-batch --no-site-file"))
    :commands
    '("@echo \"(add-to-list 'load-path nil)\" > $@-compile-script"
      "for loadpath in . ${LOADPATH}; do \\"
      "   echo \"(add-to-list 'load-path \\\"$$loadpath\\\")\" >> $@-compile-script; \\"
      "done;"
      "@echo \"(setq debug-on-error t)\" >> $@-compile-script"
-     "\"$(EMACS)\" -batch --no-site-file -l $@-compile-script -f batch-byte-compile $^"
+     "\"$(EMACS)\" $(EMACSFLAGS) -l $@-compile-script -f batch-byte-compile $^"
      )
    :autoconf '("AM_PATH_LISPDIR")
    :sourcetype '(ede-source-emacs)
@@ -111,16 +112,26 @@ Lays claim to all .elc files that match .el files in this target."
     paths))
 
 (defmethod project-compile-target ((obj ede-proj-target-elisp))
-  "Compile all sources in a Lisp target OBJ."
-  (let ((cb (current-buffer)))
-    (mapcar (lambda (src)
-	      (let ((elc (concat (file-name-sans-extension src) ".elc")))
-		(set-buffer cb)
-		(if (or (not (file-exists-p elc))
-			(file-newer-than-file-p src elc))
-		    (byte-compile-file src))))
-	    (oref obj source)))
-  (message "All Emacs Lisp sources are up to date in %s" (object-name obj)))
+  "Compile all sources in a Lisp target OBJ.
+Bonus: Return a cons cell: (COMPILED . UPTODATE)."
+  (let* ((proj (ede-target-parent obj))
+	 (dir (oref proj directory))
+	 (comp 0)
+	 (utd 0))
+    (mapc (lambda (src)
+	    (let* ((fsrc (expand-file-name src dir))
+		   (elc (concat (file-name-sans-extension fsrc) ".elc"))
+		   )
+	      (if (or (not (file-exists-p elc))
+		      (file-newer-than-file-p fsrc elc))
+		  (progn
+		    (setq comp (1+ comp))
+		    (byte-compile-file fsrc))
+		(setq utd (1+ utd)))))
+	    (oref obj source))
+    (message "All Emacs Lisp sources are up to date in %s" (object-name obj))
+    (cons comp utd)
+    ))
 
 (defmethod ede-update-version-in-source ((this ede-proj-target-elisp) version)
   "In a Lisp file, updated a version string for THIS to VERSION.
@@ -222,8 +233,7 @@ is found, such as a `-version' variable, or the standard header."
   "Flush the configure file (current buffer) to accomodate THIS."
   ;; Remove crufty old paths from elisp-compile
   (let ((ec (ede-expand-filename this "elisp-comp"))
-	(paths (ede-proj-elisp-packages-to-loadpath
-		(oref this aux-packages))))
+	)
     (if (file-exists-p ec)
 	(save-excursion
 	  (set-buffer (find-file-noselect ec t))
@@ -262,6 +272,19 @@ If nil defaults to the current directory.")
   "Target that builds an autoload file.
 Files do not need to be added to this target.")
 
+
+;;; Claiming files
+(defmethod ede-buffer-mine ((this ede-proj-target-elisp-autoloads) buffer)
+  "Return t if object THIS lays claim to the file in BUFFER.
+Lays claim to all .elc files that match .el files in this target."
+  (if (string-match
+       (concat (regexp-quote (oref this autoload-file)) "$")
+       (buffer-file-name buffer))
+      t
+    (call-next-method) ; The usual thing.
+    ))
+
+;; Compilers
 (defvar ede-emacs-cedet-autogen-compiler
   (ede-compiler
    "ede-emacs-autogen-compiler"
@@ -322,7 +345,11 @@ Always return an empty string for an autoloads generator."
 (defmethod project-compile-target ((obj ede-proj-target-elisp-autoloads))
   "Create or update the autoload target."
   (require 'cedet-autogen)
-  (call-interactively 'cedet-update-autoloads))
+  (let ((default-directory (ede-expand-filename obj ".")))
+    (apply 'cedet-update-autoloads
+	   (oref obj autoload-file)
+	   (oref obj autoload-dirs))
+    ))
 
 (defmethod ede-update-version-in-source ((this ede-proj-target-elisp-autoloads) version)
   "In a Lisp file, updated a version string for THIS to VERSION.

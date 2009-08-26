@@ -1,3 +1,72 @@
+2009-02-24  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (EMACSFLAGS): New variable.
+	(init,speedbar,opt): Use above.
+
+2008-04-14  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (VERSION): Update to 1.0.2
+
+	* speedbar.el (speedbar-update-current-file):
+	Make sure we have a frame to select.
+
+2008-02-18  Eric M. Ludlam  <zappo@gnu.org>
+
+	* speedbar.el (speedbar-directory-buttons):
+	Make sure ~ is at the beginning of the
+	directory name when shortening.  Protects against tramp issues.
+
+2008-02-10  Eric M. Ludlam  <zappo@gnu.org>
+
+	* speedbar.el (define-obsolete-function-alias): Make usage optional.
+
+	* speedbar.el (define-obsolete-variable-alias): Make usage optional.
+
+2008-01-26  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Project.ede ("speedbar"): Update version number.
+
+2008-01-22  Eric M. Ludlam  <zappo@gnu.org>
+
+	* speedbar.el:
+	Summary of Change: rename "path" to "directory" obsoletions.
+	and adopt diffs from Emacs 23.
+	(speedbar-version): Update.
+	(speedbar-show-unknown-files): Doc fix
+	(speedbar-frame-parameters): Add better custom type
+	(speedbar-dynamic-tags-function-list): Doc fix.
+	(speedbar-after-create-hook): Doc fix.
+	(speedbar-file-regexp): Moved
+	(speedbar-supported-extension-expressions): Improved custom :set
+	(speedbar-make-specialized-keymap): doc fix.
+	(speedbar-file-key-map): Name change: "contract-line"
+	(speedbar-frame-mode): doc fix
+	(speedbar-frame-width): Use defsubst.  Doc fix.
+	(speedbar-set-mode-line-format): Don't show warnings.
+	(speedbar-reconfigure-keymaps): Special local binding setup for
+	easymenu definition.
+	(speedbar-item-info-file-helper): doc fix.
+	(speedbar-item-info-tag-helper): doc fix.  Hide semantic warnings.
+	(speedbar-generic-list-tag-p): doc fix.
+	(speedbar-try-completion): consp to test alist.
+	(speedbar-update-contents): same
+	(speedbar-update-localized-contents): Use dolist
+	(speedbar-update-directory-contents): use dolist
+	(speedbar-update-special-contents): Use dolist
+	(speedbar-timer-fn): use consp
+	(speedbar-check-read-only): GUD specialization
+	(speedbar-check-vc): Try to eliminate warnings
+	(speedbar-line-directory): doc fix.
+	(speedbar-buffer-easymenu-definition): Add spacer
+	(end of file): Add obsolete variable aliases.
+
+2007-08-14  Eric M. Ludlam  <zappo@gnu.org>
+
+	* speedbar.el (speedbar-highlight-one-tag-line):
+	Use pulse when available, otherwise
+	use below.
+	(speedbar-highlight-one-tag-line-internal): Old fcn, new name.
+
 2007-03-18  Eric M. Ludlam  <zappo@gnu.org>
 
 	* Makefile (LOADPATH): Strip out duplicates
@@ -126,22 +195,12 @@
 	speedbar-vc-check-dir-p: uses now run-hook-with-args-until-success instead of
 	run-hook-with-args.
 
-2004-04-11  Eric M. Ludlam  <zappo@gnu.org>
-
-	* Makefile (dist): Add autoloads
-
 2004-04-06  Eric M. Ludlam  <zappo@gnu.org>
 
 	* Makefile (autoloads, init, speedbar, opt):
 	Compile with --no-site-file.
 	(clean): all info files.
 	(dist): Distribute the autoload file
-
-2004-03-30  Eric M. Ludlam  <zappo@gnu.org>
-
-	* Makefile (autoloads, init, speedbar, opt): Use --no-site-file
-	(clean): New info garbage pattern.
-	(dist): rearrangement of some arguments.
 
 2004-03-13  Eric M. Ludlam  <zappo@gnu.org>
 
@@ -165,7 +224,7 @@
 	the frame the event must have come in on.  No verification yet
 	from user.
 
-	* speedbar.el: (speedbar-line-text, speedbar-line-token):
+	* speedbar.el (speedbar-line-text, speedbar-line-token):
 	Support expand buttons with no text
 
 2004-02-24  Eric M. Ludlam  <zappo@gnu.org>
@@ -462,8 +521,7 @@
 	Better enable for kill/revert
 	(speedbar-buffer-kill-buffer): Use `speedbar-get-line-text'.
 
-	* sb-image.el:
-	(speedbar-directory, speedbar-box-plus, speedbar-directory-box-minus):
+	* sb-image.el (speedbar-directory, speedbar-box-plus, speedbar-directory-box-minus):
 	New images.
 	(speedbar-expand-image-button-alist): Added boxes, and empty directory.
 
@@ -504,9 +562,7 @@
 
 	* sb-label.xpm: Made slightly larger.
 
-	* sb-image.el:
-	(speedbar-label, speedbar-read-only, speedbar-document-tag,
-	speedbar-document-plus, speedbar-document-minus, speedbar-info-tag):
+	* sb-image.el (speedbar-label, speedbar-read-only, speedbar-document-tag, speedbar-document-plus, speedbar-document-minus, speedbar-info-tag):
 	New images.
 	(speedbar-expand-image-button-alist): Added above new images.
 	(speedbar-image-dump): New test command.
@@ -641,8 +697,7 @@
 	(speedbar-line-file, speedbar-line-path): Widen any current restrictions
 	(
 
-	* dframe.el: (dframe-version):
-	(dframe-make-frame-visible-function,
+	* dframe.el (dframe-version): (dframe-make-frame-visible-function,
 	 dframe-iconify-frame-function,
 	 dframe-delete-frame-function): New functions
 	(dframe-handle-make-frame-visible,
@@ -1226,7 +1281,7 @@
 
 1999-04-28  Eric M. Ludlam  <zappo@gnu.org>
 
-	* speedbar.el: (speedbar-file-key-map, speedbar-buffers-key-map):
+	* speedbar.el (speedbar-file-key-map, speedbar-buffers-key-map):
 	 Added keybinding "=" same as "+" so you don't have to hit shift.
 	 (speedbar-fetch-dynamic-etags): Set buffer to the tmp buffer when
 	 extracting expressions. (Newer XEmacs exposed this.)

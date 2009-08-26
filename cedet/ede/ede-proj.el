@@ -1,10 +1,10 @@
 ;;; ede-proj.el --- EDE Generic Project file driver
 
-;;;  Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2007  Eric M. Ludlam
+;;;  Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2007, 2008, 2009  Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: project, make
-;; RCS: $Id: ede-proj.el,v 1.47 2007/02/19 13:46:45 zappo Exp $
+;; RCS: $Id: ede-proj.el,v 1.58 2009/01/20 02:39:53 zappo Exp $
 
 ;; This software is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ of these compiler resources, and global customization thereof.")
 	     :label "Linker for combining intermediate object files."
 	     :group make
 	     :documentation
-	     "The linker to be used to link compled sources for this object.
+	     "The linker to be used to link compiled sources for this object.
 This should be a symbol, which contains the object defining the linker.
 This enables save/restore to do so by name, permitting the sharing
 of these linker resources, and global customization thereof.")
@@ -166,7 +166,7 @@ It is safe to leave this blank.")
     ("info" . ede-proj-target-makefile-info)
     ("auxiliary" . ede-proj-target-aux)
     ("scheme" . ede-proj-target-scheme)
-    ("miscelaneous" . ede-proj-target-makefile-miscelaneous)
+    ("miscellaneous" . ede-proj-target-makefile-miscelaneous)
     )
   "Alist of names to class types for available project target classes.")
 
@@ -197,6 +197,7 @@ in targets.")
 	      :type list
 	      :custom (repeat (cons (string :tag "Name")
 				    (string :tag "Value")))
+	      :group (settings)
 	      :documentation "Variables to set in this Makefile.")
    (configuration-variables
     :initarg :configuration-variables
@@ -206,6 +207,7 @@ in targets.")
 			  (repeat
 			   (cons (string :tag "Name")
 				 (string :tag "Value")))))
+    :group (settings)
     :documentation "Makefile variables to use in different configurations.
 These variables are used in the makefile when a configuration becomes active.")
    (inference-rules :initarg :inference-rules
@@ -249,8 +251,11 @@ making a tar file.")
   "The EDE-PROJ project definition class.")
 
 ;;; Code:
-(defun ede-proj-load (project)
-  "Load a project file PROJECT."
+(defun ede-proj-load (project &optional rootproj)
+  "Load a project file from PROJECT directory.
+If optional ROOTPROJ is provided then ROOTPROJ is the root project
+for the tree being read in.  If ROOTPROJ is nil, then assume that
+the PROJECT being read in is the root project."
   (save-excursion
     (let ((ret nil)
 	  (subdirs (directory-files project nil "[^.].*" nil)))
@@ -264,14 +269,19 @@ making a tar file.")
 	    (if (not (eq (car ret) 'ede-proj-project))
 		(error "Corrupt project file"))
 	    (setq ret (eval ret))
-	    (oset ret file (concat project "Project.ede")))
+	    (oset ret file (concat project "Project.ede"))
+	    (oset ret directory project)
+	    (oset ret rootproject rootproj)
+	    )
 	(kill-buffer " *tmp proj read*"))
       (while subdirs
-	(let ((sd (concat project (car subdirs))))
+	(let ((sd (file-name-as-directory
+		   (expand-file-name (car subdirs) project))))
 	  (if (and (file-directory-p sd)
-		   (ede-directory-project-p (concat sd "/")))
-	      (oset ret subproj (cons (ede-proj-load (concat sd "/"))
-				      (oref ret subproj))))
+		   (ede-directory-project-p sd))
+	      (oset ret subproj
+		    (cons (ede-proj-load sd (or rootproj ret))
+			  (oref ret subproj))))
 	  (setq subdirs (cdr subdirs))))
       ret)))
 
@@ -280,17 +290,20 @@ making a tar file.")
   (save-excursion
     (if (not project) (setq project (ede-current-project)))
     (let ((b (set-buffer (get-buffer-create " *tmp proj write*")))
-	  (cfn (oref project file)))
+	  (cfn (oref project file))
+	  (cdir (oref project directory)))
       (unwind-protect
 	  (save-excursion
 	    (erase-buffer)
 	    (let ((standard-output (current-buffer)))
 	      (oset project file (file-name-nondirectory cfn))
+	      (slot-makeunbound project :directory)
 	      (object-write project ";; EDE project file."))
 	    (write-file cfn nil)
 	    )
 	;; Restore the :file on exit.
 	(oset project file cfn)
+	(oset project directory cdir)
 	(kill-buffer b)))))
 
 (defmethod ede-commit-local-variables ((proj ede-proj-project))
@@ -333,16 +346,26 @@ Argument TARGET is the project we are completing customization on."
 (defvar ede-proj-target-history nil
   "History when querying for a target type.")
 
-(defmethod project-new-target ((this ede-proj-project))
+(defmethod project-new-target ((this ede-proj-project)
+			       &optional name type autoadd)
   "Create a new target in THIS based on the current buffer."
-  (let* ((name (read-string "Name: " ""))
-	 (type (completing-read "Type: " ede-proj-target-alist
-				nil t nil '(ede-proj-target-history . 1)))
+  (let* ((name (or name (read-string "Name: " "")))
+	 (type (or type 
+		   (completing-read "Type: " ede-proj-target-alist
+				    nil t nil '(ede-proj-target-history . 1))))
 	 (ot nil)
 	 (src (if (and (buffer-file-name)
-		       (y-or-n-p (format "Add %s to %s? " (buffer-name) name)))
-		  (buffer-file-name))))
-    (setq ot (funcall (cdr (assoc type ede-proj-target-alist)) name :name name
+		       (if (and autoadd (stringp autoadd))
+			   (string= autoadd "y")
+			 (y-or-n-p (format "Add %s to %s? " (buffer-name) name))))
+		  (buffer-file-name)))
+	 (fcn (cdr (assoc type ede-proj-target-alist)))
+	 )
+
+    (when (not fcn)
+      (error "Unknown target type %s for EDE Project." type))
+
+    (setq ot (funcall fcn name :name name
 		      :path (ede-convert-path this default-directory)
 		      :source (if src
 				  (list (file-name-nondirectory src))
@@ -352,7 +375,12 @@ Argument TARGET is the project we are completing customization on."
 	      (setq ede-object ot)
 	      (ede-apply-object-keymap)))
     ;; Add it to the project object
-    (oset this targets (cons ot (oref this targets)))
+    ;;(oset this targets (cons ot (oref this targets)))
+    ;; New form: Add to the end using fancy eieio function.
+    ;; @todone - Some targets probably want to be in the front.
+    ;;           How to do that?
+    ;; @ans - See elisp autoloads for answer
+    (object-add-to-list this 'targets ot t)
     ;; And save
     (ede-proj-save this)))
 
@@ -390,8 +418,7 @@ Argument TARGET is the project we are completing customization on."
 (defmethod project-add-file ((this ede-proj-target) file)
   "Add to target THIS the current buffer represented as FILE."
   (let ((file (ede-convert-path this file))
-	(src (ede-target-sourcecode this))
-	(aux nil))
+	(src (ede-target-sourcecode this)))
     (while (and src (not (ede-want-file-p (car src) file)))
       (setq src (cdr src)))
     (when src
@@ -492,9 +519,10 @@ Converts all symbols into the objects to be used."
 	  (if (listp comp)
 	      (setq comp (mapcar 'symbol-value comp))
 	    (setq comp (list (symbol-value comp))))
-	(let ((avail (mapcar 'symbol-value (oref obj availablecompilers)))
-	      (st (oref obj sourcetype))
-	      (sources (oref obj source)))
+	(let* ((acomp (oref obj availablecompilers))
+	       (avail (mapcar 'symbol-value acomp))
+	       (st (oref obj sourcetype))
+	       (sources (oref obj source)))
 	  ;; COMP is not specified, so generate a list from the available
 	  ;; compilers list.
 	  (while st
@@ -516,10 +544,13 @@ Converts all symbols into the objects to be used."
       (if link
 	  ;; Now that we have a pre-set linkers to use, convert type symbols
 	  ;; into objects for ease of use
-	  (setq link (mapcar 'symbol-value link))
-	(let ((avail (mapcar 'symbol-value (oref obj availablelinkers)))
-	      (st (oref obj sourcetype))
-	      (sources (oref obj source)))
+	  (if (symbolp link)
+	      (setq link (list (symbol-value link)))
+	    (error ":linker is not a symbol.  Howd you do that?"))
+	(let* ((alink (oref obj availablelinkers))
+	       (avail (mapcar 'symbol-value alink))
+	       (st (oref obj sourcetype))
+	       (sources (oref obj source)))
 	  ;; LINKER is not specified, so generate a list from the available
 	  ;; compilers list.
 	  (while st
@@ -607,7 +638,7 @@ Optional argument FORCE will force items to be regenerated."
     (require 'ede-pmake)
     (ede-proj-makefile-create this (ede-proj-dist-makefile this)))
   (if (ede-proj-automake-p this)
-      (progn
+      (progn 
 	(require 'ede-pconf)
 	;; If the user wants to force this, do it some other way?
 	(ede-proj-configure-synchronize this)
@@ -625,40 +656,11 @@ Optional argument FORCE will force items to be regenerated."
 ;;  
 (defmethod project-rescan ((this ede-proj-project))
   "Rescan the EDE proj project THIS."
-  (ede-with-projectfile this
-    (goto-char (point-min))
-    (let ((l (read (current-buffer)))
-	  (fields (object-slots this))
-	  (targets (oref this targets)))
-      (setq l (cdr (cdr l))) ;; objtype and name skip
-      (while fields ;  reset to defaults those that dont appear.
-	(if (and (not (assoc (car fields) l))
-		 (not (eq (car fields) 'file)))
-	    (let ((eieio-skip-typecheck t))
-	      ;; This is a hazardous thing, for some elements
-	      ;; might not be bound.  Skip typechecking and duplicate
-	      ;; unbound slots along the way.
-	      (eieio-oset this (car fields)
-			  (eieio-oref-default this (car fields)))))
-	(setq fields (cdr fields)))
-      (while l
-	(let ((field (car l)) (val (car (cdr l))))
-	  (cond ((eq field targets)
-		 (let ((targets (oref this targets))
-		       (newtarg nil))
-		   (setq val (cdr val)) ;; skip the `list'
-		   (while val
-		     (let ((o (object-assoc (car (cdr (car val))) ; name
-					    'name targets)))
-		       (if o
-			   (project-rescan o (car val))
-			 (setq o (eval (car val))))
-		       (setq newtarg (cons o newtarg)))
-		     (setq val (cdr val)))
-		   (oset this targets newtarg)))
-		(t
-		 (eieio-oset this field val))))
-	(setq l (cdr (cdr l))))))) ;; field/value
+  (let ((root (or (ede-project-root this) this))
+	)
+    (setq ede-projects (delq root ede-projects))
+    (ede-proj-load (ede-project-root-directory root))
+    ))
 	
 (defmethod project-rescan ((this ede-proj-target) readstream)
   "Rescan target THIS from the read list READSTREAM."
@@ -670,7 +672,7 @@ Optional argument FORCE will force items to be regenerated."
     (setq readstream (cdr (cdr readstream)))))
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("Project\\.ede" . emacs-lisp-mode))
+(add-to-list 'auto-mode-alist '("Project\\.ede$" . emacs-lisp-mode))
 
 (provide 'ede-proj)
 

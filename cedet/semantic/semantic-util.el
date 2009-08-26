@@ -1,10 +1,10 @@
 ;;; semantic-util.el --- Utilities for use with semantic tag tables
 
-;;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2007 Eric M. Ludlam
+;;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2007, 2008 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: syntax
-;; X-RCS: $Id: semantic-util.el,v 1.131 2007/02/19 02:54:03 zappo Exp $
+;; X-RCS: $Id: semantic-util.el,v 1.138 2008/11/28 03:02:55 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -66,9 +66,9 @@ If FILE is not loaded, check to see if `semanticdb' feature exists,
    and use it to get tags from files not in memory.
 If FILE is not loaded, and semanticdb is not available, find the file
    and parse it."
-  (if (get-file-buffer file)
+  (if (find-buffer-visiting file)
       (save-excursion
-	(set-buffer (get-file-buffer file))
+	(set-buffer (find-buffer-visiting file))
 	(semantic-fetch-tags))
     ;; File not loaded
     (if (and (fboundp 'semanticdb-minor-mode-p)
@@ -99,7 +99,7 @@ buffer, or a filename.  If SOMETHING is nil return nil."
       (semantic-fetch-tags)))
    ;; A Tag: Get that tag's buffer
    ((and (semantic-tag-with-position-p something)
-	 (semantic-tag-buffer something))
+	 (semantic-tag-in-buffer-p something))
     (save-excursion
       (set-buffer (semantic-tag-buffer something))
       (semantic-fetch-tags)))
@@ -116,8 +116,16 @@ buffer, or a filename.  If SOMETHING is nil return nil."
    ;; A Semanticdb table
    ((and (featurep 'semanticdb)
 	 (semanticdb-minor-mode-p)
-	 (semanticdb-abstract-table-p something))
-    (semanticdb-get-tags something something))
+	 (semanticdb-abstract-table-child-p something))
+    (semanticdb-refresh-table something)
+    (semanticdb-get-tags something))
+   ;; Semanticdb find-results
+   ((and (featurep 'semanticdb)
+	 (semanticdb-minor-mode-p)
+	 (semanticdb-find-results-p something))
+    (semanticdb-strip-find-results something))
+   ;; NOTE: This commented out since if a search result returns
+   ;;       empty, that empty would turn into everything on the next search.
    ;; Use the current buffer for nil
 ;;   ((null something)
 ;;    (semantic-fetch-tags))
@@ -236,11 +244,6 @@ STREAM is the list of tags to complete from."
        (error "No local types"))))
 
 
-;;;; Mode-specific Token information
-;;
-
-
-
 ;;; Interactive Functions for
 ;;
 (defun semantic-describe-tag (&optional tag)
@@ -252,7 +255,7 @@ If TAG is nil, describe the tag under the cursor."
   (if tag (message (semantic-format-tag-summarize tag))))
 
 
-;;; Putting keys on tokens.
+;;; Putting keys on tags.
 ;;
 (defun semantic-add-label (label value &optional tag)
   "Add a LABEL with VALUE on TAG.
@@ -279,7 +282,71 @@ If TAG is not specified, use the tag at point."
 ;;; Hacks
 ;;
 ;; Some hacks to help me test these functions
-(defun semantic-current-token (p)
+(defun semantic-describe-buffer-var-helper (varsym buffer)
+  "Display to standard out the value of VARSYM in BUFFER."
+  (let ((value (save-excursion
+		 (set-buffer buffer)
+		 (symbol-value varsym))))
+    (cond
+     ((and (consp value)
+	   (< (length value) 10))
+      ;; Draw the list of things in the list.
+      (princ (format "  %s:  #<list of %d items>\n"
+		     varsym (length value)))
+      (data-debug-insert-stuff-list
+       value "    " )
+      )
+     (t
+      ;; Else do a one-liner.
+      (data-debug-insert-thing
+       value " " (concat " " (symbol-name varsym) ": "))
+      ))))
+
+(defun semantic-describe-buffer ()
+  "Describe the semantic environment for the current buffer."
+  (interactive)
+  (let ((buff (current-buffer))
+	)
+
+    (with-output-to-temp-buffer (help-buffer)
+      (with-current-buffer standard-output
+	(princ "Semantic Configuration in ")
+	(princ (buffer-name buff))
+	(princ "\n\n")
+
+	(princ "Buffer specific configuration items:\n")
+	(let ((vars '(major-mode
+		      semantic-case-fold
+		      semantic-expand-nonterminal
+		      semantic-parser-name
+		      semantic-parse-tree-state
+		      semantic-lex-analyzer
+		      semantic-lex-reset-hooks
+		      )))
+	  (dolist (V vars)
+	    (semantic-describe-buffer-var-helper V buff)))
+
+	(princ "\nGeneral configuration items:\n")
+	(let ((vars '(semantic-inhibit-functions
+		      semantic-init-hooks
+		      semantic-init-db-hooks
+		      semantic-unmatched-syntax-hook
+		      semantic--before-fetch-tags-hook
+		      semantic-after-toplevel-bovinate-hook
+		      semantic-after-toplevel-cache-change-hook
+		      semantic-before-toplevel-cache-flush-hook
+		      semantic-dump-parse
+		      
+		      )))
+	  (dolist (V vars)
+	    (semantic-describe-buffer-var-helper V buff)))
+	
+	(princ "\n\n")
+	(mode-local-describe-bindings-2 buff)
+	)))
+  )
+
+(defun semantic-current-tag-interactive (p)
   "Display the current token.
 Argument P is the point to search from in the current buffer."
   (interactive "d")

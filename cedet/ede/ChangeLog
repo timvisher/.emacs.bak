@@ -1,3 +1,918 @@
+2009-02-28  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-add-project-to-global-list): Return first arg.
+	(ede-load-project-file): Force a directory re-load when looking up pfc.
+
+	* ede-files.el (ede-directory-project-p): Accept a 'force' option.
+
+2009-02-27  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.texi (Custom Locate): Add TODO.
+
+	* ede-cpp-root.el: Update comments.
+	(ede-cpp-root-project::ede-cpp-root-header-file-p)
+	(ede-cpp-root-project::ede-system-include-path): Moved.
+
+	* ede-locate.el (require): Add cedet-cscope.
+	(ede-locate-setup-options): Add ede-locate-cscope custom option
+	(ede-locate-cscope, initialize-instance,ede-locate-ok-in-project)
+	(ede-locate-file-in-project-impl, ede-locate-test-cscope): New
+
+2009-02-25  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-simple.el (ede-simple-load): Fix.  Return the loaded object.
+
+2009-02-24  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-locate.el (require): Add cedet-idutils
+	(ede-locate-setup-options): Add ede-locate-idutils to custom type.
+	(ede-enable-locate-on-project): Fix logic so it works when not
+	in interactive mode.
+	(ede-locate-global::ede-locate-file-in-project-impl): Simplify.
+	(ede-locate-idutils): New class.
+	(ede-locate-idutils::initialize-instance)
+	(ede-locate-idutils::ede-locate-ok-in-project)
+	(ede-locate-idutils::ede-locate-file-in-project-impl): New methods.
+	(ede-locate-test-global): Fix doc.
+	(ede-locate-test-idutils): new.
+
+	* Makefile (EMACSFLAGS): New variable.
+	(init,ede,proj-project, projects,aux-lisp):
+	Use above flag.
+
+	* ede-proj-elisp.el (ede-emacs-compiler): Add EMACSFLAGS variable.
+	Use that instead of hard-coding the flags.
+
+2009-02-21  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-pmake.el (ede-proj-project::ede-proj-makefile-create):
+	Kill Makefile buffer unless it was already open.
+
+2009-02-19  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-cpp-root.el (ede-cpp-root-project::ede-cpp-root-translate-file):
+	New method,
+	extracted from below.
+	(ede-cpp-root-project::ede-expand-filename-impl): Use above.
+	(ede-cpp-root-project::ede-preprocessor-map): Make robust against
+	unfound files.
+
+2009-02-18  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-linux.el (ede-linux-target-c::ede-preprocessor-map):
+	Make sure we calculated the file name for version.h correctly before use.
+
+2009-02-15  Eric M. Ludlam  <zappo@gnu.org>
+
+	* project-am.el: Patch from olexandr_syd
+	(project-am-type-alist): Add support for noinst_LIBRARIES
+
+2009-02-14  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.texi (ede-cpp-root): Add :spp-files description.
+
+	* ede-targets.texi: Regenerated from sources.
+
+	* ede-projects.texi:
+	(ede-project-placeholder, ede-project, ede-cpp-root-project)
+	(ede-emacs-project, ede-simple-project, ede-proj-project)
+	(project-am-makefile, ede-step-project):
+	Regenerated from sources.
+
+2009-02-12  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-cpp-root.el (ede-cpp-root-project): Add :spp-files.
+	(ede-cpp-root-project::ede-preprocessor-map):
+	Apply :spp-files to the map.
+
+2009-02-05  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-files.el (ede--disable-inode): New option.
+	(ede--inode-for-dir): Set inode to - if above option is true.
+	(ede-directory-get-toplevel-open-project): Check for 0 inode before use.
+
+2009-02-04  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-files.el: (ede-project-placeholder::ede--project-inode)
+	(ede--put-inode-dir-hash, ede--get-inode-dir-hash)
+	(ede--inode-for-dir): Renamed private, use renamed.
+	(ede-directory-get-open-project): Use renamed items
+	(ede-directory-get-toplevel-open-project):
+	Use renamed items AND if inode is 0 (ie: windows) then skip inode cache.
+
+2009-01-31  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-proj-elisp.el (ede-proj-target-elisp::project-compile-target):
+	Don't use ede-expandfilename, do a direct expansion instead.
+
+	* ede-proj-info.el (ede-documentation):
+	Fix to not use ede-expand-filename
+
+	* project-am.el (project-am-texinfo::ede-documentation):
+	Fix to not use ede-expandfilename.
+
+2009-01-29  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Project.ede (EDE): Updated to 1.0pre6.
+
+	* templates/Makefile, Makefile (VERSION): Updated to 1.0pre6.
+
+	* ede.el (ede-version): Updated to 1.0pre6.
+
+2009-01-28  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-locate.el (ede-locate-locate::ede-locate-ok-in-project):
+	Depend on the locate
+	feature instead of the program.
+
+	* ede-speedbar.el (ede-speedbar-file-setup):
+	Don't swap the speedbar list if it is not visible.
+
+2009-01-20  Eric M. Ludlam  <zappo@gnu.org>
+
+	* project-am.el (project-am-scan-for-targets):
+	Eliminate unused variable bindings.
+
+	* ede.el: (ede-project::ede-subproject-relative-path)
+	(ede-load-project-file, ede-adebug-project, ede-adebug-project-parent):
+	(ede-adebug-project-root): Eliminate unused variable bindings.
+
+	* ede-proj.el (project-add-file): Eliminate unused variable bindings.
+
+	* ede-proj-elisp.el (ede-proj-target-elisp::project-compile-target):
+	Convert mapcar to mapc.
+
+	* ede-proj-elisp.el (ede-proj-target-elisp::ede-proj-flush-autoconf):
+	Eliminate unused variable bindings.
+
+	* ede-pmake.el (ede-proj-project::ede-proj-makefile-create):
+	Eliminate unused variable bindings.
+
+	* ede-pconf.el (ede-proj-project::ede-proj-configure-synchronize):
+	Eliminate unused variable bindings.
+
+	* ede-locate.el: (ede-locate-locate::ede-locate-ok-in-project)
+	(ede-locate-test-locate, ede-locate-test-global):
+	Eliminate unused variable bindings.
+
+	* ede-files.el (ede-project-autoload::ede-project-root-directory):
+	Eliminate unused variable bindings.
+
+	* ede-emacs.el (ede-emacs-project::ede-expand-filename-impl):
+	Eliminate unused variable bindings.
+
+2009-01-10  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-proj.el (ede-proj-project::project-new-target):
+	Improved error checking of project TYPE value.
+
+	* ede-load.el (ede): New require w/ detailed comment.
+
+2009-01-06  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-locate.el (locate):
+	Moved to condition-case so if it isn't available,
+	compilation will succeed.
+
+	* Makefile (misc_AUX): Remove NEWS
+
+	* Project.ede (misc): Remove news
+
+2009-01-05  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-locate.el: Add doc to commentary.
+
+2008-12-29  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.texi (Make and Automake projects, Automake direct projects, Simple projects):
+	Change how nodes are specified.
+
+2008-12-28  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.texi (EDE Project Concepts, Creating a project):
+	(Add/Remove files, Configurations):
+	(Project types, Make and Automake projects):
+	(Simple projects, ede-cpp-root):
+	(Custom Locate, Extending EDE):
+	(User interface methods, Base project methods):
+	(Compiler and Linker objects): Misc spelling fixes.
+
+	* ede.el (ede-project::project-interactive-select-target):
+	(ede-project::project-dist-files):
+	(ede-project::ede-description):
+	(ede-target::ede-buffer-documentation-files):
+	Doc string fixes.
+	(ede-add-project-to-global-list):
+	Add some nice error messages.
+
+	* ede-source.el (ede-sourcecode): Doc string fixes.
+
+	* ede-proj-prog.el (ede-proj-target-makefile-program): Fix doc string.
+
+	* ede-proj.el (ede-proj-target): Doc fix.
+	(ede-proj-target-alist): Fix name of misc project type.
+
+	* ede-proj-misc.el (ede-proj-target-makefile-miscelaneous):
+	Doc string fix.
+
+	* ede-proj-info.el (ede-proj-target-makefile-info::object-write):
+	Doc string fix.
+
+	* ede-pmake.el: (ede-proj-project::ede-proj-makefile-garbage-patterns)
+	(ede-proj-target::ede-proj-makefile-garbage-patterns):
+	Doc string fixes.
+
+	* ede-speedbar.el (ede-speedbar-remove-file-from-target):
+	Remove extraneous EDE load call.
+
+2008-12-21  Eric M. Ludlam  <zappo@gnu.org>
+
+	* templates/Makefile: Copy templates into the dist.
+
+	* templates/Project.ede: New subproject file.
+
+	* Makefile (all): Add EDE_Templates
+	(EDE_Templates): New phony rule.
+	(dist): Add EDE_Templates
+
+	* ede.el (ede-adebug-project-parent, ede-adebug-project-root):
+	New debug commands.
+
+	* ede.el (ede-parent-project):
+	Try to fix bug where projects 3 deep returned
+	root instead of the actual parent.
+
+	* ede-files.el (ede-toplevel-project):
+	Fix bug returing an object, not a directory.
+
+2008-12-19  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-linux.el (ede-linux-project::ede-expand-filename-impl):
+	Renamed from ede-expand-filename.
+
+	* ede-emacs.el (ede-emacs-project::ede-expand-filename-impl):
+	Renamed from ede-expand-filename.
+
+	* ede-cpp-root.el (ede-cpp-root-project::ede-expand-filename-impl):
+	Renamed from ede-expand-filename.
+
+	* ede-files.el (ede-directory-get-open-project): Add 'rootreturn' arg.
+	Set rootreturn if provided.
+	Add second method for finding the project via inodes.
+	(ede-inode-get-toplevel-open-project): New fcn.
+	(ede-toplevel-project): Use buffer cache of current project if
+	available.
+	(ede-toplevel): Use buffer local variables when available.
+	(ede-get-locator-object): New fcn.
+	(ede-project::ede-expand-filename): Use locator hash, otherwise
+	use the method below.
+	(ede-project::ede-expand-filename-impl): code from ede-expand-filename.
+
+	* ede-locate.el (ede-enable-locate-on-project):
+	Ask questions for each possible match.
+	(ede-locate-base): Add "hash" slot.
+	(ede-locate-base::initialize-instance)
+	(ede-locate-base::ede-locate-file-in-hash)
+	(ede-locate-base::ede-locate-add-file-to-hash): New methods.
+
+	* ede.el (ede-object-root-project, ede-object-project):
+	New buffer local
+	variables.
+	(ede-minor-mode): Set two new vars above.
+	(ede-load-project-file): Add 'rootreturn' argument.
+	Return the root when found.
+	(ede-current-project): Use new variables to find current project.
+
+2008-12-18  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.texi (Simple projects): Add below.
+	(ede-linux): New
+	(Custom Locate): New
+
+2008-12-17  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-project-placeholder): Remove :type from dirinode slot.
+
+	* ede.texi (EDE Find File): New section.
+
+	* Makefile (ede_LISP): Add ede-locate.el
+
+	* Project.ede (ede): Add ede-locate.el
+
+	* ede-locate.el: New support for external locate tools.
+
+	* ede-cpp-root.el, ede-linux.el (ede-expand-filename):
+	Call-next-method on failure.
+
+	* ede.el (ede-project): Add locate-obj object.
+	(ede-minor-keymap): Add `ede-find-file' key "f" and menu item.
+	(ede-convert-path, ede-expand-filename): Moved to ede-files.el
+
+	* ede-files.el (ede-find-file): New command.
+	(ede-convert-path,ede-expand-filename):
+	 Moved to here from ede.el
+
+2008-12-15  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-project::ede-convert-path):
+	Add backup path relitivizer via "file-truename".
+	(ede-apply-preprocessor-map): Don't set unless there is a table to add to.
+
+	* Makefile (projects_LISP): Add ede-linux.el
+
+	* Project.ede (projects): Add ede-linux.el
+
+	* ede-linux.el: Identify and support linux kernel projects.
+
+2008-12-10  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-parent-project, ede-current-project):
+	Add short-cuts to not load a project if the specified directory does
+	not pass project-p.
+
+	* ede-files.el (ede-project-placeholder::ede-project-inode):
+	New method.
+	(ede-project-placeholder::ede-find-subproject-for-directory): Do inode compares.
+	(ede-inode-directory-hash, ede-put-inode-dir-hash, ede-get-inode-dir-hash)
+	(ede-inode-for-dir): New
+	(ede-directory-get-open-project): Use inodes for direct compares.
+	(ede-directory-get-toplevel-open-project): Use inodes as backup if
+	string compares fail.
+
+	* ede.el (ede-project-placeholder): Add dirinode slot.
+
+	* ede-files.el (ede-project-directory-remove-hash):
+	Use maphash and regexp to do
+	matching, not subdirectory scanning.
+	(ede-directory-project-p): Expand the dir passed in.
+
+	* ede-emacs.el (ede-emacs-project::initialize-instance):
+	Add this to master project list.
+	(ede-find-subproject-for-directory): New.
+
+	* ede-cpp-root.el (ede-cpp-root-project::initialize-instance):
+	Add this to master project list.
+	(ede-find-subproject-for-directory): New.
+
+	* ede-simple.el (ede-simple-project::ede-find-subproject-for-directory):
+	New.
+
+	* ede-files.el (ede-find-subproject-for-directory): New fcn.
+	(ede-directory-get-open-project): Use above, replace body with call to below.
+	(ede-directory-get-toplevel-open-project): Made from above.
+	(ede-project-directory-remove-hash): Error catch subdir scanning.
+	(ede-toplevel-project-or-nil, ede-toplevel-project):
+	References the master list of projects to do work first, then
+	try to load as needed.
+	(ede-up-directory): Doc fix.
+
+	* ede.el (ede-with-projectfile): Comments
+	(ede-minor-mode): Get current dir's project from master list if
+	available.
+	(ede-add-project-to-global-list): New
+	(ede-load-project-file): Clear hash for input dir.
+	Use new fcn above.
+	(ede-parent-project): Extract parent from master list if available.
+
+	* ede-files.el (ede-directory-get-open-project):
+	Add actual implementation
+	(ede-project-directory-remove-hash): Remove subdirs also.
+	Be sure to only remove hash directory names.
+
+2008-12-09  Eric M. Ludlam  <zappo@gnu.org>
+
+	* project-am.el (project-am-scan-for-targets):
+	Fix byte compiler warnings.
+
+	* ede-cpp-root.el (Commentary): Add doc about FILENAME.
+	(ede-cpp-root-count): New tmp profiling tool.
+	(ede-cpp-root-project::initialize-instance): Add value to :directory.
+
+	* ede-emacs.el (ede-emacs-load): Set the :directory slot.
+
+	* ede-simple.el (ede-simple-load): Set the directory slot.
+
+	* ede-proj.el (ede-proj-load): Doc fix.
+	Set the :directory of the project.
+	(ede-proj-save): Don't store the :directory slot.
+
+	* project-am.el (project-am-load-makefile): Set the :directory.
+
+	* ede-files.el (ede-directory-project-p): Add use of a hash-table.
+	(ede-directory-in-open-project): New placeholder fcn.
+	(ede-project-directory-hash): New variable.
+	(ede-project-directory-remove-hash)
+	(ede-directory-project-from-hash)
+	(ede-directory-project-add-description-to-hash): New
+	(ede-directory-project-p): Use the above hash.
+
+	* ede.el (ede-project-placeholder): Add directory slot.
+	(global-ede-mode): Fix byte compiler warning.
+	(ede-new): Set the :directory for new projects.
+	Remove this dir from the project directory hash.
+	(ede-project::eieio-done-customizing,ede-set):
+	Fix byte compiler warnings.
+
+	* Makefile (ede_LISP): Add ede-files.el
+
+	* Project.ede (ede): Add ede-files.el
+
+	* ede.el (ede-project-root, ede-project-root-directory - all classes):
+	Moved
+	(ede-directory-project-p, ede-up-directory): Moved.
+	(ede-toplevel-project(-or-nil)): Moved.
+	(ede-toplevel): Moved
+	(ede-buffer-object): Update doc.
+	(ede-files): Require.
+
+	* ede-files.el: A copy of the file /directory scanning utilties.
+
+2008-11-29  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-save-cache): Make more robust to filesystem issues.
+	(ede-target::ede-buffer-mine): Protect against errors.
+
+2008-10-10  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-auto-add-to-target):
+	Use eieio-object-p instead of object-p.
+
+	* ede-speedbar.el: (ede-speedbar-menu, ede-speedbar-compile-line)
+	(ede-speedbar-get-top-project-for-line)
+	(ede-target::eieio-speedbar-derive-line-path):
+	Use eieio-object-p instead of object-p.
+
+2008-09-29  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-proj-obj.el (ede-source-c++): Add more extension types for C++.
+
+2008-09-17  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-adebug-project):
+	Fix for change in API name in eieio-datadebug.
+
+2008-09-15  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-project): Method invocation order is depth-first.
+
+	* ede-emacs.el (ede-emacs-project):
+	Method invocation order is depth-first.
+
+2008-09-08  Eric M. Ludlam  <zappo@gnu.org>
+
+	* project-am.el (project-am-type-alist): Update doc.
+
+	* ede-speedbar.el (ede-target::eieio-speedbar-child-make-tag-lines):
+	Put only filename in as token data.
+	(ede-file-find): Revert.
+
+	* ede-speedbar.el: Fix commentary.
+	(ede-file-find): File to find is only in token.
+
+	* project-am.el (project-am-type-alist): Add header variables.
+	Add 4th element meaning if it is an indirect automake variable.
+	(project-am-lisp): Remove :lisp
+	(project-am-header, project-am-header-noist, project-am-header-inst):
+	New target classes.
+	(project-am-with-makefile-current): New edebug setup hook for this.
+	(project-rescan): Extract target reading.
+	Eliminate special lisp section.
+	(project-am-scan-for-targets): Extracted from above.
+	(project-am-lisp::ede-buffer-mine): Replace :lisp with :source.
+	(*::ede-sb-expand, *::ede-sb-button): Remove all.
+
+	* ede.el (ede-parent-project): Fix to detect shortcut for finding root.
+
+2008-09-07  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.texi (Creating a project): Add a cross-ref.
+
+	* ede-targets.texi (Targets): Regenerate Content
+
+	* ede-sourcecode.texi (Sourcecode): Regenerate Content
+
+	* ede-projects.texi (Project): Regenerate content.
+
+	* ede-compilers.texi (Compilers): Regenerate content.
+
+	* ede.texi (Simple projects): Add ede-emacs.
+	(ede-emacs): New section.
+
+2008-09-06  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-simple.el (ede-simple-project): change order of inheritance.
+
+	* ede-cpp-root.el (ede-cpp-root-project): change order of inheritance.
+
+	* ede-emacs.el (ede-emacs-project): change order of inheritance.
+
+	* ede-speedbar.el (ede-project::eieio-speedbar-object-children):
+	Handle errors.
+
+	* ede.el (ede-reset-all-buffers): New fcn.
+	(global-ede-mode): Call above.
+	(ede-rescan-toplevel): Call ede-reset-all-buffers.
+	(ede-buffer-object): Force reset of ede-object.
+	(ede-target-in-project-p): Handle a target that is unbound.
+
+	* ede-proj.el (ede-proj-project::project-rescan):
+	Re-write as deleting old project
+	from main project list, and completely re-reading.
+
+	* ede-simple.el (ede-comit-project): Fix caps
+
+	* ede-emacs.el (ede-emacs-version): New
+	(ede-emacs-load): Add a name w/ Emacs version.
+
+	* Makefile (all, dist): Add proj-project, and projects.
+	(proj-project, projects): New targets and associated variables.
+
+	* Project.ede ("EDE"): Add proj-project, and projects targets.
+	Divide "ede" into these multiple targets.
+	Add ede-emacs.el to the "projects" project.
+
+	* ede.el (ede-load): Not needed anymore.
+	(ede-parent-project): Allow ede-project-root to return null.
+
+	* ede-emacs.el: Support for an Emacs project.
+
+	* ede.el (ede-apply-target-options): New fcn.
+	(ede-minor-mode): Move items into above, and call above.
+	(ede-new-target, ede-delete-target, ede-add-file, ede-remove-file):
+	Call ede-apply-target-options instead of the keymap fcn.
+	(ede-project-root-directory): Expand the file also.
+	(ede-project::ede-convert-path,ede-project::ede-expand-filename):
+	Call ede-project-root-directory instead of calculating it inline.
+	(ede-apply-preprocessor-map): New fcn called from apply-target-options.
+
+	* ede.el (ede-save-cache): Protect against junk getting into the list.
+	(ede-build-forms-menu)
+	(ede-project-forms-menu)
+	(ede-customize-forms-menu): Protect against unbound targets list.
+	(ede-project-autoload::ede-project-root-directory): Force file to have
+	a value.
+	(ede-load-project-file): If a project isn't loaded correctly,
+	throw a nice error about the :load-type.
+
+	* ede-cpp-root.el (ede-cpp-root-project-root): Accept a DIR argument
+	(ede-cpp-root-project::ede-find-target): Provide a name.
+
+2008-09-01  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-srecode.el (ede-srecode-setup):
+	Require srecode-map before using some of its variables.
+
+2008-08-23  Eric M. Ludlam  <zappo@gnu.org>
+
+	* project-am.el (makefile-move-to-macro):
+	Add an optional NEXT argument.
+	(makefile-macro-file-list): Find all occurances of the macro, and add
+	their contents together.
+
+	* ede.el (ede-load-project-file):
+	Do not throw error when project-p passes but
+	there is no project.
+
+	* ede-pmake.el (ede-proj-project::ede-proj-makefile-create):
+	Use SRecode to insert
+	the header.
+	(ede-proj-project::ede-proj-makefile-insert-variables-new):
+	New fcn, not yet in use.
+
+2008-08-20  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-toplevel-project): Protect against 'newpath' being nil.
+
+	* project-am.el (project-am-makefile::project-rescan):
+	Protect against loading of a
+	sub-project throwing an error.
+
+2008-08-12  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-project-placeholder::ede-project-root-directory):
+	Allow a 2nd
+	optional argument.
+	(ede-project-autoload::ede-project-root-directory): Allow a 2nd
+	optional argument.  Pass this down to the :proj-root fcn.
+	(ede-project-autoload::ede-dir-to-projectfile):
+	Ask for the root of the input directory.  If we get it, we don't need
+	to cycle up the directory tree.
+
+2008-07-03  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (global-ede-mode): Add autoload cookie.
+
+	* Makefile (LOADPATH): Added srecode dependency.
+	(ede_LISP): Added ede-srecode.el
+
+	* Project.ede ("EDE"): Add ede-srecode
+
+2008-07-02  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-cpp-root.el (ede-cpp-root-project): Doc fix.
+
+2008-06-28  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-toplevel):
+	Protect calls to `ede-project-root' from being called
+	on nil.
+
+	* ede-proj-skel.el: Fix comment spelling.  (Thanks Stefano Sabatini)
+
+2008-06-19  Eric M. Ludlam  <zappo@gnu.org>
+
+	* templates/ede-make.srt: Base templates for Makefile generation in EDE
+
+	* ede-srecode.el: SRecode support.
+
+	* ede-proj.el (auto-mode-alist): Add $ to expression.
+
+2008-06-17  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-simple.el: Add todo comments.
+
+2008-06-08  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-project::ede-expand-filename): Comment.
+	(ede-load-project-file): comment out a debug message.
+	(ede-adebug-project): Fix to use data-debug.
+
+2008-05-29  Eric M. Ludlam  <zappo@gnu.org>
+
+	* project-am.el (project-am-load):
+	Use file name handling functions instead of concat.
+	(project-am-with-makefile-current): New from project-am-load-makefile.
+	Remove semantic support when loading in a Makefile.
+	(project-am-load-makefile): Use above.
+	(project-am-extract-varname): New
+	(project-am-makefile::project-rescan): Set this' project makefile as
+	current during body.
+	Expand variables in SUBDIRS as needed.
+	Use file name handling functions instead of concat.
+
+2008-05-04  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-new): Force the object name to match :name.
+
+	* ede-proj-elisp.el (ede-proj-target-elisp::project-compile-target):
+	Fix to use full filename when comparing src vs elc for date.
+
+2008-04-29  Eric M. Ludlam  <zappo@gnu.org>
+
+	* project-am.el (project-am-find-topmost-level):
+	Re-write to use file-name
+	manipulation functions.
+	(project-am-makefile::project-am-subtree): Rename subpath to subdir
+	(project-am-last-dir): Rewrite to use file-name manipulation functions.
+
+2008-04-14  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Project.ede ("EDE"): Updated to 1.0pre5
+
+	* Makefile (VERSION): Udated to 1.0pre5
+
+	* ede.el (ede-version): Updated to 1.0pre5
+
+2008-03-25  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-proj.el (ede-proj-project::project-new-target):
+	Update todo comments.
+
+	* ede-cpp-root.el: Remove todo
+
+2008-03-22  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.texi (top): Remove detailed node listing.
+	(ede-cpp-root): Augmented with new features.
+
+	* ede-cpp-root.el (ede-cpp-root-project):
+	Add system-include-path and spp-table.
+	(ede-set-project-variables): Also set up the spp-table.
+	(ede-system-include-path, ede-preprocessor-map): Implemented for
+	both project and target.  Return saved entry from the project.
+
+	* ede.el:
+	(ede-project::ede-system-include-path, ede-project::ede-preprocessor-map)
+	(ede-target::ede-system-include-path, ede-target::ede-preprocessor-map):
+	New
+	(ede-project::ede-set-project-variables): Converted to method.
+	(ede-adebug-project): New
+
+2008-03-20  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-proj-project::ede-proj-configure-synchronize):
+	Do not use parent ref if parent == proj
+
+	* ede-pconf.el (ede-proj-project::ede-proj-configure-synchronize):
+	For setting AC
+	output, specify Makefiles for the root and all sub projects.
+
+	* ede.el (ede-project::ede-subproject-relative-path):
+	Allow parent-in to be specified.
+	Return "" if there is no parent.
+
+	* ede.el (ede-project::ede-map-subprojects): Doc fix.
+	(ede-project::ede-map-all-subprojects): New
+
+2008-03-11  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-proj-elisp.el (ede-proj-target-elisp::project-compile-target):
+	Enable build when
+	default directory is incorrect.
+	(ede-proj-target-elisp-autoloads::ede-buffer-mine): New.
+	(ede-proj-target-elisp-autoloads::project-compile-target):
+	Stop calling update-autoloads interactively.
+	Pass in all needed arguments.
+
+2008-03-08  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-cpp-root.el (ede-project-class-files):
+	ede-cpp-root is not an interactive project type.
+
+	* ede.el (ede-new): Restrict new project types.
+	Error if no valid project types found.
+
+2008-03-02  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-cpp-root.el (ede-cpp-root-project::ede-expand-filename):
+	Be sure to expand the
+	name against the include path.
+
+	* ede-proj-info.el (ede-makeinfo-find-info-filename):
+	More robust filename finding.
+
+2008-02-24  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-proj-info.el (ede-makeinfo-find-info-filename):
+	Don't add .info to filename.
+
+	* ede-proj-info.el (ede-makeinfo-find-info-filename):
+	Searching for filename is now
+	more robust.
+
+2008-02-21  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-add-file): Add error checking.
+
+2008-02-20  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-cpp-root.el (ede-cpp-root-project): Unfix previous doc fix.
+	Add some more text explaining the /.
+
+	* ede-cpp-root.el (ede-cpp-root-project): Doc fix.
+
+2008-02-19  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-pmake.el (ede-proj-project::ede-proj-makefile-create):
+	Don't ask annoying question of the Makefile is empty.
+
+	* project-am.el (project-am-makefile::project-new-target):
+	Accept arguments to
+	replace prompts.
+
+	* ede-proj.el (ede-proj-project): Add :group attribs to some slots.
+	(ede-proj-project::project-new-target): Accept arguments to
+	replace interactive questions when needed.
+	(ede-proj-compilers, ede-proj-linkers):
+	Accept single values and turn into lists.
+
+	* ede.el (ede-project): Add tool-cache slot.
+	(ede-new): Support NAME input argument.
+	Force commit of parent project after adding a child.
+	(ede-new-target): Accept, and pass down argument lists.
+	Doc what those arguments might be.
+	(ede-add-file): If programatically passing in a string, look it up
+	in our list of projects.
+	(ede-project::project-new-target): Accept more arguments.
+
+2008-02-10  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.texi (all):
+	Replace references to EDE and other CEDET packages to use
+	macros.
+	(ede-cpp-root): Enhance this section some.
+
+2008-01-25  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-projects.texi: Regenerated from sources.
+
+2008-01-20  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (test_AUX): Deleted.
+
+	* Project.ede ("test"): Deleted.
+
+	* ede-proj.el (ede-proj-project::project-new-target):
+	Add new projects to the end of
+	the list.
+
+	* ede-proj-aux.el (ede-aux-source): Change name of the source object.
+
+2008-01-11  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-current-project): Allow an optional argument.
+
+	* ede.texi (top): copyight
+	(Project types): typo fix
+	(Automake direct projects): Discuss simple projects.  Add node
+	(Simple projects): New node, with subnotes
+	(ede-cpp-root, ede-simple): New
+
+	* ede-cpp-root.el (top): Updated comment w/ new features.
+	(ede-cpp-root-project): Add :include-path, and :header-match-regexp
+	(ede-cpp-root-project::ede-cpp-root-header-file-p): New fcn
+	(ede-cpp-root-default-expand-fcn): Deleted
+	(ede-cpp-root-project::ede-expand-filename): If the file being looked
+	for is a header, then try short-cut code that looks in the include path.
+
+	* ede.el (custom): Remove old compatibility layer.
+	(ede-project::ede-expand-filename): Use expand-file-name instead of concat.
+
+2007-09-07  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-load-cache): Save-excursion around fcn.
+	Store buffer in var, use var during kill.
+	Do not run ede-load-cache if we are in batch mode.
+
+2007-09-02  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-cpp-root.el (ede-cpp-root-file-existing):
+	Use `ede-project-root-directory'.
+	(ede-cpp-root-load): Accept a rootproj argument.
+	(ede-project-root): return this.
+	(ede-project-root-directory): Was ede-project-root.
+
+	* ede-simple.el (ede-simple-load): Accept a rootproj argument.
+
+	* ede-proj.el (ede-proj-load): Better doc.
+	Use better file/dirname concatination functions.
+	Implement rootproject setting features.
+
+	* ede.el (ede-project-placeholder): Add rootproject slot.
+	(ede-project-root): Add implementation.
+	(ede-project-root-directory): New
+	(ede-up-directory): Use technique suggested in Emacs manual.
+	(ede-toplevel-project): Add explicity shortcut using
+	`ede-project-root-directory'.
+	(ede-load-project-file): Add comments.
+	Pass in a rootproject
+	(ede-toplevel): Use `ede-project-root' as shortcut.
+	(ede-parent-project): Do better compare w/ `ede-project-root'results.
+
+	* project-am.el (project-am-load): Accept optional argument rootproj.
+
+2007-08-27  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-parent-project): Allow input object to be nil.
+	(ede-target-buffers): use memq instead of member when looking to see
+	if a buffer is in a list of possible targetes.
+
+2007-08-26  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-pmake.el (ede-proj-project::ede-proj-makefile-create):
+	Work around byte-compiler bug WRT tmp local variable.
+
+2007-08-25  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-toplevel-project): Fix bugs with single-root projects.
+	(ede-parent-project): Allow single-root projects to provide the answer
+	directly.
+	(ede-project::ede-target-in-project-p): Use memq to get correct
+	answers when two projects have identical targets.
+
+2007-08-23  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (ede_LISP): Add ede-cpp-root.el
+
+	* Project.ede ("ede"): add ede-cpp-root.el
+
+	* ede.el (ede-project-autoload): Add proj-root function
+	(ede-save-cache): Be more robust about jumk in the save-list.
+	(ede-project-placeholder::ede-project-root)
+	(ede-project-autoload::ede-project-root): New methods.
+	(ede-project-autoload::ede-dir-to-projectfile): fix bug when returning f
+	(ede-toplevel-project): Allow a project-autoload to provide a shortcut
+	to the root of the project.
+
+	* ede-cpp-root.el: New project type.
+
+2007-08-22  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-proj.el (ede-proj-target::ede-proj-linkers):
+	Added debugging error.
+
+2007-07-19  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede.el (ede-save-cache):
+	Catch errors if the ede placeholder cache can't be written.
+
+2007-06-21  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-simple.el (ede-simple-projectfile-for-dir):
+	Don't ask to create a dir.
+	(ede-commit-project::ede-simple-project): Ask to create the storage
+	directory.
+
 2007-06-06  Eric M. Ludlam  <zappo@gnu.org>
 
 	* Makefile (VERSION): Regress version to prerelease 4.
@@ -47,15 +962,15 @@
 
 2007-03-12  Eric M. Ludlam  <zappo@gnu.org>
 
-	* project-am.el: (project-am-texinfo::ede-documentation):
+	* project-am.el (project-am-texinfo::ede-documentation):
 	Cause all returned file names to be fully expanded.
 
-	* ede-proj-info.el: (ede-proj-target-makefile-info::ede-documentation):
+	* ede-proj-info.el (ede-proj-target-makefile-info::ede-documentation):
 	Cause all returned file names to be fully expanded.
 
 2007-03-11  Eric M. Ludlam  <zappo@gnu.org>
 
-	* ede-proj-info.el: (ede-makeinfo-find-info-filename):
+	* ede-proj-info.el (ede-makeinfo-find-info-filename):
 	Use get-file-buffer before find-file-noselect.
 
 2007-03-10  Eric M. Ludlam  <zappo@gnu.org>
@@ -85,7 +1000,7 @@
 
 2007-02-18  Eric M. Ludlam  <zappo@gnu.org>
 
-	* ede.el: (ede-project::ede-expand-filename, ede-load-project-file):
+	* ede.el (ede-project::ede-expand-filename, ede-load-project-file):
 	Handle erroneous data in project or directory lists.
 	From project-am.el use.
 
@@ -160,12 +1075,6 @@
 	used in automake right now.
 
 	* project-am.el: Requires specify .el files to prevent build problems.
-
-2005-04-24  Eric M. Ludlam  <zappo@gnu.org>
-
-	* Makefile (misc_AUX): Add ChangeLog
-
-	* Project.ede (misc): Add ChangeLog file.
 
 2005-04-22  Eric M. Ludlam  <zappo@gnu.org>
 
@@ -243,19 +1152,6 @@
 	Fix missing space in echo
 	message.
 
-2004-04-11  Eric M. Ludlam  <zappo@gnu.org>
-
-	* Makefile (dist): Add autoloads
-
-	* ede-proj-elisp.el: (ede-proj-makefile-insert-dist-dependencies)
-	(ede-proj-makefile-insert-dist-filepatterns):
-	New methods.  Include the generated file into the distribution.
-
-	* ede-pmake.el (ede-proj-makefile-insert-dist-rules):
-	When inserting distribution
-	files, include special distribution files even if there is not
-	sourcevar to include.
-
 2004-04-06  Eric M. Ludlam  <zappo@gnu.org>
 
 	* Makefile (dist): Distribute the autoload file
@@ -275,14 +1171,7 @@
 	(ede-makeinfo-find-info-filename): New function.
 	(ede-proj-makefile-target-name): Use it.
 
-	* Makefile (clean): Update info garbage pattern.
-
-	* ede-proj-info.el (ede-makeinfo-source): update info garbage pattern
-	(ede-makeinfo-find-info-filename): new fcn
-	(ede-proj-makefile-target-name): Use above
-	(ede-proj-makefile-insert-dist-filepatterns): Remove previous modification.
-
-	* ede-proj-info.el: (ede-proj-makefile-insert-dist-filepatterns):
+	* ede-proj-info.el (ede-proj-makefile-insert-dist-filepatterns):
 	Use $(wildcard ...) to expand the "*" in info names.
 
 2004-03-28  Eric M. Ludlam  <zappo@gnu.org>
@@ -297,7 +1186,7 @@
 
 2004-02-29  Eric M. Ludlam  <zappo@gnu.org>
 
-	* ede-pmake.el: (ede-proj-makefile-insert-dist-rules):
+	* ede-pmake.el (ede-proj-makefile-insert-dist-rules):
 	Add more data to help users get past out of date Makefiles.
 
 	* README: Revamped. We are a part of a CEDET install now.
@@ -320,8 +1209,7 @@
 
 	* Makefile (dist): Do not dist loaddefs.
 
-	* ede-proj-elisp.el:
-	(ede-emacs-compiler, ede-emacs-cedet-autogen-compiler):
+	* ede-proj-elisp.el (ede-emacs-compiler, ede-emacs-cedet-autogen-compiler):
 	Add --no-site-file to list of arguments.
 	(ede-proj-makefile-sourcevar:ede-proj-target-elisp-autoloads):
 	Do not specify sourcevar as LOADDEFS.
@@ -583,8 +1471,7 @@
 	(ede-load-project-file): Remove files from project cache.
 	(ede-parent-project): Fix to work well with subprojects.
 
-	* ede-pmake.el:
-	(ede-proj-makefile-insert-dist-rules: ede-proj-project):
+	* ede-pmake.el (ede-proj-makefile-insert-dist-rules: ede-proj-project):
 	 Enable the makefile to build a dist across subdirectories.
 
 	* ede-proj.el (ede-proj-dist-makefile):

@@ -1,10 +1,10 @@
 ;;; eieio-base.el --- Base classes for EIEIO.
 
 ;;;
-;; Copyright (C) 2000, 2001, 2002, 2004, 2005, 2007 Eric M. Ludlam
+;; Copyright (C) 2000, 2001, 2002, 2004, 2005, 2007, 2008 Eric M. Ludlam
 ;;
 ;; Author: <zappo@gnu.org>
-;; RCS: $Id: eieio-base.el,v 1.22 2007/06/04 00:39:27 zappo Exp $
+;; RCS: $Id: eieio-base.el,v 1.26 2008/09/17 14:23:04 zappo Exp $
 ;; Keywords: OO, lisp
 ;;
 ;; This program is free software; you can redistribute it and/or modify
@@ -101,9 +101,9 @@ a variable symbol used to store a list of all instances."
   :abstract t)
 
 (defmethod initialize-instance :AFTER ((this eieio-instance-tracker)
-				       &rest fields)
+				       &rest slots)
   "Make sure THIS is in our master list of this class.
-Optional argument FIELDS are the initialization arguments."
+Optional argument SLOTS are the initialization arguments."
   ;; Theoretically, this is never called twice for a given instance.
   (let ((sym (oref this tracking-symbol)))
     (if (not (memq this (symbol-value sym)))
@@ -115,10 +115,10 @@ Optional argument FIELDS are the initialization arguments."
        (delq this (symbol-value (oref this tracking-symbol)))))
 
 ;; In retrospect, this is a silly function.
-(defun eieio-instance-tracker-find (key field list-symbol)
-  "Find KEY as an element of FIELD in the objects in LIST-SYMBOL.
+(defun eieio-instance-tracker-find (key slot list-symbol)
+  "Find KEY as an element of SLOT in the objects in LIST-SYMBOL.
 Returns the first match."
-  (object-assoc key field (symbol-value list-symbol)))
+  (object-assoc key slot (symbol-value list-symbol)))
 
 ;;; eieio-singleton
 ;;
@@ -137,9 +137,9 @@ Multiple calls to `make-instance' will return this object."))
 A singleton is a class which will only ever have one instace."
   :abstract t)
 
-(defmethod constructor :STATIC ((class eieio-singleton) name &rest fields)
+(defmethod constructor :STATIC ((class eieio-singleton) name &rest slots)
   "Constructor for singleton CLASS.
-NAME and FIELDS initialize the new object.
+NAME and SLOTS initialize the new object.
 This constructor guarantees that no matter how many you request,
 only one object ever exists."
   ;; NOTE TO SELF: In next version, make `slot-boundp' support classes
@@ -181,7 +181,13 @@ Enables auto-choosing nice file names based on name.")
 		     :initform ";; EIEIO PERSISTENT OBJECT"
 		     :documentation
 		     "Header line for the save file.
-This is used with the `object-write' method."))
+This is used with the `object-write' method.")
+   (do-backups :type boolean
+	       :allocation :class
+	       :initform t
+	       :documentation
+	       "Saving this object should make backup files.
+Setting to nil will mean no backups are made."))
   "This special class enables persistence through save files
 Use the `object-save' method to write this object to disk.  The save
 format is Emacs Lisp code which calls the constructor for the saved
@@ -203,7 +209,7 @@ a file.  Optional argument NAME specifies a default file name."
   (oref this file))
 
 (defun eieio-persistent-read (filename)
-  "Read a persistent object from FILENAME."
+  "Read a persistent object from FILENAME, and return it."
   (save-excursion
     (let ((ret nil))
       (set-buffer (get-buffer-create " *tmp eieio read*"))
@@ -246,7 +252,16 @@ instance."
 			(eieio-persistent-path-relative this file)
 		      (file-name-nondirectory cfn)))
 	      (object-write this (oref this file-header-line)))
-	    (write-file cfn nil))
+	    (let ((backup-inhibited (not (oref this do-backups))))
+	      ;; Old way - write file.  Leaves message behind.
+	      ;;(write-file cfn nil)
+	      
+	      ;; New way - Avoid the vast quantities of error checking
+	      ;; just so I can get at the special flags that disable
+	      ;; displaying random messages.
+	      (write-region (point-min) (point-max)
+			    cfn nil 1)
+	      ))
 	;; Restore :file, and kill the tmp buffer
 	(oset this file cfn)
 	(setq buffer-file-name nil)

@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads (rpm) "rpm" "rpm.el" (18022 5417))
+;;;### (autoloads (rpm) "rpm" "rpm.el" (18857 63843))
 ;;; Generated autoloads from rpm.el
 
 (autoload (quote rpm) "rpm" "\
@@ -13,8 +13,8 @@ Red Hat Package Management in Emacs.
 
 ;;;***
 
-;;;### (autoloads (gud-speedbar-buttons) "sb-gud" "sb-gud.el" (18022
-;;;;;;  5417))
+;;;### (autoloads (gud-speedbar-buttons) "sb-gud" "sb-gud.el" (18857
+;;;;;;  63843))
 ;;; Generated autoloads from sb-gud.el
 
 (autoload (quote gud-speedbar-buttons) "sb-gud" "\
@@ -27,7 +27,7 @@ off the specialized speedbar mode.
 ;;;***
 
 ;;;### (autoloads (Info-speedbar-buttons Info-speedbar-browser) "sb-info"
-;;;;;;  "sb-info.el" (18022 5417))
+;;;;;;  "sb-info.el" (18857 63843))
 ;;; Generated autoloads from sb-info.el
 
 (autoload (quote Info-speedbar-browser) "sb-info" "\
@@ -47,7 +47,7 @@ BUFFER is the buffer speedbar is requesting buttons for.
 ;;;***
 
 ;;;### (autoloads (rmail-speedbar-buttons) "sb-rmail" "sb-rmail.el"
-;;;;;;  (18022 5417))
+;;;;;;  (18857 63843))
 ;;; Generated autoloads from sb-rmail.el
 
 (autoload (quote rmail-speedbar-buttons) "sb-rmail" "\
@@ -60,8 +60,8 @@ current message into that RMAIL folder.
 
 ;;;***
 
-;;;### (autoloads (w3-speedbar-buttons) "sb-w3" "sb-w3.el" (18022
-;;;;;;  5417))
+;;;### (autoloads (w3-speedbar-buttons) "sb-w3" "sb-w3.el" (18857
+;;;;;;  63843))
 ;;; Generated autoloads from sb-w3.el
 
 (autoload (quote w3-speedbar-buttons) "sb-w3" "\
@@ -72,14 +72,14 @@ Create speedbar buttons for the current web BUFFER displayed in w3 mode.
 ;;;***
 
 ;;;### (autoloads (speedbar-get-focus speedbar-frame-mode) "speedbar"
-;;;;;;  "speedbar.el" (18022 5417))
+;;;;;;  "speedbar.el" (18857 63843))
 ;;; Generated autoloads from speedbar.el
 
 (defalias (quote speedbar) (quote speedbar-frame-mode))
 
 (autoload (quote speedbar-frame-mode) "speedbar" "\
 Enable or disable speedbar.  Positive ARG means turn on, negative turn off.
-nil means toggle.  Once the speedbar frame is activated, a buffer in
+A nil ARG means toggle.  Once the speedbar frame is activated, a buffer in
 `speedbar-mode' will be displayed.  Currently, only one speedbar is
 supported at a time.
 `speedbar-before-popup-hook' is called before popping up the speedbar frame.
@@ -98,13 +98,15 @@ selected.  If the speedbar frame is active, then select the attached frame.
 
 ;;;### (autoloads nil nil ("bigclock.el" "dframe.el" "sb-ant.el"
 ;;;;;;  "sb-html.el" "sb-image.el" "sb-texinfo.el" "speedbar-load.el")
-;;;;;;  (18797 3157 169000))
+;;;;;;  (19093 38048 859000))
 
 ;;;***
 
+(provide 'speedbar-loaddefs)
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
+;; coding: utf-8
 ;; End:
 ;;; speedbar-loaddefs.el ends here

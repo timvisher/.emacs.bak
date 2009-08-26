@@ -1,9 +1,9 @@
 ;;; semantic-utest.el --- Tests for semantic's parsing system.
 
-;;; Copyright (C) 2003, 2004, 2007 Eric M. Ludlam
+;;; Copyright (C) 2003, 2004, 2007, 2008, 2009 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
-;; X-RCS: $Id: semantic-utest.el,v 1.2 2007/02/03 03:05:06 zappo Exp $
+;; X-RCS: $Id: semantic-utest.el,v 1.10.2.1 2009/03/01 02:29:14 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -29,6 +29,7 @@
 ;; and full reparsing system, and anything else I may feel the urge
 ;; to write a test for.
 
+(require 'cedet-utests)
 (require 'semantic)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -298,10 +299,10 @@ function fun2(a,b){ //1
 (defvar semantic-utest-Makefile-buffer-contents
 "
 t1:
-    echo t1
+\techo t1
 
 t2:t1 #1
-    echo t2
+\techo t2
 
 
 "
@@ -362,6 +363,63 @@ t2:t1 #1
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Data for PHP tests
+
+(defvar semantic-utest-PHP-buffer-contents
+  "<?php
+
+function fun1(){
+   return \"fun1\";
+}
+
+function fun2($arg1){
+   $output = \"argument to fun2: \" . $arg1;
+   return $output;
+}
+
+class aClass {
+   public function fun1($a, $b){
+      return $a;
+   }
+
+   public function fun2($a, $b){
+      return $b;
+   }
+}
+?> "
+  )
+
+(defvar semantic-utest-PHP-name-contents
+  '(("fun1" function nil
+     nil (overlay 9 45 "phptest.php"))
+    ("fun2" function
+     (:arguments (("$arg1" variable nil (reparse-symbol formal_parameters) (overlay 61 66 "phptest.php"))))
+     nil
+     (overlay 47 132 "phptest.php"))
+    ("aClass" type
+     (:members (("fun1" function
+		 (:typemodifiers ("public") :arguments
+				 (("$a" variable nil (reparse-symbol formal_parameters) (overlay 174 176 "phptest.php"))
+				  ("$b" variable nil (reparse-symbol formal_parameters) (overlay 178 180 "phptest.php"))))
+
+		 nil
+		 (overlay 153 204 "phptest.php"))
+
+		("fun2" function
+		 (:typemodifiers ("public") :arguments
+				 (("$a" variable nil (reparse-symbol formal_parameters) (overlay 230 232 "phptest.php"))
+				  ("$b" variable nil (reparse-symbol formal_parameters) (overlay 234 236 "phptest.php"))
+				  ))
+		 nil
+		 (overlay 209 260 "phptest.php"))) :type "class")
+     nil
+     (overlay 135 262 "phptest.php"))
+    )
+  "Expected results from the PHP Unit test"
+  )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Data for Csharp C# tests
 
 (defvar semantic-utest-Csharp-buffer-contents
@@ -414,11 +472,16 @@ class someClass {
 
 
 (defun semantic-utest-makebuffer (filename contents)
-  (let ((buff (find-file-noselect filename)))
+  "Create a buffer for FILENAME for use in a unit test.
+Pre-fill the buffer with CONTENTS."
+  (let ((buff (semantic-find-file-noselect filename)))
     (set-buffer buff)
+    (setq buffer-offer-save nil)
+    (font-lock-mode -1) ;; Font lock has issues in Emacs 23
     (erase-buffer)
     (insert contents)
     ;(semantic-fetch-tags) ;JAVE could this go here?
+    (set-buffer-modified-p nil)
     buff
     )
   )
@@ -441,17 +504,19 @@ class someClass {
 
       ;; Update tags, and show it.
       (semantic-fetch-tags)
+
       (switch-to-buffer buff)
       (sit-for 0)
       
       ;; Run the tests.
-      (message "First parsing test.")
+      ;;(message "First parsing test.")
       (semantic-utest-verify-names semantic-utest-C-name-contents)
 
-      (message "Invalid tag test.")
+      ;;(message "Invalid tag test.")
       (semantic-utest-last-invalid semantic-utest-C-name-contents '("fun2") "/\\*1\\*/" "/* Deleted this line */")
       (semantic-utest-verify-names semantic-utest-C-name-contents)
 
+      (set-buffer-modified-p nil)
       ;; Clean up
       ;; (kill-buffer buff)
       ;; (kill-buffer buff2)
@@ -463,7 +528,15 @@ class someClass {
 
 
 (defun semantic-utest-generic (testname filename contents name-contents names-removed killme insertme)
-  "generic unit test according to template, should work for languages withouth .h files, python javascript java."
+  "Generic unit test according to template.
+Should work for languages withouth .h files, python javascript java.
+TESTNAME is the name of the test.
+FILENAME is the name of the file to create.
+CONTENTS is the contents of the file to test.
+NAME-CONTENTS is the list of names that should be in the contents.
+NAMES-REMOVED is the list of names that gets removed in the removal step.
+KILLME is the name of items to be killed.
+INSERTME is the text to be inserted after the deletion."
   (save-excursion
     (let ((buff  (semantic-utest-makebuffer filename  contents))
 	  )
@@ -479,34 +552,42 @@ class someClass {
       (sit-for 0)
       
       ;; Run the tests.
-      (message "First parsing test %s." testname)
+      ;;(message "First parsing test %s." testname)
       (semantic-utest-verify-names name-contents)
 
-      (message "Invalid tag test %s." testname)
+      ;;(message "Invalid tag test %s." testname)
       (semantic-utest-last-invalid name-contents names-removed killme insertme)
       (semantic-utest-verify-names name-contents)
 
+      (set-buffer-modified-p nil)
       ;; Clean up
       ;; (kill-buffer buff)
-      ;; (kill-buffer buff2)
       ))
   (message "All %s tests passed." testname)
   )
 
 (defun semantic-utest-Python()
   (interactive)
-  (semantic-utest-generic "Python" "/tmp/pytest.py" semantic-utest-Python-buffer-contents  semantic-utest-Python-name-contents   '("fun2") "#1" "#deleted line")  )
+  (if (fboundp 'python-mode)
+      (semantic-utest-generic "Python" "/tmp/pytest.py" semantic-utest-Python-buffer-contents  semantic-utest-Python-name-contents   '("fun2") "#1" "#deleted line")
+    (message "Skilling Python test: NO major mode."))
+  )
 
 
 (defun semantic-utest-Javascript()
   (interactive)
-  (semantic-utest-generic "Javascript" "/tmp/javascripttest.js" semantic-utest-Javascript-buffer-contents  semantic-utest-Javascript-name-contents   '("fun2") "//1" "//deleted line")
+  (if (fboundp 'javascript-mode)
+      (semantic-utest-generic "Javascript" "/tmp/javascripttest.js" semantic-utest-Javascript-buffer-contents  semantic-utest-Javascript-name-contents   '("fun2") "//1" "//deleted line")
+    (message "Skipping JavaScript test: NO major mode."))
   )
 
 (defun semantic-utest-Java()
   (interactive)
-  (semantic-utest-generic "Java" "/tmp/JavaTest.java" semantic-utest-Java-buffer-contents  semantic-utest-Java-name-contents   '("fun2") "//1" "//deleted line")
-  )
+  ;; If JDE is installed, it might mess things up depending on the version
+  ;; that was installed.
+  (let ((auto-mode-alist  '(("\\.java\\'" . java-mode))))
+    (semantic-utest-generic "Java" "/tmp/JavaTest.java" semantic-utest-Java-buffer-contents  semantic-utest-Java-name-contents   '("fun2") "//1" "//deleted line")
+    ))
 
 (defun semantic-utest-Makefile()
   (interactive)
@@ -521,13 +602,24 @@ class someClass {
 
 (defun semantic-utest-Html()
   (interactive)
-  (semantic-utest-generic "HTML" "/tmp/tst.html" semantic-utest-Html-buffer-contents  semantic-utest-Html-name-contents   '("fun2") "<!--1-->" "<!--deleted line-->")
+  ;; Disable html-helper auto-fill-in mode.
+  (let ((html-helper-build-new-buffer nil))
+    (semantic-utest-generic "HTML" "/tmp/tst.html" semantic-utest-Html-buffer-contents  semantic-utest-Html-name-contents   '("fun2") "<!--1-->" "<!--deleted line-->")
+    ))
+
+(defun semantic-utest-PHP()
+  (interactive)
+  (if (fboundp 'php-mode)
+      (semantic-utest-generic "PHP" "/tmp/phptest.php" semantic-utest-PHP-buffer-contents semantic-utest-PHP-name-contents '("fun1") "fun2" "%^@")
+    (message "Skipping PHP Test.  No php-mode loaded."))
   )
 
 ;look at http://mfgames.com/linux/csharp-mode
 (defun semantic-utest-Csharp() ;; hmm i dont even know how to edit a scharp file. need a csharp mode implementation i suppose
   (interactive)
-  (semantic-utest-generic "C#" "/tmp/csharptest.cs" semantic-utest-Csharp-buffer-contents  semantic-utest-Csharp-name-contents   '("fun2") "//1" "//deleted line")
+  (if (fboundp 'csharp-mode)
+      (semantic-utest-generic "C#" "/tmp/csharptest.cs" semantic-utest-Csharp-buffer-contents  semantic-utest-Csharp-name-contents   '("fun2") "//1" "//deleted line")
+    (message "Skipping C# test.  No csharp-mode loaded."))
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -541,30 +633,44 @@ class someClass {
 ;hello_world()->
 ;    io:format("Hello World ~n"). 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun semantic-utest-Erlang()
-  (interactive)
-  (semantic-utest-generic "Erlang" "/tmp/tst.erl" semantic-utest-Erlang-buffer-contents  semantic-utest-Erlang-name-contents   '("fun2") "//1" "//deleted line")
-  )
-
-;texi is also supported
-(defun semantic-utest-Texi()
-  (interactive)
-  (semantic-utest-generic "texi" "/tmp/tst.texi" semantic-utest-Texi-buffer-contents  semantic-utest-Texi-name-contents   '("fun2") "//1" "//deleted line")
-  )
+;(defun semantic-utest-Erlang()
+;  (interactive)
+;  (semantic-utest-generic "Erlang" "/tmp/tst.erl" semantic-utest-Erlang-buffer-contents  semantic-utest-Erlang-name-contents   '("fun2") "//1" "//deleted line")
+;  )
+;
+;;texi is also supported
+;(defun semantic-utest-Texi()
+;  (interactive)
+;  (semantic-utest-generic "texi" "/tmp/tst.texi" semantic-utest-Texi-buffer-contents  semantic-utest-Texi-name-contents   '("fun2") "//1" "//deleted line")
+;  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defun semantic-utest-main()
   (interactive)
   "call all utests"
+  (cedet-utest-log-start "multi-lang parsing")
+  (cedet-utest-log " * C tests...")
   (semantic-utest-C)
+  (cedet-utest-log " * Python tests...")
   (semantic-utest-Python)
+  (cedet-utest-log " * Java tests...")
   (semantic-utest-Java) 
+  (cedet-utest-log " * Javascript tests...")
   (semantic-utest-Javascript)
+  (cedet-utest-log " * Makefile tests...")
   (semantic-utest-Makefile)
+  (cedet-utest-log " * Scheme tests...")
   (semantic-utest-Scheme)
-  ;(semantic-utest-Html)
-  ;(semantic-utest-Csharp)
+  (cedet-utest-log " * Html tests...")
+  (semantic-utest-Html)
+  (cedet-utest-log " * PHP tests...")
+  (semantic-utest-PHP)
+  (cedet-utest-log " * Csharp tests...")
+  (semantic-utest-Csharp)
+
+  (cedet-utest-log-shutdown "multi-lang parsing")
   )
 
 ;;; Buffer contents validation
@@ -620,8 +726,11 @@ SKIPNAMES is a list of names that should be skipped in the NAMES list."
 	       (semantic-format-tag-prototype (car table))))
     (setq names (cdr names)
 	  table (cdr table)))
-  (when names (error "Items forgotten: %S" names))
-  (when table (error "Items extra: %S" table))
+  (when names (error "Items forgotten: %S"
+		     (mapcar 'semantic-tag-name names)
+		     ))
+  (when table (error "Items extra: %S" 
+		     (mapcar 'semantic-tag-name table)))
   t)
 
 (defun semantic-utest-verify-names (name-contents &optional skipnames)

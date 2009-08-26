@@ -1,10 +1,10 @@
 ;;; semantic-doc.el --- Routines for documentation strings
 
-;;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2005 Eric M. Ludlam
+;;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2005, 2008, 2009 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: syntax
-;; X-RCS: $Id: semantic-doc.el,v 1.6 2005/09/30 20:19:50 zappo Exp $
+;; X-RCS: $Id: semantic-doc.el,v 1.13 2009/01/10 18:43:31 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -36,7 +36,7 @@
 ;;; Code:
 
 ;;;###autoload
-(define-overload semantic-documentation-for-tag (&optional tag nosnarf)
+(define-overloadable-function semantic-documentation-for-tag (&optional tag nosnarf)
   "Find documentation from TAG and return it as a clean string.
 TAG might have DOCUMENTATION set in it already.  If not, there may be
 some documentation in a comment preceding TAG's definition which we
@@ -45,37 +45,36 @@ enhancement.
 Optional argument NOSNARF means to only return the lexical analyzer token for it.
 If nosnarf if 'lex, then only return the lex token."
   (if (not tag) (setq tag (semantic-current-tag)))
-  (:override
-   ;; No override.  Try something simple to find documentation nearby
-   (save-excursion
-     (set-buffer (semantic-tag-buffer tag))
-     (semantic-go-to-tag tag)
-     (or
-      ;; Is there doc in the tag???
-      (if (semantic-tag-docstring tag)
-          (if (stringp (semantic-tag-docstring tag))
-              (semantic-tag-docstring tag)
-            (goto-char (semantic-tag-docstring tag))
-            (semantic-doc-snarf-comment-for-tag nosnarf)))
-      ;; Check just before the definition.
-      (semantic-documentation-comment-preceeding-tag tag nosnarf)
-      ;;  Lets look for comments either after the definition, but before code:
-      ;; Not sure yet.  Fill in something clever later....
-      nil))))
+  (save-excursion
+    (when (semantic-tag-with-position-p tag)
+      (set-buffer (semantic-tag-buffer tag)))
+    (:override
+     ;; No override.  Try something simple to find documentation nearby
+     (save-excursion
+       (semantic-go-to-tag tag)
+       (let ((doctmp (semantic-tag-docstring tag (current-buffer))))
+	 (or
+	  ;; Is there doc in the tag???
+	  doctmp
+	  ;; Check just before the definition.
+	  (when (semantic-tag-with-position-p tag)
+	    (semantic-documentation-comment-preceeding-tag tag nosnarf))
+	  ;;  Lets look for comments either after the definition, but before code:
+	  ;; Not sure yet.  Fill in something clever later....
+	  nil))))))
 
 (defun semantic-documentation-comment-preceeding-tag (&optional tag nosnarf)
   "Find a comment preceeding TAG.
 If TAG is nil.  use the tag under point.
 Searches the space between TAG and the preceeding tag for a comment,
 and converts the comment into clean documentation.
-Optional argument NOSNARF means to return just the lexical token and
-not the string."
+Optional argument NOSNARF with a value of 'lex means to return
+just the lexical token and not the string."
   (if (not tag) (setq tag (semantic-current-tag)))
   (save-excursion
     ;; Find this tag.
     (semantic-go-to-tag tag)
-    (let* ((end (point))
-	   (starttag (semantic-find-tag-by-overlay-prev
+    (let* ((starttag (semantic-find-tag-by-overlay-prev
 		      (semantic-tag-start tag)))
 	   (start (if starttag
 		      (semantic-tag-end starttag)
@@ -112,7 +111,9 @@ If NOSNARF is 'lex, then return the lex token."
 	    (setq ct (concat (substring ct 0 (match-beginning 0))
 			     (substring ct (match-end 0)))))
 	  ;; End of a block comment.
-	  (if (and block-comment-end (string-match block-comment-end ct))
+	  (if (and (boundp 'block-comment-end)
+		   block-comment-end
+		   (string-match block-comment-end ct))
 	      (setq ct (concat (substring ct 0 (match-beginning 0))
 			       (substring ct (match-end 0)))))
 	  ;; In case it's a real string, STRIPIT.

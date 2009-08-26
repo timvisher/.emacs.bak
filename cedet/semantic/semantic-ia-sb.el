@@ -1,10 +1,10 @@
 ;;; semantic-ia-sb.el --- Speedbar analysis display interactor
 
-;;; Copyright (C) 2002, 2003, 2004, 2006 Eric M. Ludlam
+;;; Copyright (C) 2002, 2003, 2004, 2006, 2008, 2009 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: syntax
-;; X-RCS: $Id: semantic-ia-sb.el,v 1.18 2006/07/29 15:05:00 zappo Exp $
+;; X-RCS: $Id: semantic-ia-sb.el,v 1.22 2009/01/09 23:08:46 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -83,7 +83,6 @@ DIRECTORY is the current directory, which is ignored, and ZERO is 0."
   (let ((analysis nil)
 	(buffer nil)
 	(completions nil)
-	(fnargs nil)
 	(cf (selected-frame))
 	(cnt nil)
 	(mode-local-active-mode nil)
@@ -101,7 +100,6 @@ DIRECTORY is the current directory, which is ignored, and ZERO is 0."
 	    (setq cnt (semantic-find-tag-by-overlay))
 	    (when analysis
 	      (setq completions (semantic-analyze-possible-completions analysis))
-	      (setq fnargs (semantic-get-local-arguments (point)))
 	      )
 	    ))
       (error nil))
@@ -124,11 +122,9 @@ DIRECTORY is the current directory, which is ignored, and ZERO is 0."
 	(semantic-ia-sb-string-list cnt
 				    'speedbar-tag-face
 				    'semantic-sb-token-jump))
-      (when fnargs
-	(speedbar-insert-separator "Arguments")
-	(semantic-ia-sb-string-list fnargs
-				    'speedbar-tag-face
-				    'semantic-sb-token-jump))
+      ;; If this analyzer happens to point at a complete symbol, then
+      ;; see if we can dig up some documentation for it.
+      (semantic-ia-sb-show-doc analysis)
       ;; Let different classes draw more buttons.
       (semantic-ia-sb-more-buttons analysis)
       (when completions
@@ -139,9 +135,25 @@ DIRECTORY is the current directory, which is ignored, and ZERO is 0."
 					  'semantic-ia-sb-complete)))
       )))
 
+(defmethod semantic-ia-sb-show-doc ((context semantic-analyze-context))
+  "Show documentation about CONTEXT iff CONTEXT points at a complete symbol."
+  (let ((sym (car (reverse (oref context prefix))))
+	(doc nil))
+    (when (semantic-tag-p sym)
+      (setq doc (semantic-documentation-for-tag sym))
+      (when doc
+	(speedbar-insert-separator "Documentation")
+	(insert doc)
+	(insert "\n")
+	))
+    ))
+
 (defmethod semantic-ia-sb-more-buttons ((context semantic-analyze-context))
   "Show a set of speedbar buttons specific to CONTEXT."
-  (let ((localvars (oref context localvariables)))
+  (let* ((scope (oref context scope))
+	 (localvars (when scope
+		      (oref scope localvar)))
+	 )
     (when localvars
       (speedbar-insert-separator "Local Variables")
       (semantic-ia-sb-string-list localvars
@@ -262,7 +274,8 @@ TEXT, TAG, and INDENT are speedbar function arguments."
 		     (condition-case nil
 			 (save-excursion
 			   (set-buffer ob)
-			   (semantic-analyze-tag-type tag))
+			   ;; @todo - We need a context to derive a scope from.
+			   (semantic-analyze-tag-type tag nil))
 		       (error nil))))
 		(if typetok
 		    (insert (semantic-format-tag-prototype

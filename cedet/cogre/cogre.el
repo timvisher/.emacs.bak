@@ -1,12 +1,12 @@
 ;;; cogre.el --- COnnected GRaph Editor for Emacs
 
-;;; Copyright (C) 2001, 2002, 2003, 2005, 2007 Eric M. Ludlam
+;;; Copyright (C) 2001, 2002, 2003, 2005, 2007, 2008, 2009 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: graph, oop, extensions, outlines
-;; X-RCS: $Id: cogre.el,v 1.20 2007/04/15 00:52:11 zappo Exp $
+;; X-RCS: $Id: cogre.el,v 1.24 2009/01/29 02:56:13 zappo Exp $
 
-(defvar cogre-version "0.5"
+(defvar cogre-version "0.7"
   "Current version of Cogre.")
 
 ;; This file is not part of GNU Emacs.
@@ -34,10 +34,10 @@
 ;; source code.
 ;;
 
-(require 'cogre-load)
 (require 'eieio)
 (require 'eieio-opt)
 (require 'eieio-base)
+(require 'cogre-load)
 (require 'semantic)
 (eval-when-compile
   (require 'picture-hack))
@@ -59,7 +59,14 @@
   :group 'cogre
   :type 'number)
 
+(defun cogre-noninteractive ()
+  "Return non-nil if running non-interactively."
+  (if (featurep 'xemacs)
+      (noninteractive)
+    noninteractive))
+
 ;;; Classes
+;;;###autoload
 (defclass cogre-graph (eieio-persistent)
   ((extension :initform ".cgr") ;; Override the default
    (name :initarg :name
@@ -85,6 +92,7 @@ displayed in.")
 a connected graph contains a series of nodes and links which are
 rendered in a buffer, or serialized to disk.")
 
+;;;###autoload
 (defclass cogre-graph-element (eieio-named)
   ((dirty :initform t
 	  :documentation
@@ -114,6 +122,7 @@ Graph elements are anything that is drawn into a `cogre-graph'.
 Graph elements have a method for marking themselves dirty."
   :abstract t)
 
+;;;###autoload
 (defclass cogre-node (cogre-graph-element)
   ((position :initarg :position
 	     :initform [ 0 0 ]
@@ -152,6 +161,7 @@ Nodes are regions with a fill color, and some amount of text representing
 a status, or values."
   )
 
+;;;###autoload
 (defclass cogre-link (cogre-graph-element)
   ((start :initarg :start
 	  :initform nil
@@ -440,7 +450,9 @@ Reverses `cogre-graph-pre-serialize'."
 (defmethod cogre-entered ((element cogre-graph-element) start end)
   "Method called when the cursor enters ELEMENT.
 START and END cover the region with the property."
-  (message "%s" (object-name element)))
+  (when (not (cogre-noninteractive))
+    (message "%s" (object-name element)))
+  )
 
 (defmethod cogre-left ((element cogre-graph-element) start end)
   "Method called when the cursor exits ELEMENT.
@@ -456,18 +468,18 @@ START and END cover the region with the property."
     (cogre-erase-rectangle (aref position 0) (aref position 1)
 			   (length (car rectangle))
 			   (length rectangle))
-    (mapcar 'cogre-erase links))
+    (mapc 'cogre-erase links))
   (call-next-method))
 
 (defmethod cogre-node-links ((node cogre-node))
   "Return a list of links which reference NODE."
   (with-slots (elements) cogre-graph
     (let ((links nil))
-      (mapcar (lambda (n) (if (and (obj-of-class-p n cogre-link)
-				   (or (eq (oref n start) node)
-				       (eq (oref n end) node)))
-			      (setq links (cons n links))))
-	      elements)
+      (mapc (lambda (n) (if (and (obj-of-class-p n cogre-link)
+				 (or (eq (oref n start) node)
+				     (eq (oref n end) node)))
+			    (setq links (cons n links))))
+	    elements)
       links)))
 
 (defmethod cogre-node-rectangle  ((node cogre-node))
@@ -480,7 +492,8 @@ START and END cover the region with the property."
   (cogre-node-rectangle node)
   (with-slots (position rectangle) node
     (picture-goto-coordinate (aref position 0) (aref position 1))
-    (picture-insert-rectangle rectangle nil))
+    (picture-insert-rectangle rectangle nil)
+    )
   (call-next-method))
 
 (defmethod cogre-node-rebuild ((node cogre-node))

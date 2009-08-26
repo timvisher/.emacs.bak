@@ -1,10 +1,10 @@
 ;;; ede-pmake.el --- EDE Generic Project Makefile code generator.
 
-;;;  Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2007  Eric M. Ludlam
+;;;  Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2007, 2008, 2009  Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: project, make
-;; RCS: $Id: ede-pmake.el,v 1.47 2007/02/19 13:46:24 zappo Exp $
+;; RCS: $Id: ede-pmake.el,v 1.53 2009/02/21 12:11:52 zappo Exp $
 
 ;; This software is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -52,17 +52,18 @@
 (defmethod ede-proj-makefile-create ((this ede-proj-project) mfilename)
   "Create a Makefile for all Makefile targets in THIS.
 MFILENAME is the makefile to generate."
-  (let ((mt nil) tmp
+  (let ((mt nil)
 	(isdist (string= mfilename (ede-proj-dist-makefile this)))
 	(depth 0)
-	(tmp this)
+	(orig-buffer nil)
+	(buff-to-kill nil)
 	)
     ;; Find out how deep this project is.
-    (while (ede-parent-project tmp)
-      (setq depth (1+ depth)
-	    tmp (ede-parent-project tmp)))
+    (let ((tmp this))
+      (while (setq tmp (ede-parent-project tmp))
+	(setq depth (1+ depth))))
     ;; Collect the targets that belong in a makefile.
-    (mapcar
+    (mapc
      (lambda (obj)
        (if (and (obj-of-class-p obj 'ede-proj-target-makefile)
 		(string= (oref obj makefile) mfilename))
@@ -72,33 +73,34 @@ MFILENAME is the makefile to generate."
     (setq mt (nreverse mt))
     ;; Add in the header part of the Makefile*
     (save-excursion
-      (set-buffer (find-file-noselect mfilename))
+      (setq orig-buffer (get-file-buffer mfilename))
+      (set-buffer (setq buff-to-kill (find-file-noselect mfilename)))
       (goto-char (point-min))
-      (if (not (looking-at "# Automatically Generated \\w+ by EDE."))
+      (if (and
+	   (not (eobp))
+	   (not (looking-at "# Automatically Generated \\w+ by EDE.")))
 	  (if (not (y-or-n-p (format "Really replace %s?" mfilename)))
 	      (error "Not replacing Makefile."))
 	(message "Replace EDE Makefile"))
       (erase-buffer)
+      (ede-srecode-setup)
       ;; Insert a giant pile of stuff that is common between
       ;; one of our Makefiles, and a Makefile.in
-      (insert
-       "# Automatically Generated " (file-name-nondirectory mfilename)
-       " by EDE.\n"
-       "# For use with: "
+      (ede-srecode-insert 
+       "file:ede-empty"
+       "MAKETYPE" 
        (with-slots (makefile-type) this
 	 (cond ((eq makefile-type 'Makefile) "make")
 	       ((eq makefile-type 'Makefile.in) "autoconf")
 	       ((eq makefile-type 'Makefile.am) "automake")
-	       (t (error ":makefile-type in project invalid"))))
-       "\n#\n"
-       "# DO NOT MODIFY THIS FILE OR YOUR CHANGES MAY BE LOST.\n"
-       "# EDE is the Emacs Development Environment.\n"
-       "# http://cedet.sourceforge.net/ede.shtml\n"
-       "# \n")
+	       (t (error ":makefile-type in project invalid")))))
+
       ;; Just this project's variables
       (ede-proj-makefile-insert-variables this)
+
       ;; Space
       (insert "\n")
+
       (cond
        ((eq (oref this makefile-type) 'Makefile)
 	(let* ((targ (if isdist (oref this targets) mt))
@@ -209,7 +211,11 @@ MFILENAME is the makefile to generate."
 	)
        (t (error "Unknown makefile type when generating Makefile")))
       ;; Put the cursor in a nice place
-      (goto-char (point-min)))))
+      (goto-char (point-min)))
+    ;; If we have an original buffer, then don't kill it.
+    (when (not orig-buffer)
+      (kill-buffer buff-to-kill))
+    ))
 
 ;;; VARIABLE insertion
 ;;
@@ -268,6 +274,61 @@ Argument THIS is the target to get sources from."
   "Return a list of configuration variables from THIS.
 Use CONFIGURATION as the current configuration to query."
   (cdr (assoc configuration (oref this configuration-variables))))
+
+(defmethod ede-proj-makefile-insert-variables-new ((this ede-proj-project))
+  "Insert variables needed by target THIS.
+
+NOTE: Not yet in use!  This is part of an SRecode conversion of
+      EDE that is in progress."
+  (let ((conf-table (ede-proj-makefile-configuration-variables
+		     this (oref this configuration-default)))
+	(conf-done nil))
+
+    (ede-srecode-insert-with-dictionary
+     "declaration:ede-vars"
+
+     ;; Insert all variables, and augment them with details from
+     ;; the current configuration.
+     (mapc (lambda (c)
+
+	     (let ((ldict (srecode-dictionary-add-section-dictionary
+			   dict "VARIABLE"))
+		   )
+	       (srecode-dictionary-set-value ldict "NAME" (car c))
+	       (if (assoc (car c) conf-table)
+		   (let ((vdict (srecode-dictionary-add-section-dictionary
+				 ldict "VALUE")))
+		     (srecode-dictionary-set-value 
+		      vdict "VAL" (cdr (assoc (car c) conf-table)))
+		     (setq conf-done (cons (car c) conf-done))))
+	       (let ((vdict (srecode-dictionary-add-section-dictionary
+			     ldict "VALUE")))
+		 (srecode-dictionary-set-value vdict "VAL" (cdr c))))
+	     )
+
+	   (oref this variables))
+
+     ;; Add in all variables from the configuration not allready covered.
+     (mapc (lambda (c)
+
+	     (if (member (car c) conf-done)
+		 nil
+	       (let* ((ldict (srecode-dictionary-add-section-dictionary
+			      dict "VARIABLE"))
+		      (vdict (srecode-dictionary-add-section-dictionary
+			      ldict "VALUE"))
+		      )
+		 (srecode-dictionary-set-value ldict "NAME" (car c))
+		 (srecode-dictionary-set-value vdict "VAL" (cdr c))))
+	     )
+
+	   conf-table)
+
+     
+     ;; @TODO - finish off this function, and replace the below fcn
+
+     )
+  ))
 
 (defmethod ede-proj-makefile-insert-variables ((this ede-proj-project))
   "Insert variables needed by target THIS."
@@ -371,7 +432,7 @@ sources variable."
 ;;; GARBAGE PATTERNS
 ;;
 (defmethod ede-proj-makefile-garbage-patterns ((this ede-proj-project))
-  "Return a list of patterns that are considred garbage to THIS.
+  "Return a list of patterns that are considered garbage to THIS.
 These are removed with make clean."
   (let ((mc (ede-map-targets
 	     this (lambda (c) (ede-proj-makefile-garbage-patterns c))))
@@ -386,7 +447,7 @@ These are removed with make clean."
     (nreverse uniq)))
 
 (defmethod ede-proj-makefile-garbage-patterns ((this ede-proj-target))
-  "Return a list of patterns that are considred garbage to THIS.
+  "Return a list of patterns that are considered garbage to THIS.
 These are removed with make clean."
   ;; Get the  the source object from THIS, and use the specified garbage.
   (let ((src (ede-target-sourcecode this))

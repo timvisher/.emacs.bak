@@ -1,3 +1,114 @@
+2009-02-24  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (EMACSFLAGS): New variable.
+	(init,dot,Mode,hacks,COGRE,tests): Use above.
+
+2009-01-29  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Project.ede ("COGRE"): Updated version to 0.7
+
+	* Makefile (VERSION): Updated to 0.7
+
+	* cogre.el (cogre-version): Updated to version 0.7.
+
+2009-01-28  Eric M. Ludlam  <zappo@gnu.org>
+
+	* cogre-utest.el (cogre-utest-link-at):
+	Change to use 'push-mark' instead of
+	'push-mark-command'.
+
+2009-01-24  Eric M. Ludlam  <zappo@gnu.org>
+
+	* cogre-uml.el (cogre-uml-enable-unicode):
+	Update doc to describe the code pages.
+
+2009-01-20  Eric M. Ludlam  <zappo@gnu.org>
+
+	* INSTALL: Add dicussion on unicode drawing chars.
+
+	* cogre-uml.el (cogre-uml-enable-unicode): Support unicode UML symbols.
+
+	* picture-hack.el (picture-rectangle-ctr, picture-rectangle-cbl, picture-rectangle-cbr):
+	Added in from picture mode.
+	(picture-draw-rectilinear-line): Use correct corners.
+
+	* cogre-utest.el (cogre-utest): Use new cedet logging fcns.
+	Fixup to work in batch mode.
+	(cogre-utest-make-node-at): Render the graph.
+	(cogre-utest-link-at): Pass nomsg to push-mark.
+
+	* cogre-mode.el (cogre-node-position): New fcn.
+	(cogre-move-node-left, cogre-move-node-right, cogre-move-node-up):
+	(cogre-move-node-down): Use cogre-node-position.
+
+	* cogre.el (cogre-noninteractive): New fcn.
+	(cogre-graph-element::cogre-entered): No message in non-interactive mode.
+	(cogre-node::cogre-erase, cogre-node::cogre-render):
+	Convert mapcar to mapc.
+
+	* picture-hack.el (picture-insert-rectangle):
+	Don't use insert-rectangle, but do it
+	directly inline.
+
+2009-01-10  Eric M. Ludlam  <zappo@gnu.org>
+
+	* picture-hack.el (picture-rectangle-ctl): XEmacs compat hack.
+	(picture-draw-rectilinear-line):
+
+	* cogre-utest.el (cogre-uml-utest): Force tag loading.
+
+2009-01-05  Eric M. Ludlam  <zappo@gnu.org>
+
+	* cogre-utest.el (cogre-uml-utest): New test.
+
+	* cogre-uml.el (cogre-inherit): Reduce the horizontal preference.
+
+	* Makefile (tests_LISP): New var
+	(all): Add tests
+	(dist): Add tests
+	(tests): New target
+
+	* Project.ede ("tests"): New target.
+
+	* cogre-utest.el (picture-hack, cogre-mode): New requires
+
+	* cogre-utest.el: Basic unit tests for cogre.
+
+	* cogre-mode.el (cogre-mode):
+	Disable transient mark mode in cogre buffers.
+	(cogre-new-node): Return the node
+	(cogre-new-link): Return the link
+
+2008-07-03  Eric M. Ludlam  <zappo@gnu.org>
+
+	* cogre-uml.el (cogre-package, cogre-class, cogre-inherit, cogre-aggrigate):
+	Add autoload cookies.
+
+	* cogre.el (cogre-load): Move require after eieio.
+	(cogre-graph, cogre-graph-element, cogre-node, cogre-link):
+	Add autoload cookies.
+
+2008-05-11  Eric M. Ludlam  <zappo@gnu.org>
+
+	* cogre.texi (top):
+	Update main header of COGRE, and all node entries to new format.
+	(Creating Nodes and Links)
+	(Moving Nodes, Customizing Nodes): Wrote.
+
+2008-04-14  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (VERSION): Updated to 0.6.
+
+	* Project.ede (COGRE): Update version.
+
+	* cogre.el (cogre-version): Update to 0.6.
+
+2008-03-11  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (LOADPATH): Added EDE
+
+	* Project.ede ("COGRE"): Renamed from bogus thing.
+
 2007-04-15  Eric M. Ludlam  <zappo@gnu.org>
 
 	* uml-create.el (cogre-graph::cogre-save): Deleted from this file.
@@ -31,7 +142,7 @@
 
 2007-02-03  Eric M. Ludlam  <zappo@gnu.org>
 
-	* uml-create.el: (cogre-semantic-class::cogre-uml-stoken->uml):
+	* uml-create.el (cogre-semantic-class::cogre-uml-stoken->uml):
 	Disable images in semantic formatted strings.
 
 2005-09-30  Eric M. Ludlam  <zappo@gnu.org>
@@ -56,17 +167,9 @@
 
 	* Makefile: Re-generated to start Emacs with --no-site-file.
 
-2004-04-11  Eric M. Ludlam  <zappo@gnu.org>
-
-	* Makefile (dist): Add autoloads
-
 2004-04-06  Eric M. Ludlam  <zappo@gnu.org>
 
 	* Makefile (dist): Distribute the autoload file
-
-2004-03-30  Eric M. Ludlam  <zappo@gnu.org>
-
-	* Makefile (clean): Update info garbage pattern.
 
 2004-03-28  David Ponce  <david@dponce.com>
 
@@ -296,7 +399,7 @@
 
 2001-06-06  Eric M. Ludlam  <zappo@gnu.org>
 
-	* picture-hack.el: (Colin Marquardt):
+	* picture-hack.el (Colin Marquardt):
 	Added XEmacs compatibility functions.
 
 2001-06-05  Eric M. Ludlam  <zappo@gnu.org>

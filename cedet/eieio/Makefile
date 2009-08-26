@@ -4,24 +4,25 @@
 # DO NOT MODIFY THIS FILE OR YOUR CHANGES MAY BE LOST.
 # EDE is the Emacs Development Environment.
 # http://cedet.sourceforge.net/ede.shtml
-# 
+#
 
 top=
 ede_FILES=Project.ede Makefile
 
 EMACS=emacs
-LOADPATH=../common/ ../speedbar/ 
+LOADPATH= ../common/  ../speedbar/
 LOADDEFS=eieio-loaddefs.el
 LOADDIRS=.
 init_LISP=eieio-load.el
 EMACS=emacs
-eieio_LISP=eieio.el eieio-comp.el eieio-opt.el eieio-custom.el eieio-doc.el eieio-base.el
-examples_LISP=tree.el call-tree.el chart.el eieio-speedbar.el linemark.el lmcompile.el
+EMACSFLAGS=-batch --no-site-file
+eieio_LISP=eieio.el eieio-comp.el eieio-opt.el eieio-custom.el eieio-doc.el eieio-base.el eieio-datadebug.el
+examples_LISP=chart.el eieio-speedbar.el linemark.el lmcompile.el
 eieio_info_TEXINFOS=eieio.texi
 MAKEINFO=makeinfo
-test_LISP=eieio-tests.el eieio-test-methodinvoke.el
+test_LISP=eieio-tests.el eieio-test-methodinvoke.el eieio-perftest.el
 Misc_MISC=INSTALL ChangeLog NEWS
-VERSION=1.0
+VERSION=1.2
 DISTDIR=$(top)eieio-$(VERSION)
 
 
@@ -44,7 +45,7 @@ init: $(init_LISP)
 	   echo "(add-to-list 'load-path \"$$loadpath\")" >> $@-compile-script; \
 	done;
 	@echo "(setq debug-on-error t)" >> $@-compile-script
-	"$(EMACS)" -batch --no-site-file -l $@-compile-script -f batch-byte-compile $^
+	"$(EMACS)" $(EMACSFLAGS) -l $@-compile-script -f batch-byte-compile $^
 
 .PHONY: eieio
 eieio: $(eieio_LISP)
@@ -53,7 +54,7 @@ eieio: $(eieio_LISP)
 	   echo "(add-to-list 'load-path \"$$loadpath\")" >> $@-compile-script; \
 	done;
 	@echo "(setq debug-on-error t)" >> $@-compile-script
-	"$(EMACS)" -batch --no-site-file -l $@-compile-script -f batch-byte-compile $^
+	"$(EMACS)" $(EMACSFLAGS) -l $@-compile-script -f batch-byte-compile $^
 
 .PHONY: examples
 examples: $(examples_LISP)
@@ -62,7 +63,7 @@ examples: $(examples_LISP)
 	   echo "(add-to-list 'load-path \"$$loadpath\")" >> $@-compile-script; \
 	done;
 	@echo "(setq debug-on-error t)" >> $@-compile-script
-	"$(EMACS)" -batch --no-site-file -l $@-compile-script -f batch-byte-compile $^
+	"$(EMACS)" $(EMACSFLAGS) -l $@-compile-script -f batch-byte-compile $^
 
 eieio.info: $(eieio_info_TEXINFOS)
 	$(MAKEINFO) $<
@@ -74,7 +75,7 @@ test: $(test_LISP)
 	   echo "(add-to-list 'load-path \"$$loadpath\")" >> $@-compile-script; \
 	done;
 	@echo "(setq debug-on-error t)" >> $@-compile-script
-	"$(EMACS)" -batch --no-site-file -l $@-compile-script -f batch-byte-compile $^
+	"$(EMACS)" $(EMACSFLAGS) -l $@-compile-script -f batch-byte-compile $^
 
 Misc: 
 	@

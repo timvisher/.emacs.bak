@@ -1,9 +1,9 @@
 ;;; semantic-el.el --- Semantic details for Emacs Lisp
 
-;;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2007 Eric M. Ludlam
+;;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2007, 2008, 2009 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
-;; X-RCS: $Id: semantic-el.el,v 1.39 2007/03/08 04:11:20 zappo Exp $
+;; X-RCS: $Id: semantic-el.el,v 1.50 2009/01/10 00:13:51 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -104,7 +104,9 @@ syntax as specified by the syntax table."
       (cond
        ((stringp (car p))
 	(car p))
-       ((or (symbolp (car p)) (listp (car p)))
+       ((or (symbolp (car p))
+	    (listp (car p))
+	    (numberp (car p)))
 	(format "%S" (car p)))
        (t nil)))))
 
@@ -180,7 +182,7 @@ See also `semantic-elisp-setup-form-parser'."
 Return a bovination list to use."
   (let* ((start (car sl))
          (end   (cdr sl))
-         (form  (read (buffer-substring start end))))
+         (form  (read (buffer-substring-no-properties start end))))
     (cond
      ;; If the first elt is a list, then it is some arbitrary code.
      ((listp (car form))
@@ -230,13 +232,15 @@ Return a bovination list to use."
        (semantic-elisp-desymbolify (nth 2 form))
        :user-visible-flag (eq (car-safe (nth 4 form)) 'interactive)
        :documentation (semantic-elisp-do-doc (nth 3 form))
-       :overloadable (eq (car form) 'define-overload)
+       :overloadable (or (eq (car form) 'define-overload)
+			 (eq (car form) 'define-overloadable-function))
        ))
   defun
   defun*
   defsubst
   defmacro
-  define-overload
+  define-overload ;; @todo - remove after cleaning up semantic.
+  define-overloadable-function
   )
 
 (semantic-elisp-setup-form-parser
@@ -255,10 +259,54 @@ Return a bovination list to use."
   defvar
   defconst
   defcustom
+  )
+
+(semantic-elisp-setup-form-parser
+    (lambda (form start end)
+      (let ((doc (semantic-elisp-form-to-doc-string (nth 3 form))))
+        (semantic-tag-new-variable
+         (symbol-name (nth 1 form))
+         "face"
+         (nth 2 form)
+         :user-visible-flag (and doc
+                                 (> (length doc) 0)
+                                 (= (aref doc 0) ?*))
+         :documentation (semantic-elisp-do-doc doc)
+         )))
   defface
+  )
+
+
+(semantic-elisp-setup-form-parser
+    (lambda (form start end)
+      (let ((doc (semantic-elisp-form-to-doc-string (nth 3 form))))
+        (semantic-tag-new-variable
+         (symbol-name (nth 1 form))
+         "image"
+         (nth 2 form)
+         :user-visible-flag (and doc
+                                 (> (length doc) 0)
+                                 (= (aref doc 0) ?*))
+         :documentation (semantic-elisp-do-doc doc)
+         )))
   defimage
   defezimage
   )
+
+
+(semantic-elisp-setup-form-parser
+    (lambda (form start end)
+      (let ((doc (semantic-elisp-form-to-doc-string (nth 3 form))))
+        (semantic-tag
+         (symbol-name (nth 1 form))
+         'customgroup
+         :value (nth 2 form)
+         :user-visible-flag t
+         :documentation (semantic-elisp-do-doc doc)
+         )))
+  defgroup
+  )
+
 
 (semantic-elisp-setup-form-parser
     (lambda (form start end)
@@ -404,10 +452,30 @@ Return a bovination list to use."
 (define-mode-local-override semantic-dependency-tag-file
   emacs-lisp-mode (tag)
   "Find the file BUFFER depends on described by TAG."
-  (let ((f (file-name-sans-extension
-	    (locate-library (semantic-tag-name tag)))))
-    (concat f ".el")))
+  (if (fboundp 'find-library-name)
+      (condition-case nil
+	  ;; Try an Emacs 22 fcn.  This throws errors.
+	  (find-library-name (semantic-tag-name tag))
+	(error 
+	 (message "semantic: connot find source file %s"
+		  (semantic-tag-name tag))))
+    ;; No handy function available.  (Older Emacsen)
+    (let* ((lib (locate-library (semantic-tag-name tag)))
+	   (name (if lib (file-name-sans-extension lib) nil))
+	   (nameel (concat name ".el")))
+      (cond
+       ((and name (file-exists-p nameel)) nameel)
+       ((and name (file-exists-p (concat name ".el.gz")))
+	;; This is the linux distro case.
+	(concat name ".el.gz"))
+       ;; source file does not exists
+       (name
+	(message "semantic: cannot find source file %s" (concat name ".el")))
+       (t
+	nil)))))
 
+;;; DOC Strings
+;;
 (defun semantic-emacs-lisp-overridable-doc (tag)
   "Return the documentation string generated for overloadable functions.
 Fetch the item for TAG.  Only returns info about what symbols can be
@@ -475,9 +543,19 @@ Optional argument NOSNARF is ignored."
        (semantic-emacs-lisp-overridable-doc tag)
        (semantic-emacs-lisp-obsoleted-doc tag)))))
 
+;;; Tag Features
+;;
+(define-mode-local-override semantic-tag-include-filename emacs-lisp-mode
+  (tag)
+  "Return the name of the tag with .el appended.
+If there is a detail, prepend that directory."
+  (let ((name (semantic-tag-name tag))
+	(detail (semantic-tag-get-attribute tag :directory)))
+    (concat (expand-file-name name detail) ".el")))
+
 (define-mode-local-override semantic-insert-foreign-tag
-  emacs-lisp-mode (tag tagfile)
-  "Insert TAG from TAGFILE at point.
+  emacs-lisp-mode (tag)
+  "Insert TAG at point.
 Attempts a simple prototype for calling or using TAG."
   (cond ((semantic-tag-of-class-p tag 'function)
 	 (insert "(" (semantic-tag-name tag) " )")
@@ -546,10 +624,11 @@ of `let' or `let*', grab those variable names."
 	  (forward-char 1)
 	  (forward-word 1)
 	  (skip-chars-forward "* \t\n")
-	  (let ((varlst (read (buffer-substring (point)
-						(save-excursion
-						  (forward-sexp 1)
-						  (point))))))
+	  (let ((varlst (read (buffer-substring-no-properties
+			       (point)
+			       (save-excursion
+				 (forward-sexp 1)
+				 (point))))))
 	    (while varlst
 	      (let* ((oneelt (car varlst))
 		     (name (if (symbolp oneelt)
@@ -730,20 +809,14 @@ fields and such to, but that is for some other day."
       (error '(variable)))
     ))
 
-(define-mode-local-override semantic-tag-include-filename emacs-lisp-mode
-  (tag)
-  "Return the name of the tag with .el appended.
-If there is a detail, prepend that directory."
-  (let ((name (semantic-tag-name tag))
-	(detail (semantic-tag-get-attribute tag :directory)))
-    (concat (expand-file-name name detail) ".el")))
-
+;;; Formatting
+;;
 (define-mode-local-override semantic-format-tag-abbreviate emacs-lisp-mode
   (tag &optional parent color)
   "Return an abbreviated string describing tag."
   (let ((class (semantic-tag-class tag))
 	(name (semantic-format-tag-name tag parent color))
-	str)
+	)
     (cond
      ((eq class 'function)
       (concat "(" name ")"))
@@ -759,7 +832,7 @@ Make up something else.  When we go to write something that needs
 a real Emacs Lisp protype, we can fix it then."
   (let ((class (semantic-tag-class tag))
 	(name (semantic-format-tag-name tag parent color))
-	str)
+	)
     (cond
      ((eq class 'function)
       (let* ((args  (semantic-tag-function-arguments tag))
@@ -784,6 +857,23 @@ See `semantic-format-tag-prototype' for Emacs Lisp for more details."
 See `semantic-format-tag-prototype' for Emacs Lisp for more details."
   (semantic-format-tag-prototype tag parent color))
 
+;;; IA Commands
+;;
+(define-mode-local-override semantic-ia-insert-tag
+  emacs-lisp-mode (tag)
+  "Insert TAG into the current buffer based on completion."
+  ;; This function by David <de_bb@...> is a tweaked version of the original.
+  (insert (semantic-tag-name tag))
+  (let ((tt (semantic-tag-class tag))
+	(args (semantic-tag-function-arguments tag)))
+    (cond ((eq tt 'function)
+	   (if args
+	       (insert " ")
+	     (insert ")")))
+	  (t nil))))
+
+;;; Lexical features and setup
+;;
 (defvar-mode-local emacs-lisp-mode semantic-lex-analyzer
   'semantic-emacs-lisp-lexer)
 
@@ -807,6 +897,11 @@ See `semantic-format-tag-prototype' for Emacs Lisp for more details."
 
 (defvar-mode-local emacs-lisp-mode imenu-create-index-function
   'semantic-create-imenu-index)
+
+(defvar-mode-local emacs-lisp-mode semantic-stickyfunc-sticky-classes
+  '(function type variable)
+  "Add variables.
+ELisp variables can be pretty long, so track this one too.")
 
 (define-child-mode lisp-mode emacs-lisp-mode
   "Make `lisp-mode' inherits mode local behavior from `emacs-lisp-mode'.")

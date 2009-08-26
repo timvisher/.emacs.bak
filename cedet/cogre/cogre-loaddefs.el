@@ -3,9 +3,17 @@
 ;;; Code:
 
 
-;;;### (autoloads (cogre-load-graph cogre) "cogre" "cogre.el" (18022
-;;;;;;  5418))
+;;;### (autoloads (cogre-load-graph cogre) "cogre" "cogre.el" (18857
+;;;;;;  63845))
 ;;; Generated autoloads from cogre.el
+
+(eieio-defclass-autoload (quote cogre-graph) (quote (eieio-persistent)) "cogre" "A Connected Graph.\na connected graph contains a series of nodes and links which are\nrendered in a buffer, or serialized to disk.")
+
+(eieio-defclass-autoload (quote cogre-graph-element) (quote (eieio-named)) "cogre" "A Graph Element.\nGraph elements are anything that is drawn into a `cogre-graph'.\nGraph elements have a method for marking themselves dirty.")
+
+(eieio-defclass-autoload (quote cogre-node) (quote (cogre-graph-element)) "cogre" "Connected Graph node.\nNodes are regions with a fill color, and some amount of text representing\na status, or values.")
+
+(eieio-defclass-autoload (quote cogre-link) (quote (cogre-graph-element)) "cogre" "Connected Graph link.\nLinks are lines drawn between two nodes, or possibly loose in space\nas an intermediate step.  Some links have text describing what they\ndo, and most links have special markers on one end or another, such as\narrows or circles.")
 
 (autoload (quote cogre) "cogre" "\
 Create a new graph with the Connected Graph Editor.
@@ -21,8 +29,8 @@ Load a graph from FILE into a new graph buffer.
 
 ;;;***
 
-;;;### (autoloads (cogre-mode) "cogre-mode" "cogre-mode.el" (18022
-;;;;;;  5418))
+;;;### (autoloads (cogre-mode) "cogre-mode" "cogre-mode.el" (18857
+;;;;;;  63845))
 ;;; Generated autoloads from cogre-mode.el
 
 (autoload (quote cogre-mode) "cogre-mode" "\
@@ -33,8 +41,37 @@ Connected Graph Editor Mode.
 
 ;;;***
 
+;;;### (autoloads nil "cogre-uml" "cogre-uml.el" (18857 63845))
+;;; Generated autoloads from cogre-uml.el
+
+(eieio-defclass-autoload (quote cogre-package) (quote (cogre-node)) "cogre-uml" "A Package node.\nPackages represent other class diagrams, and list the major nodes\nwithin them.  They can be linked by dependency links.")
+
+(eieio-defclass-autoload (quote cogre-class) (quote (cogre-node)) "cogre-uml" "A Class node.\nClass nodes represent a class, and can list the attributes and methods\nwithin them.  Classes can have attribute links, and class hierarchy links.")
+
+(eieio-defclass-autoload (quote cogre-inherit) (quote (cogre-link)) "cogre-uml" "This type of link indicates that the two nodes reference infer inheritance.\nThe `start' node is the child, and the `end' node is the parent.\nThis is supposed to infer that START inherits from END.")
+
+(eieio-defclass-autoload (quote cogre-aggrigate) (quote (cogre-link)) "cogre-uml" "This type of link indicates aggregation.\nThe `start' node is the owner of the aggregation, the `end' node is\nthe item being aggregated.\nThis is supposed to infer that START contains END.")
+
+;;;***
+
+;;;### (autoloads (cogre-uml-utest cogre-utest) "cogre-utest" "cogre-utest.el"
+;;;;;;  (18857 63845))
+;;; Generated autoloads from cogre-utest.el
+
+(autoload (quote cogre-utest) "cogre-utest" "\
+Unit test Various aspects of COGRE.
+
+\(fn)" t nil)
+
+(autoload (quote cogre-uml-utest) "cogre-utest" "\
+Quick test for UML chart generation.
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads (cogre-uml-create cogre-uml-quick-class) "uml-create"
-;;;;;;  "uml-create.el" (18022 5418))
+;;;;;;  "uml-create.el" (18857 63845))
 ;;; Generated autoloads from uml-create.el
 
 (autoload (quote cogre-uml-quick-class) "uml-create" "\
@@ -52,7 +89,7 @@ CLASS must be a type in the current project.
 ;;;***
 
 ;;;### (autoloads (wisent-dot-setup-parser) "wisent-dot" "wisent-dot.el"
-;;;;;;  (18022 5418))
+;;;;;;  (18857 63845))
 ;;; Generated autoloads from wisent-dot.el
 
 (autoload (quote wisent-dot-setup-parser) "wisent-dot" "\
@@ -64,14 +101,16 @@ Setup buffer for parse.
 
 ;;;***
 
-;;;### (autoloads nil nil ("cogre-load.el" "cogre-uml.el" "picture-hack.el"
-;;;;;;  "wisent-dot-wy.el") (18797 3201 232000))
+;;;### (autoloads nil nil ("cogre-load.el" "picture-hack.el" "wisent-dot-wy.el")
+;;;;;;  (19093 38086 437000))
 
 ;;;***
 
+(provide 'cogre-loaddefs)
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
+;; coding: utf-8
 ;; End:
 ;;; cogre-loaddefs.el ends here

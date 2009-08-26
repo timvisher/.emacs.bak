@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2002, 2003, 2004, 2007 Richard Kim
 
-;; Author:  <tvishe01@PFC-FM59234>
-;; Created: 2009-01-13 16:49:42-0500
+;; Author:  <tvishe01@PFC-PM72018>
+;; Created: 2009-08-26 16:01:57-0400
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 

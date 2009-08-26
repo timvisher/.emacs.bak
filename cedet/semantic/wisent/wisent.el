@@ -1,12 +1,13 @@
 ;;; wisent.el --- GNU Bison for Emacs - Runtime
 
+;; Copyright (C) 2009 Eric M. Ludlam
 ;; Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007 David Ponce
 
 ;; Author: David Ponce <david@dponce.com>
 ;; Maintainer: David Ponce <david@dponce.com>
 ;; Created: 30 January 2002
 ;; Keywords: syntax
-;; X-RCS: $Id: wisent.el,v 1.37 2007/02/19 13:39:11 zappo Exp $
+;; X-RCS: $Id: wisent.el,v 1.39 2009/01/10 00:15:49 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -61,9 +62,10 @@
 ;;;; -------------
 
 ;;; Compatibility
-(if (fboundp 'char-valid-p)
-    (eval-and-compile (defalias 'wisent-char-p 'char-valid-p))
-  (eval-and-compile (defalias 'wisent-char-p 'char-or-char-int-p)))
+(eval-and-compile
+  (if (fboundp 'char-valid-p)
+      (defalias 'wisent-char-p 'char-valid-p)
+    (defalias 'wisent-char-p 'char-or-char-int-p)))
 
 ;;; Printed representation of terminals and nonterminals
 (defconst wisent-escape-sequence-strings
@@ -276,7 +278,7 @@ variable, where `N' is the the Nth element of the current rule
 components that match the block beginning.  It defaults to the value
 of the `$region' variable."
   (let ((start (car (or bounds $region)))
-        end input block)
+        end input)
     (if (not (number-or-marker-p start))
         ;; No nonterminal region available, skip the lookahead token.
         (wisent-skip-token)

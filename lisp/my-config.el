@@ -5,6 +5,8 @@
 
 (standard-display-ascii ?\t "    ")
 
+(set-background-color "white")
+
 ;; Shell Config
 ;; TODO Move to Easy Customization
   (setq shell-file-name "bash")
@@ -29,6 +31,3 @@
                                 (width . 150)
                                ))
 
-    (require 'color-theme)
-    (color-theme-initialize)
-    (color-theme-simple-1)))

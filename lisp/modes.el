@@ -11,6 +11,8 @@
 
 (display-time)
 
+(windmove-default-keybindings)
+
 (require 'uniquify) ;; Emacs-Fu: p4abl0
 
 ;; Predictive-Expansion from Nathanial Flath @ http://nflath.com/2009/04/predictive-expansion-for-emacs/
@@ -43,13 +45,12 @@ If there is no expansion the command returned by
 
 (setq debug-on-error t)
 
+    ;; CEDET
 
-;; CEDET
+    (load-file (expand-file-name (concat emacs-root "cedet/common/cedet.el")))
 
-(load-file (expand-file-name (concat emacs-root "cedet/common/cedet.el")))
-
-(semantic-load-enable-excessive-code-helpers)
-(require 'semantic-ia)
+    (semantic-load-enable-excessive-code-helpers)
+    (require 'semantic-ia)
 
 (setq defer-loading-jde t)
 
@@ -61,9 +62,9 @@ If there is no expansion the command returned by
     (require 'jde))
 
 (defun tab-config-jde-mode-hook ()
-    (setq c-basic-offset 4))
+        (setq c-basic-offset 4))
 
-(add-hook 'jde-mode-hook 'tab-config-jde-mode-hook)
+    (add-hook 'jde-mode-hook 'tab-config-jde-mode-hook)
 
 ;; NXML Mode
 

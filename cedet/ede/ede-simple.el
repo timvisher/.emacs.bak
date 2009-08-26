@@ -1,9 +1,9 @@
 ;;; ede-simple.el --- Overlay an EDE structure on an existing project
 
-;; Copyright (C) 2007 Eric M. Ludlam
+;; Copyright (C) 2007, 2008, 2009 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
-;; X-RCS: $Id: ede-simple.el,v 1.2 2007/06/04 00:46:38 zappo Exp $
+;; X-RCS: $Id: ede-simple.el,v 1.10 2009/02/25 23:08:25 zappo Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -34,11 +34,15 @@
 ;; It will also support a the minimal EDE UI for compilation and
 ;; configuration.
 
+;; @todo - Add support for cpp-root as an ede-simple project.
+;; @todo - Allow ede-simple to store locally.
+
 (require 'ede)
 (require 'cedet-files)
 
 ;;; Code:
 ;;;###autoload
+;; @todo - below is not compatible w/ Emacs 20!
 (add-to-list 'ede-project-class-files
 	     (ede-project-autoload "simple-overlay"
 	      :name "Simple" :file 'ede-simple
@@ -62,11 +66,6 @@
   "Return a full file name to the project file stored in the current directory.
 The directory has three parts:
   <STORAGE ROOT>/<PROJ DIR AS FILE>/ProjSimple.ede"
-  (when (not (file-exists-p ede-simple-save-directory))
-    (if (y-or-n-p (concat ede-simple-save-directory
-			  " Doesn't exist.  Create? "))
-	(make-directory ede-simple-save-directory)
-      (error "No save directory for new project")))
   (let ((d (or dir default-directory))
 	)
     (concat
@@ -79,13 +78,17 @@ The directory has three parts:
     ))
 
 ;;;###autoload
-(defun ede-simple-load (dir)
+(defun ede-simple-load (dir &optional rootproj)
   "Load a project of type `Simple' for the directory DIR.
-Return nil if there isn't one."
-  (let ((pf (ede-simple-projectfile-for-dir dir)))
+Return nil if there isn't one.
+ROOTPROJ is nil, since we will only create a single EDE project here."
+  (let ((pf (ede-simple-projectfile-for-dir dir))
+	(obj nil))
     (when pf
-      (eieio-persistent-read pf))
-    ))
+      (setq obj (eieio-persistent-read pf))
+      (oset obj :directory dir)
+      )
+    obj))
 
 (defclass ede-simple-target (ede-target)
   ()
@@ -93,7 +96,7 @@ Return nil if there isn't one."
 All directories need at least one target.")
 
 ;;;###autoload
-(defclass ede-simple-project (eieio-persistent ede-project)
+(defclass ede-simple-project (ede-project eieio-persistent)
   ((extension :initform ".ede")
    (file-header-line :initform ";; EDE Simple Project")
    )
@@ -102,8 +105,21 @@ Each directory needs a a project file to control it.")
 
 (defmethod ede-commit-project ((proj ede-simple-project))
   "Commit any change to PROJ to its file."
+  (when (not (file-exists-p ede-simple-save-directory))
+    (if (y-or-n-p (concat ede-simple-save-directory
+			  " doesn't exist.  Create? "))
+	(make-directory ede-simple-save-directory)
+      (error "No save directory for new project")))
   (eieio-persistent-save proj))
 
+(defmethod ede-find-subproject-for-directory ((proj ede-simple-project)
+					      dir)
+  "Return PROJ, for handling all subdirs below DIR."
+  proj)
+
+;;; TEST
+;;
+;; @TODO - write a simple test for EDE simple.
 
 (provide 'ede-simple)
 

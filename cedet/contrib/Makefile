@@ -4,25 +4,26 @@
 # DO NOT MODIFY THIS FILE OR YOUR CHANGES MAY BE LOST.
 # EDE is the Emacs Development Environment.
 # http://cedet.sourceforge.net/ede.shtml
-# 
+#
 
 top=
 ede_FILES=Project.ede Makefile
 
 misc_AUX=ChangeLog
 EMACS=emacs
-LOADPATH= ../common/  ../semantic/ ../eieio/\
+LOADPATH= ../common/  ../ede/ ../semantic/ ../eieio/\
     ../semantic/bovine/ ../speedbar/ ../semantic/wisent/
 LOADDEFS=contrib-loaddefs.el
 LOADDIRS=.
 init_LISP=cedet-contrib-load.el
 EMACS=emacs
+EMACSFLAGS=-batch --no-site-file
 setup_LISP=cedet-contrib.el
-wy_SEMANTIC_GRAMMAR=wisent-csharp.wy wisent-javascript-jv.wy
+wy_SEMANTIC_GRAMMAR=wisent-csharp.wy wisent-ruby.wy wisent-php.wy
 EMACS=emacs
-wy_SEMANTIC_GRAMMAR_EL=wisent-csharp-wy.el wisent-javascript-jv-wy.el
-lisp_LISP=wisent-csharp.el wisent-javascript.el semantic-tag-folding.el semanticdb-javascript.el
-VERSION=1.0pre4
+wy_SEMANTIC_GRAMMAR_EL=wisent-csharp-wy.el wisent-ruby-wy.el wisent-php-wy.el
+lisp_LISP=wisent-csharp.el semantic-tag-folding.el eassist.el wisent-ruby.el wisent-php.el ede-gnustep.el
+VERSION=1.0pre6
 DISTDIR=$(top)Contrib-$(VERSION)
 
 
@@ -45,7 +46,7 @@ init: $(init_LISP)
 	   echo "(add-to-list 'load-path \"$$loadpath\")" >> $@-compile-script; \
 	done;
 	@echo "(setq debug-on-error t)" >> $@-compile-script
-	"$(EMACS)" -batch --no-site-file -l $@-compile-script -f batch-byte-compile $^
+	"$(EMACS)" $(EMACSFLAGS) -l $@-compile-script -f batch-byte-compile $^
 
 .PHONY: setup
 setup: $(setup_LISP)
@@ -54,7 +55,7 @@ setup: $(setup_LISP)
 	   echo "(add-to-list 'load-path \"$$loadpath\")" >> $@-compile-script; \
 	done;
 	@echo "(setq debug-on-error t)" >> $@-compile-script
-	"$(EMACS)" -batch --no-site-file -l $@-compile-script -f batch-byte-compile $^
+	"$(EMACS)" $(EMACSFLAGS) -l $@-compile-script -f batch-byte-compile $^
 
 .PHONY: wy
 wy: $(wy_SEMANTIC_GRAMMAR)
@@ -73,7 +74,7 @@ lisp: $(lisp_LISP)
 	   echo "(add-to-list 'load-path \"$$loadpath\")" >> $@-compile-script; \
 	done;
 	@echo "(setq debug-on-error t)" >> $@-compile-script
-	"$(EMACS)" -batch --no-site-file -l $@-compile-script -f batch-byte-compile $^
+	"$(EMACS)" $(EMACSFLAGS) -l $@-compile-script -f batch-byte-compile $^
 
 tags: 
 

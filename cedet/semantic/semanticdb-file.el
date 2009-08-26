@@ -1,10 +1,10 @@
 ;;; semanticdb-file.el --- Save a semanticdb to a cache file.
 
-;;; Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2007 Eric M. Ludlam
+;;; Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2007, 2008, 2009 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: tags
-;; X-RCS: $Id: semanticdb-file.el,v 1.19 2007/05/20 15:59:18 zappo Exp $
+;; X-RCS: $Id: semanticdb-file.el,v 1.41 2009/02/05 01:26:27 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -28,8 +28,9 @@
 ;; A set of semanticdb classes for persistently saving caches on disk.
 ;;
 
-(require 'semanticdb)
 (require 'inversion)
+(require 'semantic)
+(require 'semanticdb)
 (require 'cedet-files)
 
 (defvar semanticdb-file-version semantic-version
@@ -46,7 +47,7 @@
   :type 'string)
 
 ;;;###autoload
-(defcustom semanticdb-default-save-directory nil
+(defcustom semanticdb-default-save-directory (expand-file-name "~/.semanticdb")
   "*Directory name where semantic cache files are stored.
 If this value is nil, files are saved in the current directory.  If the value
 is a valid directory, then it overrides `semanticdb-default-file-name' and
@@ -58,7 +59,7 @@ stores caches in a coded file name in this directory."
                  (directory)))
 
 ;;;###autoload
-(defcustom semanticdb-persistent-path '(project)
+(defcustom semanticdb-persistent-path '(always)
   "*List of valid paths that semanticdb will cache tags to.
 When `global-semanticdb-minor-mode' is active, tag lists will
 be saved to disk when Emacs exits.  Not all directories will have
@@ -104,6 +105,7 @@ NOTE: This should get deleted from semantic soon."
 (defclass semanticdb-project-database-file (semanticdb-project-database
 					    eieio-persistent)
   ((file-header-line :initform ";; SEMANTICDB Tags save file")
+   (do-backups :initform nil)
    (semantic-tag-version :initarg :semantic-tag-version
 			 :initform "1.4"
 			 :documentation
@@ -129,6 +131,8 @@ To save the version number, we must hand-set this version string.")
 If a database for DIRECTORY has already been loaded, return it.
 If a database for DIRECTORY exists, then load that database, and return it.
 If DIRECTORY doesn't exist, create a new one."
+  ;; Make sure this is fully expanded so we don't get duplicates.
+  (setq directory (file-truename directory))
   (let* ((fn (semanticdb-cache-filename dbc directory))
 	 (db (or (semanticdb-file-loaded-p fn)
 		 (if (file-exists-p fn)
@@ -139,7 +143,7 @@ If DIRECTORY doesn't exist, create a new one."
 		dbc  ; Create the database requested.  Perhaps
 		(concat (file-name-nondirectory
 			 (directory-file-name
-			  (file-name-directory fn)))
+			  directory))
 			"/")
 		:file fn :tables nil
 		:semantic-tag-version semantic-version
@@ -180,7 +184,8 @@ If DIRECTORY doesn't exist, create a new one."
 	  (delete-instance r)
 	  (setq r nil))
 	r)
-    (error (message "Cache Error: %s, Restart" foo)
+    (error (message "Cache Error: [%s] %s, Restart" 
+		    filename foo)
 	   nil)))
 
 ;;;###autoload
@@ -188,17 +193,39 @@ If DIRECTORY doesn't exist, create a new one."
   "Return the project belonging to FILENAME if it was already loaded."
   (eieio-instance-tracker-find filename 'file 'semanticdb-database-list))
 
-(defmethod semanticdb-save-db ((DB semanticdb-project-database-file))
+(defmethod semanticdb-file-directory-exists-p ((DB semanticdb-project-database-file)
+					       &optional supress-questions)
+  "Does the directory the database DB needs to write to exist?
+If SUPRESS-QUESTIONS, then do not ask to create the directory."
+  (let ((dest (file-name-directory (oref DB file)))
+	)
+    (cond ((null dest)
+	   ;; @TODO - If it was never set up... what should we do ?
+	   nil)
+	  ((file-exists-p dest) t)
+	  (supress-questions nil)
+	  ((y-or-n-p (format "Create directory %s for SemanticDB? "
+			     dest))
+	   (make-directory dest t)
+	   t)
+	  (t nil))
+    ))
+
+(defmethod semanticdb-save-db ((DB semanticdb-project-database-file)
+			       &optional
+			       supress-questions)
   "Write out the database DB to its file.
 If DB is not specified, then use the current database."
   (let ((objname (oref DB file)))
     (when (and (semanticdb-live-p DB)
-	       (semanticdb-write-directory-p DB))
-      (message "Saving tag summary for %s..." objname)
+	       (semanticdb-file-directory-exists-p DB supress-questions)
+	       (semanticdb-write-directory-p DB)
+	       (semanticdb-dirty-p DB))
+      ;;(message "Saving tag summary for %s..." objname)
       (condition-case foo
 	  (eieio-persistent-save (or DB semanticdb-current-database))
-	(file-error ; System error saving?  Ignore it.
-	 (message "Error saving %s" objname))
+	(file-error		    ; System error saving?  Ignore it.
+	 (message "%S: %s" foo objname))
 	(error
 	 (cond
 	  ((and (listp foo)
@@ -210,12 +237,17 @@ If DB is not specified, then use the current database."
 		(string-match "no such directory" (nth 1 foo)))
 	   (message (nth 1 foo)))
 	  (t
-	   (if (y-or-n-p (format "Skip Error: %S ?" (car (cdr foo))))
-	       nil
+	   ;; @todo - It should ask if we are not called from a hook.
+	   ;;         How?
+	   (if (or supress-questions
+		   (y-or-n-p (format "Skip Error: %S ?" (car (cdr foo)))))
+	       (message "Save Error: %S: %s" (car (cdr foo))
+			objname)
 	     (error "%S" (car (cdr foo))))))))
       (run-hook-with-args 'semanticdb-save-database-hooks
 			  (or DB semanticdb-current-database))
-      (message "Saving tag summary for %s...done" objname))
+      ;;(message "Saving tag summary for %s...done" objname)
+      )
     ))
 
 ;;;###autoload
@@ -229,40 +261,47 @@ Live databases are objects associated with existing directories."
   "Return non-nil if the file associated with OBJ is live.
 Live files are either buffers in Emacs, or files existing on the filesystem."
   (let ((full-filename (semanticdb-full-filename obj)))
-    (or (get-file-buffer full-filename)
+    (or (find-buffer-visiting full-filename)
 	(file-exists-p full-filename))))
 
 (defmethod object-write ((obj semanticdb-table))
   "When writing a table, we have to make sure we deoverlay it first.
 Restore the overlays after writting.
 Argument OBJ is the object to write."
-  (if (semanticdb-live-p obj)
-      (let ((b (get-file-buffer (semanticdb-full-filename obj))))
-	(save-excursion
-	  (if b (progn (set-buffer b)
-		       ;; Try to get an accurate unmatched syntax table.
-		       (when (and (boundp semantic-show-unmatched-syntax-mode)
-				  semantic-show-unmatched-syntax-mode)
-			 ;; Only do this if the user runs unmatched syntax
-			 ;; mode display enties.
-			 (oset obj unmatched-syntax
-			       (semantic-show-unmatched-lex-tokens-fetch))
-			 )
-		       ;; Unlink the cache.  When there are arrors,
-		       ;; reset the master cache.
-		       (condition-case nil
-			   (semantic--tag-unlink-cache-from-buffer)
-			 (error
-			  (condition-case nil
-			      (semantic-clear-toplevel-cache)
-			    (error
-			     (semantic--set-buffer-cache nil)))))
-		       (oset obj pointmax (point-max)))))
-	(call-next-method)
-	(save-excursion
-	  (if b (progn (set-buffer b) (semantic--tag-link-cache-to-buffer)))
-	  (oset obj unmatched-syntax nil))
-	)))
+  (when (semanticdb-live-p obj)
+    (when (semanticdb-in-buffer-p obj)
+      (save-excursion
+	(set-buffer (semanticdb-in-buffer-p obj))
+
+	;; Make sure all our tag lists are up to date.
+	(semantic-fetch-tags)
+
+	;; Try to get an accurate unmatched syntax table.
+	(when (and (boundp semantic-show-unmatched-syntax-mode)
+		   semantic-show-unmatched-syntax-mode)
+	  ;; Only do this if the user runs unmatched syntax
+	  ;; mode display enties.
+	  (oset obj unmatched-syntax
+		(semantic-show-unmatched-lex-tokens-fetch))
+	  )
+		       
+	;; Make sure pointmax is up to date
+	(oset obj pointmax (point-max))
+	))
+
+    ;; Make sure that the file size and other attributes are
+    ;; up to date.
+    (let ((fattr (file-attributes (semanticdb-full-filename obj))))
+      (oset obj fsize (nth 7 fattr))
+      (oset obj lastmodtime (nth 5 fattr))
+      )
+    
+    ;; Do it!
+    (call-next-method)
+
+    ;; Clear the dirty bit.
+    (oset obj dirty nil)
+    ))
 
 ;;; State queries
 ;;
@@ -276,6 +315,10 @@ Uses `semanticdb-persistent-path' to determine the return value."
 	       (if (string= (oref obj reference-directory) (car path))
 		   (throw 'found t)))
 	      ((eq (car path) 'project)
+	       ;; @TODO - EDE causes us to go in here and disable
+	       ;; the old default 'always save' setting.
+	       ;;
+	       ;; With new default 'always' should I care?
 	       (if semanticdb-project-predicate-functions
 		   (if (run-hook-with-args-until-success
 			'semanticdb-project-predicate-functions
@@ -299,6 +342,12 @@ Uses `semanticdb-persistent-path' to determine the return value."
 
 ;;; Filename manipulation
 ;;
+(defmethod semanticdb-file-table ((obj semanticdb-project-database-file) filename)
+  "From OBJ, return FILENAME's associated table object."
+  ;; Cheater option.  In this case, we always have files directly
+  ;; under ourselves.  The main project type may not.
+  (object-assoc (file-name-nondirectory filename) 'file (oref obj tables)))
+
 (defmethod semanticdb-file-name-non-directory :STATIC
   ((dbclass semanticdb-project-database-file))
   "Return the file name DBCLASS will use.
@@ -313,9 +362,8 @@ The returned path is related to DIRECTORY."
       (let ((file (cedet-directory-name-to-file-name directory)))
         ;; Now create a filename for the cache file in
         ;; ;`semanticdb-default-save-directory'.
-	(expand-file-name
-         (concat (file-name-as-directory semanticdb-default-save-directory)
-                 file)))
+	(expand-file-name 
+	 file (file-name-as-directory semanticdb-default-save-directory)))
     directory))
 
 (defmethod semanticdb-cache-filename :STATIC
@@ -323,6 +371,8 @@ The returned path is related to DIRECTORY."
   "For DBCLASS, return a file to a cache file belonging to PATH.
 This could be a cache file in the current directory, or an encoded file
 name in a secondary directory."
+  ;; Use concat and not expand-file-name, because the dir part
+  ;; may include some of the file name.
   (concat (semanticdb-file-name-directory dbclass path)
 	  (semanticdb-file-name-non-directory dbclass)))
 
@@ -331,76 +381,51 @@ name in a secondary directory."
   "Fetch the full filename that OBJ refers to."
   (oref obj file))
 
-(defmethod semanticdb-full-filename ((obj semanticdb-table))
-  "Fetch the full filename that OBJ refers to."
-  (concat (file-name-as-directory
-	   (oref (oref obj parent-db) reference-directory))
-	  (oref obj file)))
-
-;;; Compatibility
+;;; FLUSH OLD FILES
 ;;
-;; replace-regexp-in-string is in subr.el in Emacs 21.  Provide
-;; here for compatibility.
+(defun semanticdb-cleanup-cache-files (&optional noerror)
+  "Cleanup any cache files associated with directories that no longer exist.
+Optional NOERROR prevents errors from being displayed."
+  (interactive)
+  (when (and (not semanticdb-default-save-directory)
+	     (not noerror))
+    (error "No default save directory for semantic-save files"))
 
-(if (not (fboundp 'replace-regexp-in-string))
+  (when semanticdb-default-save-directory
 
-(defun replace-regexp-in-string (regexp rep string &optional
-					fixedcase literal subexp start)
-  "Replace all matches for REGEXP with REP in STRING.
-
-Return a new string containing the replacements.
-
-Optional arguments FIXEDCASE, LITERAL and SUBEXP are like the
-arguments with the same names of function `replace-match'.  If START
-is non-nil, start replacements at that index in STRING.
-
-REP is either a string used as the NEWTEXT arg of `replace-match' or a
-function.  If it is a function it is applied to each match to generate
-the replacement passed to `replace-match'; the match-data at this
-point are such that match 0 is the function's argument.
-
-To replace only the first match (if any), make REGEXP match up to \\'
-and replace a sub-expression, e.g.
-  (replace-regexp-in-string \"\\(foo\\).*\\'\" \"bar\" \" foo foo\" nil nil 1)
-    => \" bar foo\""
-
-  ;; To avoid excessive consing from multiple matches in long strings,
-  ;; don't just call `replace-match' continually.  Walk down the
-  ;; string looking for matches of REGEXP and building up a (reversed)
-  ;; list MATCHES.  This comprises segments of STRING which weren't
-  ;; matched interspersed with replacements for segments that were.
-  ;; [For a `large' number of replacements it's more efficient to
-  ;; operate in a temporary buffer; we can't tell from the function's
-  ;; args whether to choose the buffer-based implementation, though it
-  ;; might be reasonable to do so for long enough STRING.]
-  (let ((l (length string))
-	(start (or start 0))
-	matches str mb me)
-    (save-match-data
-      (while (and (< start l) (string-match regexp string start))
-	(setq mb (match-beginning 0)
-	      me (match-end 0))
-	;; If we matched the empty string, make sure we advance by one char
-	(when (= me mb) (setq me (min l (1+ mb))))
-	;; Generate a replacement for the matched substring.
-	;; Operate only on the substring to minimize string consing.
-	;; Set up match data for the substring for replacement;
-	;; presumably this is likely to be faster than munging the
-	;; match data directly in Lisp.
-	(string-match regexp (setq str (substring string mb me)))
-	(setq matches
-	      (cons (replace-match (if (stringp rep)
-				       rep
-				     (funcall rep (match-string 0 str)))
-				   fixedcase literal str subexp)
-		    (cons (substring string start mb) ; unmatched prefix
-			  matches)))
-	(setq start me))
-      ;; Reconstruct a string from the pieces.
-      (setq matches (cons (substring string start l) matches)) ; leftover
-      (apply #'concat (nreverse matches)))))
-
-)
+    ;; Calculate all the cache files we have.
+    (let* ((regexp (regexp-quote semanticdb-default-file-name))
+	   (files (directory-files semanticdb-default-save-directory
+				   t regexp))
+	   (orig nil)
+	   (to-delete nil))
+      (dolist (F files)
+	(setq orig (cedet-file-name-to-directory-name
+		    (file-name-nondirectory F)))
+	(when (not (file-exists-p (file-name-directory orig)))
+	  (setq to-delete (cons F to-delete))
+	  ))
+      (if to-delete
+	(save-window-excursion
+	  (let ((buff (get-buffer-create "*Semanticdb Delete*")))
+	    (with-current-buffer buff
+	      (erase-buffer)
+	      (insert "The following Cache files appear to be obsolete.\n\n")
+	      (dolist (F to-delete)
+		(insert F "\n")))
+	    (pop-to-buffer buff t t)
+	    (fit-window-to-buffer (get-buffer-window buff) nil 1)
+	    (when (y-or-n-p "Delete Old Cache Files? ")
+	      (mapc (lambda (F)
+		      (message "Deleting to %s..." F)
+		      (delete-file F))
+		    to-delete)
+	      (message "done."))
+	    ))
+	;; No files to delete
+	(when (not noerror)
+	  (message "No obsolete semanticdb.cache files."))
+	))))
 
 (provide 'semanticdb-file)
 

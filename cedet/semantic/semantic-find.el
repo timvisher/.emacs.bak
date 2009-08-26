@@ -1,10 +1,10 @@
 ;;; semantic-find.el --- Search routines
 
-;;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005 Eric M. Ludlam
+;;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2008, 2009 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: syntax
-;; X-RCS: $Id: semantic-find.el,v 1.22 2005/09/30 20:20:10 zappo Exp $
+;; X-RCS: $Id: semantic-find.el,v 1.26 2009/01/20 02:28:22 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -339,7 +339,7 @@ Used in completion."
     ,table))
 
 ;;;###autoload
-(defun semantic-find-tags-by-scope-protection (scopeprotection parent &optional table)
+(define-overloadable-function semantic-find-tags-by-scope-protection (scopeprotection parent &optional table)
   "Find all tags accessable by SCOPEPROTECTION.
 SCOPEPROTECTION is a symbol which can be returned by the method
 `semantic-tag-protection'.  A hard-coded order is used to determine a match.
@@ -352,12 +352,24 @@ See `semantic-tag-protected-p' for details on which tags are returned."
       (signal 'wrong-type-argument '(semantic-find-tags-by-scope-protection
 				     parent
 				     semantic-tag-class type))
+    (:override)))
+
+(defun semantic-find-tags-by-scope-protection-default
+  (scopeprotection parent &optional table)
+  "Find all tags accessable by SCOPEPROTECTION.
+SCOPEPROTECTION is a symbol which can be returned by the method
+`semantic-tag-protection'.  A hard-coded order is used to determine a match.
+PARENT is a tag representing the PARENT slot needed for
+`semantic-tag-protection'.
+TABLE is a list of tags (a subset of PARENT members) to scan.  If TABLE is nil,
+the type members of PARENT are used.
+See `semantic-tag-protected-p' for details on which tags are returned."
     (if (not table) (setq table (semantic-tag-type-members parent)))
     (if (null scopeprotection)
 	table
       (semantic--find-tags-by-macro
        (not (semantic-tag-protected-p (car tags) scopeprotection parent))
-       table))))
+       table)))
 
 ;;;###autoload
 (defsubst semantic-find-tags-included (&optional table)
@@ -429,7 +441,7 @@ TABLE is a tag table.  See `semantic-something-to-tag-table'."
   (name streamorbuffer &optional search-parts search-include)
   "Find a tag NAME within STREAMORBUFFER.  NAME is a string.
 If SEARCH-PARTS is non-nil, search children of tags.
-If SEARCH-INCLUDE is non-nil, search include files.
+If SEARCH-INCLUDE was never implemented.
 
 Use `semantic-find-first-tag-by-name' instead."
   (let* ((stream (semantic-something-to-tag-table streamorbuffer))
@@ -578,46 +590,29 @@ used for the searching child lists.  If SEARCH-PARTS is the symbol
 'positiononly, then only children that have positional information are
 searched.
 
-If SEARCH-INCLUDES is non-nil, then all include files are also
-searched for matches.  This parameter hasn't be active for a while
-and is obsolete."
-  (let ((streamlist (list
-		     (semantic-something-to-tag-table streamorbuffer)))
-	(includes nil)			;list of includes
-	(stream nil)			;current stream
-        (tag  nil)                    ;current tag
+If SEARCH-INCLUDES has not been implemented.
+This parameter hasn't be active for a while and is obsolete."
+  (let ((stream (semantic-something-to-tag-table streamorbuffer))
 	(sl nil)			;list of tag children
 	(nl nil)			;new list
         (case-fold-search semantic-case-fold))
-    (if search-includes
-	(setq includes (semantic-brute-find-tag-by-class
-			'include (car streamlist))))
-    (while streamlist
-      (setq stream     (car streamlist)
-            streamlist (cdr streamlist))
-      (while stream
-        (setq tag  (car stream)
-              stream (cdr stream))
-	(if (not (semantic-tag-p tag))
-            ;; `semantic-tag-components-with-overlays' can return invalid
-            ;; tags if search-parts is not equal to 'positiononly
-            nil ;; Ignore them!
-          (if (funcall function tag)
-              (setq nl (cons tag nl)))
-          (and search-parts
-               (setq sl (if (eq search-parts 'positiononly)
-			    (semantic-tag-components-with-overlays tag)
-			  (semantic-tag-components tag))
-		     )
-               (setq nl (nconc nl
-                               (semantic-brute-find-tag-by-function
-                                function sl
-                                search-parts search-includes)))))))
+    (dolist (tag stream)
+      (if (not (semantic-tag-p tag))
+	  ;; `semantic-tag-components-with-overlays' can return invalid
+	  ;; tags if search-parts is not equal to 'positiononly
+	  nil ;; Ignore them!
+	(if (funcall function tag)
+	    (setq nl (cons tag nl)))
+	(and search-parts
+	     (setq sl (if (eq search-parts 'positiononly)
+			  (semantic-tag-components-with-overlays tag)
+			(semantic-tag-components tag))
+		   )
+	     (setq nl (nconc nl
+			     (semantic-brute-find-tag-by-function
+			      function sl
+			      search-parts))))))
     (setq nl (nreverse nl))
-;;;    (while includes
-;;;      (setq nl (append nl (semantic-brute-find-tag-by-function
-;;;			   
-;;;			   ))))
     nl))
 
 ;;;###autoload

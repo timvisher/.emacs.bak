@@ -1,10 +1,10 @@
 ;;; semanticdb-el.el --- Semantic database extensions for Emacs Lisp
 
-;;; Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007 Eric M. Ludlam
+;;; Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: tags
-;; X-RCS: $Id: semanticdb-el.el,v 1.26 2007/03/10 01:57:23 zappo Exp $
+;; X-RCS: $Id: semanticdb-el.el,v 1.31 2009/01/24 04:52:45 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -43,10 +43,19 @@
 ;;; Code:
 
 ;;; Classes:
-(defclass semanticdb-table-emacs-lisp (semanticdb-search-results-table)
+(defclass semanticdb-table-emacs-lisp (semanticdb-abstract-table)
   ((major-mode :initform emacs-lisp-mode)
    )
   "A table for returning search results from Emacs.")
+
+(defmethod semanticdb-refresh-table ((obj semanticdb-table-emacs-lisp))
+  "Do not refresh Emacs Lisp table.
+It does not need refreshing."
+  nil)
+
+(defmethod semanticdb-needs-refresh-p ((obj semanticdb-table-emacs-lisp))
+  "Return nil, we never need a refresh."
+  nil)
 
 (defclass semanticdb-project-database-emacs-lisp
   (semanticdb-project-database eieio-singleton)
@@ -103,15 +112,65 @@ local variable."
     (set-buffer buffer)
     (eq (or mode-local-active-mode major-mode) 'emacs-lisp-mode)))
 
+(defmethod semanticdb-full-filename ((obj semanticdb-table-emacs-lisp))
+  "Fetch the full filename that OBJ refers to.
+For Emacs Lisp system DB, there isn't one."
+  nil)
+
 ;;; Conversion
 ;;
 (defmethod semanticdb-normalize-tags ((obj semanticdb-table-emacs-lisp) tags)
-  "Convert tags, originating from Emacs OBJ, into standardized form.
-If Emacs cannot resolve this symbol to a particular file, then just
-return the TAGS."
-  ;; @TODO - Lets do this.  We could find the tag's source file
-  ;;         using the help system, for example.
-  tags)
+  "Convert tags, originating from Emacs OBJ, into standardized form."
+  (let ((newtags nil))
+    (dolist (T tags)
+      (let* ((ot (semanticdb-normalize-one-tag obj T))
+	     (tag (cdr ot)))
+	(setq newtags (cons tag newtags))))
+    ;; There is no promise to have files associated.
+    (nreverse newtags)))
+
+(defmethod semanticdb-normalize-one-tag ((obj semanticdb-table-emacs-lisp) tag)
+  "Convert one TAG, originating from Emacs OBJ, into standardized form.
+If Emacs cannot resolve this symbol to a particular file, then return nil."
+  ;; Here's the idea.  For each tag, get the name, then use
+  ;; Emacs' `symbol-file' to get the source.  Once we have that,
+  ;; we can use more typical semantic searching techniques to
+  ;; get a regularly parsed tag.
+  (let* ((type (cond ((semantic-tag-of-class-p tag 'function)
+		      'defun)
+		     ((semantic-tag-of-class-p tag 'variable)
+		      'defvar)
+		     ))
+	 (sym (intern (semantic-tag-name tag)))
+	 (file (condition-case err
+		   (symbol-file sym type)
+		 ;; Older [X]Emacs don't have a 2nd argument.
+		 (error (symbol-file sym))))
+	 )
+    (if (or (not file) (not (file-exists-p file)))
+	;; The file didn't exist.  Return nil.
+	nil
+      (when (string-match "\\.elc" file)
+	(setq file (concat (file-name-sans-extension file)
+			   ".el"))
+	(when (and (not (file-exists-p file))
+		   (file-exists-p (concat file ".gz")))
+	  ;; Is it a .gz file?
+	  (setq file (concat file ".gz"))))
+      (let* ((tab (semanticdb-file-table-object file))
+	     (alltags (semanticdb-get-tags tab))
+	     (newtags (semanticdb-find-tags-by-name-method
+		       tab (semantic-tag-name tag)))
+	     (match nil))
+	;; Find the best match.
+	(dolist (T newtags)
+	  (when (semantic-tag-similar-p T tag)
+	    (setq match T)))
+	;; Backup system.
+	(when (not match)
+	    (setq match (car newtags)))
+	;; Return it.
+	(cons tab match)))))
 
 (defun semanticdb-elisp-sym-function-arglist (sym)
   "Get the argument list for SYM.
@@ -232,7 +291,7 @@ Returns a table of all matching tags."
 Optional argument TAGS is a list of tags to search.
 Returns a table of all matching tags."
   (if tags (call-next-method)
-    ;; We could implement this, but it could be massy.
+    ;; We could implement this, but it could be messy.
     nil))
 
 ;;; Deep Searches

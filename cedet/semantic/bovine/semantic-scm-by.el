@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2001, 2003 Eric M. Ludlam
 
-;; Author:  <tvishe01@PFC-FM59234>
-;; Created: 2009-01-13 16:49:47-0500
+;; Author:  <tvishe01@PFC-PM72018>
+;; Created: 2009-08-26 16:02:02-0400
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 

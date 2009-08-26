@@ -1,3 +1,164 @@
+2009-02-24  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (EMACSFLAGS): New variable
+	(init,setup,lisp): Use above.
+
+2009-01-29  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Project.ede (contrib): Updated to 1.0pre6.
+
+	* Makefile (VERSION): Updated to 1.0pre6.
+
+	* cedet-contrib.el (cedet-contrib-version): Updated to 1.0pre6.
+
+2009-01-24  Eric M. Ludlam  <zappo@gnu.org>
+
+	* wisent-php.el (wisent-php-default-setup):
+	Remove traces of old 'document' tool.
+
+2009-01-05  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-gnustep.el (ede-step-project): Fix doc
+
+2008-12-11  Eric M. Ludlam  <zappo@gnu.org>
+
+	* ede-gnustep.el (ede-step-load): Save the directory on load.
+
+2008-10-21  Marco (Bj) Bardelli <safanaj@users.sourceforge.net>
+
+	* ede-gnustep.el: Added header files support.
+
+2008-09-04  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (wy_SEMANTIC_GRAMMAR, wy_SEMANTIC_GRAMMAR_EL, lisp_LISP):
+	Remove
+	javascript support.
+
+	* Project.ede ("wy", "lisp"): Remove javascript support.
+
+	* semanticdb-javascript.el: Move to semantic.
+
+	* wisent-javascript-jv.wy, wisent-javascript.el:
+	Moving to semantic/wisent directory.
+
+2008-09-03  Eric M. Ludlam  <zappo@gnu.org>
+
+	* semantic-matlab.el: Moving to a different project.
+
+2008-08-28  Marco (Bj) Bardelli <safanaj@users.sourceforge.net>
+
+	* ede-gnustep.el:
+	removed (require 'ede-pmake) from `ede-proj-setup-buidenvironment'
+
+2008-08-07  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (lisp_LISP): Add ede-gnustep.el
+
+	* Project.ede ("lisp"): Add ede-gnustep.el
+
+	* ede-gnustep.el (require ede):
+	Unquote.  Move require of ede-proj here.
+
+2008-08-04  Marco (Bj) Bardelli <safanaj@users.sourceforge.net>
+
+	* ede-gnustep.el: Initial import.
+	create a basic GNUmakefile to work with GNUstep-Make.
+
+2008-07-03  Eric M. Ludlam  <zappo@gnu.org>
+
+	* wisent-php.el (copyright): Fix FSF name.
+
+2008-06-28  Eric M. Ludlam  <zappo@gnu.org>
+
+	* wisent-php.wy:
+	Replaced all occurances of php-tag to just php in comments.
+	(wisent-php-lexer): Renamed.
+
+2008-06-26  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (wy_SEMANTIC_GRAMMAR): Add wisent-php.wy
+	(wy_SEMANTIC_GRAMMAR_EL): Add wisent-php-wy.el
+	(lisp_LISP): Add wisent-php.el
+
+	* Project.ede ("wy"): Add wisent-php.wy
+	("lisp"): Add wisent-php.el
+
+	* wisent-php.el, wisent-php.wy: PHP parser support.
+
+2008-05-19  Eric M. Ludlam  <zappo@gnu.org>
+
+	* semantic-matlab.el: Replace contents with notify.
+
+2008-05-16  Eric M. Ludlam  <zappo@gnu.org>
+
+	* semantic-matlab.el (semantic-matlab-match-function-re):
+	Update to handle a non-bracketed
+	output variable.
+
+2008-05-14  Eric M. Ludlam  <zappo@gnu.org>
+
+	* semantic-matlab.el (semantic-matlab-match-function-re): Fix.
+	(semantic-matlab-function-tags): Wrap error prone fcns in condition-case
+	Add omit-nulls arg to split-string.
+	(semantic-matlab-parse-region): Make sure the parse functions
+	doesn't throw an error.
+
+2008-04-14  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (LOADPATH): Added ede to load path.
+	(VERSION): Udated to 1.0pre5
+
+	* Project.ede ("Contrib"): Updated to 1.0pre5
+
+	* cedet-contrib.el (cedet-contrib-version): Updated to 1.0pre5
+
+2008-02-23  Anton V. Belyaev <kpoxman@users.sourceforge.net>
+
+	* eassist.el:
+
+	EAssist: set line to current function initially
+
+2008-02-21  Eric M. Ludlam  <zappo@gnu.org>
+
+	* semantic-matlab.el (semantic-matlab-match-function-re):
+	Fix expression to handle space
+	between fcn name and optional arg list.
+
+2007-08-31  Eric M. Ludlam  <zappo@gnu.org>
+
+	* wisent-ruby.el (semantic-lex-ruby-hashes): Fix space finding regexps.
+	(semantic-lex-ruby-assigned-vars): New var to fix byte-compiler
+	(wisent-ruby-expand-tags): Fix quote-in of .
+
+2007-08-29  Anton V. Belyaev <kpoxman@users.sourceforge.net>
+
+	* eassist.el: Header-body switch improvement
+
+	* INSTALL, eassist.el: Some fixes in EAssist documentation
+
+2007-08-26  Dan Debertin <airboss@users.sourceforge.net>
+
+	* Makefile: Added wisent-ruby.el/wy.
+
+	* Project.ede: Added wisent-ruby.el/wy
+
+	* wisent-ruby.wy, wisent-ruby.el: Initial import.
+
+2007-08-09  Eric M. Ludlam  <zappo@gnu.org>
+
+	* Makefile (lisp_LISP): Added eassist.
+
+	* Project.ede ("Contrib"): Add eassist.
+
+	* eassist.el: Fixed spelling in commentary.
+	(eassist-buffer, eassist-names-column, eassist-methods, eassist-actual-methods)
+	(eassist-search-string, eassist-overlays): Added to silence warnings.
+
+	* eassist.el:
+	EAssist, as emailed to me by Anton Belyaev on June 23, 2007.
+
+	* INSTALL: Add eassist install instructions.
+
 2007-06-06  Eric M. Ludlam  <zappo@gnu.org>
 
 	* Makefile (VERSION): Regress version to prerelease 4.
@@ -31,8 +192,7 @@
 
 2006-07-29  Eric M. Ludlam  <zappo@gnu.org>
 
-	* wisent-csharp.el:
-	(wisent-csharp-lex-ignore-region,wisent-csharp-lex-ignore-endregion):
+	* wisent-csharp.el (wisent-csharp-lex-ignore-region,wisent-csharp-lex-ignore-endregion):
 	Analyze begin/end region
 	(wisent-csharp-lexer): Use new lexers
 
@@ -226,31 +386,15 @@
 
 	* Makefile: Re-generated to start Emacs with --no-site-file.
 
-2004-04-11  Eric M. Ludlam  <zappo@gnu.org>
-
-	* Makefile (dist): Add autoloads
-
 2004-04-06  Eric M. Ludlam  <zappo@gnu.org>
 
 	* Makefile (dist): Distribute the autoload file
-
-2004-03-30  Eric M. Ludlam  <zappo@gnu.org>
-
-	* Project.ede, Makefile: Turned into a metaproject.
 
 2004-03-30  David Ponce  <david@dponce.com>
 
 	* Makefile: Rebuild.
 
 	* Project.ede ("Contrib"): Set :metasubproject to true.
-
-2004-03-29  Eric M. Ludlam  <zappo@gnu.org>
-
-	* Makefile: Really revert the last checking.
-
-	* Makefile, Project.ede: Revert last checkin.
-
-	* Project.ede, Makefile: Remove setup
 
 2004-03-28  David Ponce  <david@dponce.com>
 
