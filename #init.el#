@@ -15,7 +15,7 @@
                 "site-lisp"       ;; Interweb ELisp
                 "color-theme"     ;; Theming Support
                 "jde/lisp"        ;; Java Development
-                "cedet-1.0pre6"
+                "cedet-1.0pre6
                 "elib"
                 "nxml-mode"       ;; XML Support
                 "ecb-2.40"

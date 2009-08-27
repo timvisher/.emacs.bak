@@ -29,5 +29,5 @@
     (setq default-frame-alist '(
                                 (left . 70)
                                 (width . 150)
-                               ))
+                               ))))
 
