@@ -11,6 +11,8 @@
 
 (display-time)
 
+(windmove-default-keybindings)
+
 (require 'uniquify) ;; Emacs-Fu: p4abl0
 
 ;; Groovy Mode
@@ -47,13 +49,12 @@ If there is no expansion the command returned by
 
 (setq debug-on-error t)
 
+    ;; CEDET
 
-;; CEDET
+    (load-file (expand-file-name (concat emacs-root "cedet-1.0pre6/common/cedet.el")))
 
-(load-file (expand-file-name (concat emacs-root "cedet/common/cedet.el")))
-
-(semantic-load-enable-excessive-code-helpers)
-(require 'semantic-ia)
+    (semantic-load-enable-excessive-code-helpers)
+    (require 'semantic-ia)
 
 (setq defer-loading-jde t)
 
@@ -65,9 +66,9 @@ If there is no expansion the command returned by
     (require 'jde))
 
 (defun tab-config-jde-mode-hook ()
-    (setq c-basic-offset 4))
+        (setq c-basic-offset 4))
 
-(add-hook 'jde-mode-hook 'tab-config-jde-mode-hook)
+    (add-hook 'jde-mode-hook 'tab-config-jde-mode-hook)
 
 ;; NXML Mode
 
@@ -81,4 +82,4 @@ If there is no expansion the command returned by
 	     '("\\.php[345]?\\|\\.phtml" . php-mode))
 
 ;; ECB Mode
-(require 'ecb-autoloads)
+;;(require 'ecb)

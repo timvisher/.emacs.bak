@@ -15,13 +15,10 @@
                 "site-lisp"       ;; Interweb ELisp
                 "color-theme"     ;; Theming Support
                 "jde/lisp"        ;; Java Development
-                "cedet"
-                "cedet/semantic"
-                "cedet/speedbar"
-                "cedet/eieio"
+                "cedet-1.0pre6"
                 "elib"
                 "nxml-mode"       ;; XML Support
-                "ecb"
+                "ecb-2.40"
                )
     )
 )
