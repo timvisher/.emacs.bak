@@ -40,3 +40,5 @@
 (global-set-key (kbd "C-c m") 'column-marker-1)
 
 (global-set-key (kbd "<f2>") 'mail-buffer)
+
+(global-set-key (kbd "C-<return>") 'newline-and-indent)
