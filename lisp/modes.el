@@ -45,30 +45,30 @@ If there is no expansion the command returned by
 (autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
 (add-to-list 'auto-mode-alist '("\\.\\(frm\\|bas\\|cls\\)$" . visual-basic-mode))
 
+;; CEDET
+
+(load-file (expand-file-name (concat emacs-root "cedet-1.0pre6/common/cedet.el")))
+
+(semantic-load-enable-excessive-code-helpers)
+(require 'semantic-ia)
+
 ;; JDEE
 
-(setq debug-on-error t)
+;;(setq debug-on-error t)
 
-    ;; CEDET
+;;(setq defer-loading-jde nil)
 
-    (load-file (expand-file-name (concat emacs-root "cedet-1.0pre6/common/cedet.el")))
+;;(if defer-loading-jde
+;;    (progn
+;;        (autoload 'jde-mode "jde" "JDE mode." t)
+;;        (add-to-list 'auto-mode-alist
+;;                     '("\\.java\\'" . jde-mode)))
+;;    (require 'jde))
 
-    (semantic-load-enable-excessive-code-helpers)
-    (require 'semantic-ia)
+;;(defun tab-config-jde-mode-hook ()
+;;        (setq c-basic-offset 4))
 
-(setq defer-loading-jde t)
-
-(if defer-loading-jde
-    (progn
-        (autoload 'jde-mode "jde" "JDE mode." t)
-        (add-to-list 'auto-mode-alist
-                     '("\\.java\\'" . jde-mode)))
-    (require 'jde))
-
-(defun tab-config-jde-mode-hook ()
-        (setq c-basic-offset 4))
-
-    (add-hook 'jde-mode-hook 'tab-config-jde-mode-hook)
+;;(add-hook 'jde-mode-hook 'tab-config-jde-mode-hook)
 
 ;; NXML Mode
 
@@ -82,4 +82,4 @@ If there is no expansion the command returned by
 	     '("\\.php[345]?\\|\\.phtml" . php-mode))
 
 ;; ECB Mode
-;;(require 'ecb)
+(require 'ecb)

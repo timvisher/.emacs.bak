@@ -23,6 +23,10 @@
   "\\(while\\|for\\)\\>"
   )
 
+(defconst groovy-block-mid-re
+  ""
+  )
+
 (defconst groovy-indent-beg-re
   "\\(\\s *\\(class\\|module\\|def\\)\\)\\|if\\|case\\|while\\|for"
     )
