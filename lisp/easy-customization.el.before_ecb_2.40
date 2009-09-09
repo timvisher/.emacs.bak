@@ -8,7 +8,6 @@
  '(bookmark-save-flag 1)
  '(column-number-mode t)
  '(display-time-day-and-date t)
- '(ecb-options-version "2.40")
  '(echo-keystrokes 0.1)
  '(fill-column 80)
  '(global-hl-line-mode t)

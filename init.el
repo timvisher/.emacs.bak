@@ -14,9 +14,8 @@
     (add-path '("lisp"            ;; My own ELisp
                 "site-lisp"       ;; Interweb ELisp
                 "color-theme"     ;; Theming Support
-;;                "jde/lisp"        ;; Java Development
                 "cedet-1.0pre6"
-                "elib"
+                "jdee/lisp"        ;; Java Development
                 "nxml-mode"       ;; XML Support
                 "ecb-2.40"
                )
