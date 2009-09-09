@@ -54,21 +54,7 @@ If there is no expansion the command returned by
 
 ;; JDEE
 
-;;(setq debug-on-error t)
-
-;;(setq defer-loading-jde nil)
-
-;;(if defer-loading-jde
-;;    (progn
-;;        (autoload 'jde-mode "jde" "JDE mode." t)
-;;        (add-to-list 'auto-mode-alist
-;;                     '("\\.java\\'" . jde-mode)))
-;;    (require 'jde))
-
-;;(defun tab-config-jde-mode-hook ()
-;;        (setq c-basic-offset 4))
-
-;;(add-hook 'jde-mode-hook 'tab-config-jde-mode-hook)
+(load "jde-autoload")
 
 ;; NXML Mode
 
