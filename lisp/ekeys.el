@@ -42,3 +42,9 @@
 (global-set-key (kbd "<f2>") 'mail-buffer)
 
 (global-set-key (kbd "C-<return>") 'newline-and-indent)
+
+;; Luke Gorrie (http://steve.yegge.googlepages.com/effective-emacs)
+(global-set-key (kbd "M-h") 'help-command)
+(global-set-key (kbd "M-h M-h") 'help-for-help)
+(global-set-key (kbd "C-h") 'backward-delete-char-untabify)
+(global-unset-key (kbd "DEL"))
