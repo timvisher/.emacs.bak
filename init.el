@@ -16,6 +16,7 @@
                 "color-theme"     ;; Theming Support
                 "cedet-1.0pre6"   ;; General IDE-like support
                 "jdee/lisp"       ;; Java Development
+                "elib"
                 "nxml-mode"       ;; XML Support
                 "ecb-2.40"        ;; General IDE-like support
                )
