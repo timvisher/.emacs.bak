@@ -18,6 +18,7 @@
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(ispell-program-name "aspell")
+ '(jde-jdk-registry (quote (("1.6" . "c:/sun/sdk/jdk"))))
  '(mouse-avoidance-animation-delay 0)
  '(mouse-avoidance-mode (quote banish) nil (avoid))
  '(paren-match-face (quote paren-face-match-light))
