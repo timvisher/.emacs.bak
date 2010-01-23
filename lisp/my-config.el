@@ -1,6 +1,6 @@
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1)) ;; Yegge
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1)) ;; Yegge
-(if (not (string-equal "emacs-mac-window" (emacs-type)))
+(if (not (and (emacs-is-mac) (emacs-is-windowed)))
     (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))) ;; Yegge/Emacs-Fu: ieure
 
 (standard-display-ascii ?\t "    ")
@@ -22,10 +22,15 @@
 
 (setq visible-bell t)
 
-(if (string-match ".*-window" (emacs-type))
+(if (emacs-is-windowed)
   (progn
     (setq default-frame-alist '(
                                 (left . 70)
                                 (width . 150)
                                ))))
 
+;; Mac Specific Configuration
+(if (emacs-is-mac)
+    (progn
+        (if (boundp 'mac-command-modifier) (setq mac-command-modifier 'meta))
+        (if (boundp 'mac-option-modifier) (setq mac-option-modifier 'none))))

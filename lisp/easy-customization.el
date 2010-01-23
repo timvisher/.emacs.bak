@@ -63,7 +63,9 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :family "outline-inconsolata"))))
+ (if (emacs-is-mac)
+    '(default ((t (:stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "apple" :family "Inconsolata"))))
+    '(default ((t (:stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :family "outline-inconsolata")))))
  '(cursor ((t (:background "indian red"))))
  '(font-lock-comment-delimiter-face ((default (:inherit font-lock-comment-face :foreground "darkgreen")) (((class color) (min-colors 16)) nil)))
  '(font-lock-comment-face ((((class color) (min-colors 88) (background light)) (:foreground "darkgreen"))))

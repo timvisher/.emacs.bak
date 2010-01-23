@@ -39,7 +39,7 @@
 ;; http://www.emacswiki.org/emacs/column-marker.el
 (global-set-key (kbd "C-c m") 'column-marker-1)
 
-(global-set-key (kbd "<f2>") 'mail-buffer)
+(global-set-key (kbd "M-<f2>") 'mail-buffer)
 
 (global-set-key (kbd "C-<return>") 'newline-and-indent)
 
@@ -48,3 +48,10 @@
 (global-set-key (kbd "M-h M-h") 'help-for-help)
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify)
 (global-unset-key (kbd "DEL"))
+
+;; Mac Configuration
+(if (emacs-is-mac)
+    (progn
+        (global-set-key (kbd "M-<f2>") 'mail-buffer)
+        (global-set-key (kbd "M-<f3>") 'kmacro-start-macro-or-insert-counter)
+        (global-set-key (kbd "M-<f4>") 'kmacro-end-or-call-macro)))
