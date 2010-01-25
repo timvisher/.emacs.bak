@@ -9,7 +9,7 @@ emacs-nt - for regular Emacs on Windows NT/9x in a console (NOT IMPLEMENTED YET)
 emacs-nt-window - for regular Emacs on Windows NT/9x in a window(W32)
 xemacs-nt - for XEmacs on Windows NT/9x in a console (NOT IMPLEMENTED YET)
 xemacs-nt-window - for XEmacs on Windows NT/9x in a window(W32)
-emacs-mac-window - for regular Emacs on Mac(??) in a window
+emacs-apple-window - for regular Emacs on Mac(??) in a window
 emacs-msdos - for MS-DOS
 unknown - Something unsupported"
   (cond
@@ -23,7 +23,7 @@ unknown - Something unsupported"
    ((or (and (string-match "apple" (emacs-version))
              (string-match "GNU" (emacs-version)))
         (boundp 'macintosh))
-    "emacs-mac-window")
+    "emacs-apple-window")
    ((or (eq system-type 'gnu/linux)
         (eq system-type 'linux))
     (if (string-match "XEmacs" emacs-version)
@@ -40,7 +40,7 @@ unknown - Something unsupported"
 
 (defun emacs-is-mac ()
 "Returns non-nil if Emacs is running on a Mac."
-(string-match "mac" (emacs-type)))
+(string-match "apple" (emacs-type)))
 
 (defun emacs-is-windowed ()
 "Returns non-nil if Emacs is running in Windowed mode."
