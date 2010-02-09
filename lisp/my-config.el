@@ -29,6 +29,11 @@
                                 (width . 150)
                                ))))
 
+(require 'color-theme)
+(color-theme-initialize)
+(load-file "~/.emacs.d/site-lisp/zen-and-art/zen-and-art.el")
+(color-theme-zen-and-art)
+
 ;; Mac Specific Configuration
 (if (emacs-is-mac)
     (progn
