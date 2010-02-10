@@ -76,7 +76,7 @@
          :underline nil
          :slant normal
          :weight normal
-         :height 150
+         :height 130
          :width normal
          :foundry "apple"
          :family "Inconsolata"))))
