@@ -146,6 +146,37 @@ determines which characters these are."
 (interactive)
 (insert (format-time-string "%Y-%m-%d - %I:%M %p")))
 
+(defun insert-reflection-stamp (reflection-type)
+(interactive "sReflection type: ")
+"Inserts a string reflection yesterday 'YYYY-MM-DD REFLECTION-TYPE Reflections'."
+(insert (yesterday-string))
+(if reflection-type
+    (insert " " reflection-type))
+(insert " Reflections")
+(newline))
+
+(defun yesterday-string ()
+"Inserts yesterday's date stamp 'YYYY-MM-DD'"
+(format-time-string "%Y-%m-%d" (yesterday)))
+
+(defun yesterday ()
+"Provide the date/time 24 hours before the time now in the format of current-time."
+(setq
+    now-time (current-time) ; get the time now
+    hi (car now-time) ; save off the high word
+    lo (car (cdr now-time)) ; save off the low word
+    msecs (nth 2 now-time) ; save off the milliseconds
+)
+(if (< lo 20864) ; if the low word is too small for subtracting
+    (setq hi (- hi 2) lo (+ lo 44672)) ; take 2 from the high word and add to the low
+    (setq hi (- hi 1) lo (- lo 20864)) ; else, add 86400 seconds (in two parts)
+)
+(list hi lo msecs) ; regurgitate the new values
+)
+
+;;(current-time-zone)
+
+
 ;; http://www.emacswiki.org/emacs/column-marker.el
 (require 'column-marker)
 

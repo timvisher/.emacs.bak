@@ -39,7 +39,7 @@
 ;; http://www.emacswiki.org/emacs/column-marker.el
 (global-set-key (kbd "C-c m") 'column-marker-1)
 
-(global-set-key (kbd "M-<f2>") 'mail-buffer)
+(global-set-key (kbd "<f2>") 'mail-buffer)
 
 (global-set-key (kbd "C-<return>") 'newline-and-indent)
 
