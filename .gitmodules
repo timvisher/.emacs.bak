@@ -1,3 +1,3 @@
 [submodule "site-lisp/zen-and-art"]
 	path = site-lisp/zen-and-art
-	url = /cygdrive/g/Documents/zen-and-art.git
+    url = git://github.com/irfn/zen-and-art.git
