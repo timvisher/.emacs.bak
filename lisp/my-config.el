@@ -22,17 +22,13 @@
 
 (setq visible-bell t)
 
-(if (emacs-is-windowed)
-  (progn
-    (setq default-frame-alist '(
-                                (left . 70)
-                                (width . 150)
-                               ))))
-
 (require 'color-theme)
 (color-theme-initialize)
 (load-file "~/.emacs.d/site-lisp/zen-and-art/zen-and-art.el")
 (color-theme-zen-and-art)
+
+(if (emacs-is-windowed)
+    (maximize-frame))
 
 ;; Mac Specific Configuration
 (if (emacs-is-mac)

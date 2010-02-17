@@ -168,3 +168,28 @@ determines which characters these are."
     (kill-line arg)))
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
 
+(defun sacha.increase-font-size () ;; http://sachachua.com/wp/2006/09/emacs-changing-the-font-size-on-the-fly/
+  (interactive)
+  (set-face-attribute 'default
+                      nil
+                      :height
+                      (ceiling (* 1.10
+                                  (face-attribute 'default :height)))))
+(defun sacha.decrease-font-size () ;; http://sachachua.com/wp/2006/09/emacs-changing-the-font-size-on-the-fly/
+  (interactive)
+  (set-face-attribute 'default
+                      nil
+                      :height
+                      (floor (* 0.9
+                                (face-attribute 'default :height))))
+  (maximize-frame))
+(global-set-key (kbd "C-+") 'sacha.increase-font-size)
+(global-set-key (kbd "C-=") 'sacha.increase-font-size)
+(global-set-key (kbd "C--") 'sacha.decrease-font-size)
+
+(defun maximize-frame () ;; http://github.com/asenchi/emacs/blob/master/dot.emacs.d/functions.el#L75
+  (interactive)
+  (set-frame-size (selected-frame)
+                  (display-pixel-width)
+                  (display-pixel-height))
+  (set-frame-position (selected-frame) 0 0))
