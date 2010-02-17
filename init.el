@@ -26,11 +26,12 @@
 ; Emacs Flavor Specific Setup
 (require 'emacs-type)
 
-(load-library "functions")      ;; Personal one-off functions
-(load-library "ekeys")          ;; Key bindings and aliases
-(load-library "modes")          ;; Mode configuration
-(load-library "my-config")      ;; one-off variable settings
-(load-library "enabled")        ;; Place to store the functionality I have restored
+(load-library "functions") ;; Personal one-off functions
+(load-library "platform-detection") ;; Functions for detecting platforms
+(load-library "ekeys") ;; Key bindings and aliases
+(load-library "modes") ;; Mode configuration
+(load-library "my-config") ;; one-off variable settings
+(load-library "enabled") ;; Place to store the functionality I have restored
 
 (server-start)
 (put 'scroll-left 'disabled nil)
