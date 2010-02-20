@@ -33,3 +33,5 @@
 
 (defalias 'qrr 'query-replace-regexp) ;; Yegge
 (defalias 'll 'longlines-mode)
+(defalias 's 'ispell)
+(defalias 'sr 'ispell-region)
