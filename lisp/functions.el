@@ -135,13 +135,13 @@ determines which characters these are."
 (defun mail-buffer ()
 "Create a buffer to edit e-mail."
 (interactive)
-(if (get-buffer "*mail*")
-    (kill-buffer "*mail*"))
-(get-buffer-create "*mail*")
-(switch-to-buffer "*mail*")
-(markdown-mode)
+(kill-matching-buffers "mail[0-9]+\.markdown")
+(find-file (concat "~/tmp/" "mail" (format-time-string "%Y%m%d%H%M%S") ".markdown"))
 (longlines-mode)
-(yank))
+(yank)
+(beginning-of-buffer))
+
+(format-time-string "%Y%m%d%H%M%S")
 
 (defadvice yank (after indent-region activate)
   (if (member major-mode
