@@ -1,26 +1,20 @@
-This is ../info/viper, produced by makeinfo version 4.11 from
+This is ../../info/viper, produced by makeinfo version 4.13 from
 viper.texi.
 
 Copyright (C) 1995, 1996, 1997, 2001, 2002, 2003, 2004, 2005, 2006,
-2007, 2008 Free Software Foundation, Inc.
+2007, 2008, 2009 Free Software Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
-     Version 1.2 or any later version published by the Free Software
+     Version 1.3 or any later version published by the Free Software
      Foundation; with no Invariant Sections, with the Front-Cover texts
      being "A GNU Manual", and with the Back-Cover Texts as in (a)
      below.  A copy of the license is included in the section entitled
-     "GNU Free Documentation License" in the Emacs manual.
+     "GNU Free Documentation License".
 
-     (a) The FSF's Back-Cover Text is: "You have freedom to copy and
-     modify this GNU Manual, like GNU software.  Copies published by
-     the Free Software Foundation raise funds for GNU development."
-
-     This document is part of a collection distributed under the GNU
-     Free Documentation License.  If you want to distribute this
-     document separately from the collection, you can do so by adding a
-     copy of the license to the document, as described in section 6 of
-     the license.
+     (a) The FSF's Back-Cover Text is: "You have the freedom to copy and
+     modify this GNU manual.  Buying copies from the FSF supports it in
+     developing GNU and promoting software freedom."
 
 INFO-DIR-SECTION Emacs
 START-INFO-DIR-ENTRY
@@ -73,6 +67,21 @@ may be visited as needed.
    Comments and bug reports are welcome.  `kifer@cs.stonybrook.edu' is
 the current address for Viper bug reports.  Please use the Ex command
 `:submitReport' for this purpose.
+
+   Copyright (C) 1995, 1996, 1997, 2001, 2002, 2003, 2004, 2005, 2006,
+2007, 2008, 2009 Free Software Foundation, Inc.
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.3 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with the Front-Cover texts
+     being "A GNU Manual", and with the Back-Cover Texts as in (a)
+     below.  A copy of the license is included in the section entitled
+     "GNU Free Documentation License".
+
+     (a) The FSF's Back-Cover Text is: "You have the freedom to copy and
+     modify this GNU manual.  Buying copies from the FSF supports it in
+     developing GNU and promoting software freedom."
 
 * Menu:
 
@@ -181,9 +190,9 @@ then the buffer will become not modified.  Also if you see `%%' at the
 beginning of the mode line, it means that the file associated with the
 buffer is write protected.  The mode line will also show the buffer
 name and current major and minor modes (see below).  A special buffer
-called "Minibuffer" is displayed as the last line in a Minibuffer
-window.  The Minibuffer window is used for command input output.  Viper
-uses Minibuffer window for `/' and `:' commands.
+called "Minibuffer" is displayed as the last line in a minibuffer
+window.  The minibuffer window is used for command input output.  Viper
+uses minibuffer window for `/' and `:' commands.
 
    An Emacs buffer can have a "major mode" that customizes Emacs for
 editing text of a particular sort by changing the functionality of the
@@ -519,7 +528,7 @@ about are:
      data in another file.  Reconstructing the full command, `:w! foo',
      from the history is still not that hard, since Viper has a
      separate history for file names.  By typing `: M-p', you will get
-     `:w!' in the Minibuffer.  Then, repeated `M-p' will get you through
+     `:w!' in the minibuffer.  Then, repeated `M-p' will get you through
      the file history, inserting one file name after another.
 
      In contrast to `:w! foo', if the command were `:r foo', the entire
@@ -527,7 +536,7 @@ about are:
      `:r' alone as a default is meaningless, since this command
      requires a file argument.
 
-   As Vi, Viper's destructive commands can be re-executed by typing
+   As in Vi, Viper's destructive commands can be re-executed by typing
 ``.''.  However, in addition, Viper keeps track of the history of such
 commands.  This history can be perused by typing `C-c M-p' and `C-c
 M-n'.  Having found the appropriate command, it can be then executed by
@@ -628,7 +637,7 @@ File: viper,  Node: The Minibuffer,  Next: Multiple Files in Viper,  Prev: State
 1.4 The Minibuffer
 ==================
 
-The Minibuffer is where commands are entered in.  Editing can be done
+The minibuffer is where commands are entered in.  Editing can be done
 by commands from Insert state, namely:
 
 `C-h'
@@ -655,22 +664,28 @@ by commands from Insert state, namely:
      The precise history to be perused depends on the context.  It may
      be the history of search strings, Ex commands, file names, etc.
 
-   Most of the Emacs keys are functional in the Minibuffer.  While in
-the Minibuffer, Viper tries to make editing resemble Vi's behavior when
+`C-s'
+     If the minibuffer is entered via the Viper search commands `/' or
+     `?', then this key inserts the last search string used by the
+     Emacs incremental search command (which is bound to `C-s'
+     everywhere except in this case).
+
+   Most of the Emacs keys are functional in the minibuffer.  While in
+the minibuffer, Viper tries to make editing resemble Vi's behavior when
 the latter is waiting for the user to type an Ex command.  In
-particular, you can use the regular Vi commands to edit the Minibuffer.
+particular, you can use the regular Vi commands to edit the minibuffer.
 You can switch between the Vi state and Insert state at will, and even
-use the replace mode.  Initially, the Minibuffer comes up in Insert
+use the replace mode.  Initially, the minibuffer comes up in Insert
 state.
 
-   Some users prefer plain Emacs bindings in the Minibuffer.  To this
+   Some users prefer plain Emacs bindings in the minibuffer.  To this
 end, set `viper-vi-style-in-minibuffer' to `nil' in `.viper'.  *Note
 Customization::, to learn how to do this.
 
-   When the Minibuffer changes Viper states, you will notice that the
+   When the minibuffer changes Viper states, you will notice that the
 appearance of the text there changes as well.  This is useful because
-the Minibuffer has no mode line to tell which Vi state it is in.  The
-appearance of the text in the Minibuffer can be changed.  *Note Viper
+the minibuffer has no mode line to tell which Vi state it is in.  The
+appearance of the text in the minibuffer can be changed.  *Note Viper
 Specials::, for more details.
 
 
@@ -722,7 +737,7 @@ elements are common over all the files.
      The current directory name for a file is automatically prepended
      to the file name in any `:e', `:r', `:w', etc., command (in Emacs,
      each buffer has a current directory).  This directory is inserted
-     in the Minibuffer once you type space after `:e, r', etc.  Viper
+     in the minibuffer once you type space after `:e, r', etc.  Viper
      also supports completion of file names and Ex commands (<TAB>),
      and it keeps track of command and file history (`M-p', `M-n').
      Absolute filenames are required less often in Viper.
@@ -877,7 +892,7 @@ for destructive commands in Vi state.  These are useful for fixing
 those small typos that screw up searches and `:s', and for eliminating
 routine associated with repeated typing of file names or pieces of text
 that need to be inserted frequently.  At the `:' or `/' prompts in the
-Minibuffer, you can do the following:
+minibuffer, you can do the following:
 
 `M-p and M-n'
      To move to previous and next history items.  This causes the
@@ -983,7 +998,7 @@ of `C-r or C-s'.  For details, *note Incremental Search:
 (emacs)Incremental Search.
 
    Viper also provides a query replace function that prompts through the
-Minibuffer.  It is invoked by the `Q' key in Vi state.
+minibuffer.  It is invoked by the `Q' key in Vi state.
 
    On a window display, Viper supports mouse search, i.e., you can
 search for a word by clicking on it.  *Note Viper Specials::, for
@@ -1121,7 +1136,7 @@ These commands have no Vi analogs.
 `V'
 `C-v'
      These keys are used to visit files.  `v' will switch to a buffer
-     visiting file whose name can be entered in the Minibuffer.  `V' is
+     visiting file whose name can be entered in the minibuffer.  `V' is
      similar, but will use a window different from the current window.
      `C-v' is like `V', except that a new frame (X window) will be used
      instead of a new Emacs window.
@@ -1212,8 +1227,14 @@ These commands have no Vi analogs.
      invoke this function.  
 
 `M-p and M-n'
-     In the Minibuffer, these commands navigate through the minibuffer
+     In the minibuffer, these commands navigate through the minibuffer
      histories, such as the history of search strings, Ex commands, etc.
+
+`C-s'
+     If the minibuffer is entered via a Viper search commands `/' or
+     `?', then typing this key inserts the last search string used by
+     the Emacs incremental search command (that is bound to `C-s'
+     everywhere except in this case).
 
 `C-c M-p and C-c M-n'
      In Insert or Replace state, these commands let  the user peruse
@@ -1468,8 +1489,8 @@ get the full list of Vi variables, type `:se <SPC> <TAB>'.
 
 `viper-vi-style-in-minibuffer t'
      If not `nil', Viper provides a high degree of compatibility with Vi
-     insert mode when you type text in the Minibuffer; if `nil', typing
-     in the Minibuffer feels like plain Emacs.
+     insert mode when you type text in the minibuffer; if `nil', typing
+     in the minibuffer feels like plain Emacs.
 
 `viper-no-multiple-ESC t'
      If you set this to `nil', you can use <ESC> as Meta in Vi state.
@@ -1479,17 +1500,6 @@ get the full list of Vi variables, type `:se <SPC> <TAB>'.
      almost like `nil', except that double <ESC> beeps.  This, too,
      lets <ESC> to be used as a Meta.
 
-`viper-ESC-keyseq-timeout 200 on tty, 0 on windowing display'
-     Escape key sequences separated by this much delay (in
-     milliseconds) are interpreted as command, ignoring the special
-     meaning of <ESC> in VI.  The default is suitable for most
-     terminals.  However, if your terminal is extremely slow, you might
-     want to increase this slightly.  You will know if your terminal is
-     slow if the <ESC> key sequences emitted by the arrow keys are
-     interpreted as separately typed characters (and thus the arrow
-     keys won't work).  Making this value too large will slow you down,
-     so exercise restraint.
-
 `viper-fast-keyseq-timeout 200'
      Key sequences separated by this many milliseconds are treated as
      Vi-style keyboard macros.  If the key sequence is defined as such
@@ -1498,21 +1508,6 @@ get the full list of Vi variables, type `:se <SPC> <TAB>'.
 
      Setting this variable too high may slow down your typing.  Setting
      it too low may make it hard to type macros quickly enough.
-
-`viper-translate-all-ESC-keysequences `t' on tty, `nil' on windowing display'
-     Normally, Viper lets Emacs translate only those ESC key sequences
-     that are defined in the low-level key-translation-map or
-     function-key-map, such as those emitted by the arrow and function
-     keys. Other sequences, e.g., `\\e/', are treated as `ESC' command
-     followed by a `/'. This is good for people who type fast and tend
-     to hit other characters right after they hit ESC. Other people
-     like Emacs to translate `ESC' sequences all the time.  The default
-     is to translate all sequences only when using a dumb terminal.
-     This permits you to use `ESC' as a meta key in insert mode. For
-     instance, hitting `ESC x' fast would have the effect of typing
-     `M-x'.  If your dumb terminal is not so dumb and understands the
-     meta key, then you probably will be better off setting this
-     variable to `nil'. Try and see which way suits you best.
 
 `viper-ex-style-motion t'
      Set this to `nil', if you want `l,h' to cross lines, etc.  *Note
@@ -1680,11 +1675,6 @@ get the full list of Vi variables, type `:se <SPC> <TAB>'.
      i.e., it will set Viper up so that the very next command will be
      executed as if it were typed in Vi state.
 
-`viper-ESC-key "\e"'
-     Specifies the key used to escape from Insert/Replace states to Vi.
-     Must be set in `.viper'.  This variable cannot be changed
-     interactively after Viper is loaded.
-
 `viper-buffer-search-char nil'
      Key used for buffer search.  *Note Viper Specials::, for details.
 
@@ -1749,11 +1739,11 @@ arrow keys may not emit the right signals for Emacs to understand.  To
 let Emacs know about those keys, you will have to find out which key
 sequences they emit by typing `C-q' and then the key (you should switch
 to Emacs state first).  Then you can bind those sequences to their
-preferred forms using `function-key-map' as follows:
+preferred forms using `input-decode-map' as follows:
 
      (cond ((string= (getenv "TERM") "xterm")
-     (define-key function-key-map "\e[192z" [f11])    ; L1
-     (define-key function-key-map "\e[195z" [f14])    ; L4, Undo
+     (define-key input-decode-map "\e[192z" [f11])    ; L1
+     (define-key input-decode-map "\e[195z" [f14])    ; L4, Undo
 
    The above illustrates how to do this for Xterm.  On VT100, you would
 have to replace "xterm" with "vt100" and also change the key sequences
@@ -2145,7 +2135,7 @@ explained here.
      then `f31'.
 
      One should not bind the above functions to `M-p' or `M-n', since
-     this will interfere with the Minibuffer histories and, possibly,
+     this will interfere with the minibuffer histories and, possibly,
      other major modes.
 
 `viper-command-ring-size  14'
@@ -2168,7 +2158,7 @@ explained here.
      hit any digit (1 to 9) then `f31'.
 
      One should not bind the above functions to `M-p' or `M-n', since
-     this will interfere with the Minibuffer histories and, possibly,
+     this will interfere with the minibuffer histories and, possibly,
      other major modes.
 
 `viper-minibuffer-vi-face  'viper-minibuffer-vi-face'
@@ -2187,7 +2177,7 @@ explained here.
      subgroup.
 
      Note that only the text you type in is affected by the above faces.
-     Prompts and Minibuffer messages are not affected.
+     Prompts and minibuffer messages are not affected.
 
      Purists who do not like adornments in the minibuffer can always
      zap them by putting
@@ -2592,7 +2582,7 @@ Since Viper macros are much more powerful than Vi's it is impossible to
 detect such loops.  In practice, this is not really a limitation but,
 rather, a feature.
 
-   We should also note that Vi macros are disabled in the Minibuffer,
+   We should also note that Vi macros are disabled in the minibuffer,
 which helps keep some potential troubles away.
 
    The rate at which the user must type keys in order for them to be
@@ -3111,7 +3101,7 @@ see options for word-wrap.
      destructive commands.  Successive typing of `C-c M-p' causes Viper
      to search the history in the direction of older commands, while
      hitting `C-c M-n' does so in reverse order.  Each command in the
-     history is displayed in the Minibuffer.  The displayed command can
+     history is displayed in the minibuffer.  The displayed command can
      then be executed by typing ``.''.
 
      Since typing the above sequences of keys may be tedious, the
@@ -3126,7 +3116,7 @@ File: viper,  Node: Editing in Insert State,  Next: Deleting Text,  Prev: Append
 
 Minibuffer can be edited similarly to Insert state, and you can switch
 between Insert/Replace/Vi states at will.  Some users prefer plain
-Emacs feel in the Minibuffer.  To this end, set
+Emacs feel in the minibuffer.  To this end, set
 VIPER-VI-STYLE-IN-MINIBUFFER to `nil'.
 
 `C-v'
@@ -3299,6 +3289,12 @@ from wrapping around.
      Viper does not parse search patterns and does not expand special
      symbols found there (e.g., `~' is not expanded to the result of
      the previous substitution).
+
+     After typing `/' or `?' all the usual Emacs minibuffer commands,
+     such as `M-p' and `M-n' are available. In addition, typing `C-s'
+     will insert the last search string used by the Emacs incremental
+     search command (which is bound to `C-s' everywhere except in this
+     case).
 
 `<count>  ?<string>'
      To the <count>th previous occurrence of <string>.
@@ -3620,7 +3616,7 @@ you type `1:w' you would see `:11,22w' in the minibuffer.
 
 `v, V, C-v'
      Edit a file in current or another window, or in another frame.
-     File name is typed in Minibuffer.  File completion and history are
+     File name is typed in minibuffer.  File completion and history are
      supported.
    
 
@@ -4003,14 +3999,13 @@ File: viper,  Node: GNU Free Documentation License,  Up: Top
 Appendix A GNU Free Documentation License
 *****************************************
 
-                      Version 1.2, November 2002
+                     Version 1.3, 3 November 2008
 
-     Copyright (C) 2000,2001,2002  Free Software Foundation, Inc.
-     51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+     Copyright (C) 2000, 2001, 2002, 2007, 2008, 2009 Free Software Foundation, Inc.
+     `http://fsf.org/'
 
      Everyone is permitted to copy and distribute verbatim copies
      of this license document, but changing it is not allowed.
-
 
   0. PREAMBLE
 
@@ -4022,7 +4017,7 @@ Appendix A GNU Free Documentation License
      author and publisher a way to get credit for their work, while not
      being considered responsible for modifications made by others.
 
-     This License is a kind of "copyleft," which means that derivative
+     This License is a kind of "copyleft", which means that derivative
      works of the document must themselves be free in the same sense.
      It complements the GNU General Public License, which is a copyleft
      license designed for free software.
@@ -4036,7 +4031,6 @@ Appendix A GNU Free Documentation License
      We recommend this License principally for works whose purpose is
      instruction or reference.
 
-
   1. APPLICABILITY AND DEFINITIONS
 
      This License applies to any manual or other work, in any medium,
@@ -4044,8 +4038,8 @@ Appendix A GNU Free Documentation License
      can be distributed under the terms of this License.  Such a notice
      grants a world-wide, royalty-free license, unlimited in duration,
      to use that work under the conditions stated herein.  The
-     "Document," below, refers to any such manual or work.  Any member
-     of the public is a licensee, and is addressed as "you."  You
+     "Document", below, refers to any such manual or work.  Any member
+     of the public is a licensee, and is addressed as "you".  You
      accept the license if you copy, modify or distribute the work in a
      way requiring permission under copyright law.
 
@@ -4053,16 +4047,16 @@ Appendix A GNU Free Documentation License
      Document or a portion of it, either copied verbatim, or with
      modifications and/or translated into another language.
 
-     A "Secondary Section" is a named appendix or a front-matter
-     section of the Document that deals exclusively with the
-     relationship of the publishers or authors of the Document to the
-     Document's overall subject (or to related matters) and contains
-     nothing that could fall directly within that overall subject.
-     (Thus, if the Document is in part a textbook of mathematics, a
-     Secondary Section may not explain any mathematics.)  The
-     relationship could be a matter of historical connection with the
-     subject or with related matters, or of legal, commercial,
-     philosophical, ethical or political position regarding them.
+     A "Secondary Section" is a named appendix or a front-matter section
+     of the Document that deals exclusively with the relationship of the
+     publishers or authors of the Document to the Document's overall
+     subject (or to related matters) and contains nothing that could
+     fall directly within that overall subject.  (Thus, if the Document
+     is in part a textbook of mathematics, a Secondary Section may not
+     explain any mathematics.)  The relationship could be a matter of
+     historical connection with the subject or with related matters, or
+     of legal, commercial, philosophical, ethical or political position
+     regarding them.
 
      The "Invariant Sections" are certain Secondary Sections whose
      titles are designated, as being those of Invariant Sections, in
@@ -4090,7 +4084,7 @@ Appendix A GNU Free Documentation License
      markup, has been arranged to thwart or discourage subsequent
      modification by readers is not Transparent.  An image format is
      not Transparent if used for any substantial amount of text.  A
-     copy that is not "Transparent" is called "Opaque."
+     copy that is not "Transparent" is called "Opaque".
 
      Examples of suitable formats for Transparent copies include plain
      ASCII without markup, Texinfo input format, LaTeX input format,
@@ -4098,8 +4092,8 @@ Appendix A GNU Free Documentation License
      standard-conforming simple HTML, PostScript or PDF designed for
      human modification.  Examples of transparent image formats include
      PNG, XCF and JPG.  Opaque formats include proprietary formats that
-     can be read and edited only by proprietary word processors, SGML
-     or XML for which the DTD and/or processing tools are not generally
+     can be read and edited only by proprietary word processors, SGML or
+     XML for which the DTD and/or processing tools are not generally
      available, and the machine-generated HTML, PostScript or PDF
      produced by some word processors for output purposes only.
 
@@ -4110,11 +4104,14 @@ Appendix A GNU Free Documentation License
      Page" means the text near the most prominent appearance of the
      work's title, preceding the beginning of the body of the text.
 
+     The "publisher" means any person or entity that distributes copies
+     of the Document to the public.
+
      A section "Entitled XYZ" means a named subunit of the Document
      whose title either is precisely XYZ or contains XYZ in parentheses
      following text that translates XYZ in another language.  (Here XYZ
      stands for a specific section name mentioned below, such as
-     "Acknowledgements," "Dedications," "Endorsements," or "History.")
+     "Acknowledgements", "Dedications", "Endorsements", or "History".)
      To "Preserve the Title" of such a section when you modify the
      Document means that it remains a section "Entitled XYZ" according
      to this definition.
@@ -4192,59 +4189,75 @@ Appendix A GNU Free Documentation License
      whoever possesses a copy of it.  In addition, you must do these
      things in the Modified Version:
 
-     A. Use in the Title Page (and on the covers, if any) a title
-     distinct    from that of the Document, and from those of previous
-     versions    (which should, if there were any, be listed in the
-     History section    of the Document).  You may use the same title
-     as a previous version    if the original publisher of that version
-     gives permission.
-     B. List on the Title Page, as authors, one or more persons or
-     entities    responsible for authorship of the modifications in the
-     Modified    Version, together with at least five of the principal
-     authors of the    Document (all of its principal authors, if it
-     has fewer than five),    unless they release you from this
-     requirement.
-     C. State on the Title page the name of the publisher of the
-     Modified Version, as the publisher.
-     D. Preserve all the copyright notices of the Document.
-     E. Add an appropriate copyright notice for your modifications
-     adjacent to the other copyright notices.
-     F. Include, immediately after the copyright notices, a license
-     notice    giving the public permission to use the Modified Version
-     under the    terms of this License, in the form shown in the
-     Addendum below.
-     G. Preserve in that license notice the full lists of Invariant
-     Sections    and required Cover Texts given in the Document's
-     license notice.
-     H. Include an unaltered copy of this License.
-     I. Preserve the section Entitled "History," Preserve its Title,
-     and add    to it an item stating at least the title, year, new
-     authors, and    publisher of the Modified Version as given on the
-     Title Page.  If    there is no section Entitled "History" in the
-     Document, create one    stating the title, year, authors, and
-     publisher of the Document as    given on its Title Page, then add
-     an item describing the Modified    Version as stated in the
-     previous sentence.
-     J. Preserve the network location, if any, given in the Document for
-       public access to a Transparent copy of the Document, and likewise
-       the network locations given in the Document for previous versions
-       it was based on.  These may be placed in the "History" section.
-       You may omit a network location for a work that was published at
-       least four years before the Document itself, or if the original
-      publisher of the version it refers to gives permission.
-     K. For any section Entitled "Acknowledgements" or "Dedications,"
-     Preserve the Title of the section, and preserve in the section all
-       the substance and tone of each of the contributor
-     acknowledgements    and/or dedications given therein.
-     L. Preserve all the Invariant Sections of the Document,
-     unaltered in their text and in their titles.  Section numbers
-     or the equivalent are not considered part of the section titles.
-     M. Delete any section Entitled "Endorsements."  Such a section
-     may not be included in the Modified Version.
-     N. Do not retitle any existing section to be Entitled
-     "Endorsements"    or to conflict in title with any Invariant
-     Section.
-     O. Preserve any Warranty Disclaimers.
+       A. Use in the Title Page (and on the covers, if any) a title
+          distinct from that of the Document, and from those of
+          previous versions (which should, if there were any, be listed
+          in the History section of the Document).  You may use the
+          same title as a previous version if the original publisher of
+          that version gives permission.
+
+       B. List on the Title Page, as authors, one or more persons or
+          entities responsible for authorship of the modifications in
+          the Modified Version, together with at least five of the
+          principal authors of the Document (all of its principal
+          authors, if it has fewer than five), unless they release you
+          from this requirement.
+
+       C. State on the Title page the name of the publisher of the
+          Modified Version, as the publisher.
+
+       D. Preserve all the copyright notices of the Document.
+
+       E. Add an appropriate copyright notice for your modifications
+          adjacent to the other copyright notices.
+
+       F. Include, immediately after the copyright notices, a license
+          notice giving the public permission to use the Modified
+          Version under the terms of this License, in the form shown in
+          the Addendum below.
+
+       G. Preserve in that license notice the full lists of Invariant
+          Sections and required Cover Texts given in the Document's
+          license notice.
+
+       H. Include an unaltered copy of this License.
+
+       I. Preserve the section Entitled "History", Preserve its Title,
+          and add to it an item stating at least the title, year, new
+          authors, and publisher of the Modified Version as given on
+          the Title Page.  If there is no section Entitled "History" in
+          the Document, create one stating the title, year, authors,
+          and publisher of the Document as given on its Title Page,
+          then add an item describing the Modified Version as stated in
+          the previous sentence.
+
+       J. Preserve the network location, if any, given in the Document
+          for public access to a Transparent copy of the Document, and
+          likewise the network locations given in the Document for
+          previous versions it was based on.  These may be placed in
+          the "History" section.  You may omit a network location for a
+          work that was published at least four years before the
+          Document itself, or if the original publisher of the version
+          it refers to gives permission.
+
+       K. For any section Entitled "Acknowledgements" or "Dedications",
+          Preserve the Title of the section, and preserve in the
+          section all the substance and tone of each of the contributor
+          acknowledgements and/or dedications given therein.
+
+       L. Preserve all the Invariant Sections of the Document,
+          unaltered in their text and in their titles.  Section numbers
+          or the equivalent are not considered part of the section
+          titles.
+
+       M. Delete any section Entitled "Endorsements".  Such a section
+          may not be included in the Modified Version.
+
+       N. Do not retitle any existing section to be Entitled
+          "Endorsements" or to conflict in title with any Invariant
+          Section.
+
+       O. Preserve any Warranty Disclaimers.
 
      If the Modified Version includes new front-matter sections or
      appendices that qualify as Secondary Sections and contain no
@@ -4254,11 +4267,11 @@ Appendix A GNU Free Documentation License
      Version's license notice.  These titles must be distinct from any
      other section titles.
 
-     You may add a section Entitled "Endorsements," provided it contains
+     You may add a section Entitled "Endorsements", provided it contains
      nothing but endorsements of your Modified Version by various
-     parties-for example, statements of peer review or that the text has
-     been approved by an organization as the authoritative definition
-     of a standard.
+     parties--for example, statements of peer review or that the text
+     has been approved by an organization as the authoritative
+     definition of a standard.
 
      You may add a passage of up to five words as a Front-Cover Text,
      and a passage of up to 25 words as a Back-Cover Text, to the end
@@ -4298,7 +4311,7 @@ Appendix A GNU Free Documentation License
      In the combination, you must combine any sections Entitled
      "History" in the various original documents, forming one section
      Entitled "History"; likewise combine any sections Entitled
-     "Acknowledgements," and any sections Entitled "Dedications."  You
+     "Acknowledgements", and any sections Entitled "Dedications".  You
      must delete all sections Entitled "Endorsements."
 
   6. COLLECTIONS OF DOCUMENTS
@@ -4351,20 +4364,37 @@ Appendix A GNU Free Documentation License
      this License or a notice or disclaimer, the original version will
      prevail.
 
-     If a section in the Document is Entitled "Acknowledgements,"
-     "Dedications," or "History," the requirement (section 4) to
+     If a section in the Document is Entitled "Acknowledgements",
+     "Dedications", or "History", the requirement (section 4) to
      Preserve its Title (section 1) will typically require changing the
      actual title.
 
   9. TERMINATION
 
      You may not copy, modify, sublicense, or distribute the Document
-     except as expressly provided for under this License.  Any other
-     attempt to copy, modify, sublicense or distribute the Document is
-     void, and will automatically terminate your rights under this
-     License.  However, parties who have received copies, or rights,
-     from you under this License will not have their licenses
-     terminated so long as such parties remain in full compliance.
+     except as expressly provided under this License.  Any attempt
+     otherwise to copy, modify, sublicense, or distribute it is void,
+     and will automatically terminate your rights under this License.
+
+     However, if you cease all violation of this License, then your
+     license from a particular copyright holder is reinstated (a)
+     provisionally, unless and until the copyright holder explicitly
+     and finally terminates your license, and (b) permanently, if the
+     copyright holder fails to notify you of the violation by some
+     reasonable means prior to 60 days after the cessation.
+
+     Moreover, your license from a particular copyright holder is
+     reinstated permanently if the copyright holder notifies you of the
+     violation by some reasonable means, this is the first time you have
+     received notice of violation of this License (for any work) from
+     that copyright holder, and you cure the violation prior to 30 days
+     after your receipt of the notice.
+
+     Termination of your rights under this section does not terminate
+     the licenses of parties who have received copies or rights from
+     you under this License.  If your rights have been terminated and
+     not permanently reinstated, receipt of a copy of some or all of
+     the same material does not give you any rights to use it.
 
  10. FUTURE REVISIONS OF THIS LICENSE
 
@@ -4372,7 +4402,7 @@ Appendix A GNU Free Documentation License
      the GNU Free Documentation License from time to time.  Such new
      versions will be similar in spirit to the present version, but may
      differ in detail to address new problems or concerns.  See
-     http://www.gnu.org/copyleft/.
+     `http://www.gnu.org/copyleft/'.
 
      Each version of the License is given a distinguishing version
      number.  If the Document specifies that a particular numbered
@@ -4382,7 +4412,40 @@ Appendix A GNU Free Documentation License
      published (not as a draft) by the Free Software Foundation.  If
      the Document does not specify a version number of this License,
      you may choose any version ever published (not as a draft) by the
-     Free Software Foundation.
+     Free Software Foundation.  If the Document specifies that a proxy
+     can decide which future versions of this License can be used, that
+     proxy's public statement of acceptance of a version permanently
+     authorizes you to choose that version for the Document.
+
+ 11. RELICENSING
+
+     "Massive Multiauthor Collaboration Site" (or "MMC Site") means any
+     World Wide Web server that publishes copyrightable works and also
+     provides prominent facilities for anybody to edit those works.  A
+     public wiki that anybody can edit is an example of such a server.
+     A "Massive Multiauthor Collaboration" (or "MMC") contained in the
+     site means any set of copyrightable works thus published on the MMC
+     site.
+
+     "CC-BY-SA" means the Creative Commons Attribution-Share Alike 3.0
+     license published by Creative Commons Corporation, a not-for-profit
+     corporation with a principal place of business in San Francisco,
+     California, as well as future copyleft versions of that license
+     published by that same organization.
+
+     "Incorporate" means to publish or republish a Document, in whole or
+     in part, as part of another Document.
+
+     An MMC is "eligible for relicensing" if it is licensed under this
+     License, and if all works that were first published under this
+     License somewhere other than this MMC, and subsequently
+     incorporated in whole or in part into the MMC, (1) had no cover
+     texts or invariant sections, and (2) were thus incorporated prior
+     to November 1, 2008.
+
+     The operator of an MMC Site may republish an MMC contained in the
+     site under CC-BY-SA on the same site at any time before August 1,
+     2009, provided the MMC is eligible for relicensing.
 
 
 ADDENDUM: How to use this License for your documents
@@ -4392,20 +4455,20 @@ To use this License in a document you have written, include a copy of
 the License in the document and put the following copyright and license
 notices just after the title page:
 
-     Copyright (C)  YEAR  YOUR NAME.
-     Permission is granted to copy, distribute and/or modify this document
-     under the terms of the GNU Free Documentation License, Version 1.2
-     or any later version published by the Free Software Foundation;
-     with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
-     A copy of the license is included in the section entitled ``GNU
-     Free Documentation License.''
+       Copyright (C)  YEAR  YOUR NAME.
+       Permission is granted to copy, distribute and/or modify this document
+       under the terms of the GNU Free Documentation License, Version 1.3
+       or any later version published by the Free Software Foundation;
+       with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+       Texts.  A copy of the license is included in the section entitled ``GNU
+       Free Documentation License''.
 
    If you have Invariant Sections, Front-Cover Texts and Back-Cover
 Texts, replace the "with...Texts." line with this:
 
-     with the Invariant Sections being LIST THEIR TITLES, with the
-     Front-Cover Texts being LIST, and with the Back-Cover Texts being
-     LIST.
+         with the Invariant Sections being LIST THEIR TITLES, with
+         the Front-Cover Texts being LIST, and with the Back-Cover Texts
+         being LIST.
 
    If you have Invariant Sections without Cover Texts, or some other
 combination of the three, merge those two alternatives to suit the
@@ -4425,44 +4488,44 @@ Key Index
  [index ]
 * Menu:
 
-* "<a-z1-9>P:                            Yanking.             (line  38)
-* "<a-z1-9>p:                            Yanking.             (line  38)
-* "<a-z1-9>P:                            Appending Text.      (line  72)
 * "<a-z1-9>p:                            Appending Text.      (line  72)
-* "<a-z>y<move>:                         Yanking.             (line  38)
+* "<a-z1-9>P:                            Appending Text.      (line  72)
+* "<a-z1-9>p:                            Yanking.             (line  38)
+* "<a-z1-9>P:                            Yanking.             (line  38)
 * "<A-Z>y<move>:                         Yanking.             (line  38)
+* "<a-z>y<move>:                         Yanking.             (line  38)
 * #:                                     New Commands.        (line  39)
-* #c<move>:                              Changing Text.       (line  96)
-* #C<move> <1>:                          Changing Text.       (line  96)
-* #C<move>:                              New Commands.        (line  50)
 * #c<move>:                              New Commands.        (line  46)
-* #g<move> <1>:                          Mapping.             (line  59)
-* #g<move> <2>:                          Search and Replace.  (line  75)
+* #C<move> <1>:                          New Commands.        (line  50)
+* #C<move>:                              Changing Text.       (line  96)
+* #c<move>:                              Changing Text.       (line  96)
+* #g<move> <1>:                          Search and Replace.  (line  81)
+* #g<move> <2>:                          Mapping.             (line  59)
 * #g<move>:                              New Commands.        (line  55)
 * #q<move>:                              New Commands.        (line  59)
 * #q<move> :                             Changing Text.       (line  96)
 * #s<move>:                              New Commands.        (line  64)
 * $:                                     Move Commands.       (line 171)
-* % <1>:                                 Search and Replace.  (line  75)
+* % <1>:                                 Search and Replace.  (line  81)
 * %:                                     Move Commands.       (line 171)
-* & <1>:                                 Search and Replace.  (line  75)
+* & <1>:                                 Search and Replace.  (line  81)
 * &:                                     Changing Text.       (line  96)
-* '' <1>:                                Marking.             (line  49)
-* '':                                    Move Commands.       (line 171)
-* '<a-z> <1>:                            Marking.             (line  49)
-* '<a-z>:                                Move Commands.       (line 171)
+* '' <1>:                                Move Commands.       (line 171)
+* '':                                    Marking.             (line  49)
+* '<a-z> <1>:                            Move Commands.       (line 171)
+* '<a-z>:                                Marking.             (line  49)
 * (:                                     Move Commands.       (line 171)
 * ):                                     Move Commands.       (line 171)
-* * <1>:                                 Mapping.             (line  59)
-* *:                                     New Commands.        (line  69)
+* * <1>:                                 New Commands.        (line  69)
+* *:                                     Mapping.             (line  59)
 * +:                                     Move Commands.       (line 171)
 * ,:                                     Move Commands.       (line 171)
 * -:                                     Move Commands.       (line 171)
-* . <1>:                                 Undoing.             (line  21)
-* .:                                     Appending Text.      (line  72)
+* . <1>:                                 Appending Text.      (line  72)
+* .:                                     Undoing.             (line  21)
 * /<cr>:                                 Move Commands.       (line 171)
-* /<string> <1>:                         Search and Replace.  (line  75)
-* /<string>:                             Move Commands.       (line 171)
+* /<string> <1>:                         Move Commands.       (line 171)
+* /<string>:                             Search and Replace.  (line  81)
 * 0:                                     Move Commands.       (line 171)
 * ;:                                     Move Commands.       (line 171)
 * <<:                                    Deleting Text.       (line  39)
@@ -4480,30 +4543,30 @@ Key Index
 * ><move>:                               Appending Text.      (line  72)
 * >>:                                    Appending Text.      (line  72)
 * ?<cr>:                                 Move Commands.       (line 171)
-* ?<string> <1>:                         Search and Replace.  (line  75)
-* ?<string>:                             Move Commands.       (line 171)
+* ?<string> <1>:                         Move Commands.       (line 171)
+* ?<string>:                             Search and Replace.  (line  81)
 * @!:                                    New Commands.        (line  94)
 * @!<a-z>:                               Mapping.             (line  59)
 * @# <1>:                                Mapping.             (line  59)
 * @#:                                    New Commands.        (line  94)
-* @<a-z> <1>:                            Mapping.             (line  59)
-* @<a-z>:                                New Commands.        (line  94)
+* @<a-z> <1>:                            New Commands.        (line  94)
+* @<a-z>:                                Mapping.             (line  59)
 * @@:                                    Mapping.             (line  59)
 * [<a-z> <1>:                            Mapping.             (line  59)
-* [<a-z> <2>:                            Yanking.             (line  38)
-* [<a-z> <3>:                            Appending Text.      (line  72)
-* [<a-z> <4>:                            Move Commands.       (line 171)
-* [<a-z>:                                New Commands.        (line  87)
+* [<a-z> <2>:                            New Commands.        (line  87)
+* [<a-z> <3>:                            Yanking.             (line  38)
+* [<a-z> <4>:                            Appending Text.      (line  72)
+* [<a-z>:                                Move Commands.       (line 171)
 * [[:                                    Move Commands.       (line 171)
-* [] <1>:                                Move Commands.       (line 171)
-* []:                                    New Commands.        (line  98)
+* [] <1>:                                New Commands.        (line  98)
+* []:                                    Move Commands.       (line 171)
 * \:                                     New Commands.        (line  19)
 * \&:                                    Changing Text.       (line  96)
-* ]<a-z> <1>:                            Mapping.             (line  59)
-* ]<a-z> <2>:                            Yanking.             (line  38)
+* ]<a-z> <1>:                            New Commands.        (line  84)
+* ]<a-z> <2>:                            Mapping.             (line  59)
 * ]<a-z> <3>:                            Appending Text.      (line  72)
-* ]<a-z> <4>:                            Move Commands.       (line 171)
-* ]<a-z>:                                New Commands.        (line  84)
+* ]<a-z> <4>:                            Yanking.             (line  38)
+* ]<a-z>:                                Move Commands.       (line 171)
 * ]]:                                    Move Commands.       (line 171)
 * ^:                                     Move Commands.       (line 171)
 * `<a-z> <1>:                            Marking.             (line  49)
@@ -4515,26 +4578,26 @@ Key Index
 * b:                                     Move Commands.       (line 171)
 * B:                                     Move Commands.       (line 171)
 * C:                                     Changing Text.       (line  96)
-* C-\ <1>:                               Emacs Related Commands.
+* C-\ <1>:                               Vi State.            (line  33)
+* C-\:                                   Emacs Related Commands.
                                                               (line  54)
-* C-\:                                   Vi State.            (line  33)
-* C-] <1>:                               New Commands.        (line 106)
-* C-]:                                   Vi State.            (line  24)
+* C-] <1>:                               Vi State.            (line  24)
+* C-]:                                   New Commands.        (line 106)
 * C-^:                                   File and Buffer Handling.
                                                               (line 148)
 * C-b:                                   Display.             (line  57)
-* C-c <1>:                               New Commands.        (line   9)
-* C-c:                                   Vi State.            (line  19)
-* C-c / <1>:                             Move Commands.       (line 171)
-* C-c / <2>:                             New Commands.        (line 115)
-* C-c /:                                 Vi State.            (line  71)
+* C-c <1>:                               Vi State.            (line  19)
+* C-c:                                   New Commands.        (line   9)
+* C-c / <1>:                             New Commands.        (line 115)
+* C-c / <2>:                             Vi State.            (line  71)
+* C-c /:                                 Move Commands.       (line 171)
 * C-c C-g:                               New Commands.        (line 110)
 * C-c M-n <1>:                           Changing Text.       (line  96)
-* C-c M-n <2>:                           Appending Text.      (line  72)
-* C-c M-n:                               New Commands.        (line 128)
+* C-c M-n <2>:                           New Commands.        (line 134)
+* C-c M-n:                               Appending Text.      (line  72)
 * C-c M-p <1>:                           Changing Text.       (line  96)
-* C-c M-p <2>:                           Appending Text.      (line  72)
-* C-c M-p:                               New Commands.        (line 128)
+* C-c M-p <2>:                           New Commands.        (line 134)
+* C-c M-p:                               Appending Text.      (line  72)
 * C-c\:                                  Emacs Related Commands.
                                                               (line  54)
 * C-d:                                   Display.             (line  57)
@@ -4547,16 +4610,17 @@ Key Index
 * C-l:                                   Display.             (line  57)
 * C-n:                                   Move Commands.       (line 171)
 * C-p:                                   Move Commands.       (line 171)
+* C-s:                                   New Commands.        (line 128)
 * C-u <1>:                               Display.             (line  57)
 * C-u:                                   Editing in Insert State.
                                                               (line  23)
-* C-v <1>:                               Editing in Insert State.
+* C-v <1>:                               New Commands.        (line  32)
+* C-v:                                   Editing in Insert State.
                                                               (line  23)
-* C-v:                                   New Commands.        (line  32)
 * C-w:                                   Editing in Insert State.
                                                               (line  23)
-* C-x <1>:                               New Commands.        (line   9)
-* C-x:                                   Vi State.            (line  11)
+* C-x <1>:                               Vi State.            (line  11)
+* C-x:                                   New Commands.        (line   9)
 * C-x0:                                  Emacs Related Commands.
                                                               (line  54)
 * C-x1:                                  Emacs Related Commands.
@@ -4570,10 +4634,10 @@ Key Index
 * C-y <1>:                               Emacs Related Commands.
                                                               (line  54)
 * C-y:                                   Display.             (line  57)
-* C-z <1>:                               Emacs Related Commands.
-                                                              (line  54)
+* C-z <1>:                               States in Viper.     (line   6)
 * C-z <2>:                               Emacs State.         (line   6)
-* C-z:                                   States in Viper.     (line   6)
+* C-z:                                   Emacs Related Commands.
+                                                              (line  54)
 * c<move>:                               Changing Text.       (line  96)
 * cc:                                    Changing Text.       (line  96)
 * D:                                     Deleting Text.       (line  39)
@@ -4584,7 +4648,7 @@ Key Index
 * f<char>:                               Move Commands.       (line 171)
 * F<char>:                               Move Commands.       (line 171)
 * G:                                     Move Commands.       (line 171)
-* g<move>:                               Search and Replace.  (line  75)
+* g<move>:                               Search and Replace.  (line  81)
 * h:                                     Move Commands.       (line 171)
 * H:                                     Move Commands.       (line 171)
 * i <1>:                                 Appending Text.      (line  72)
@@ -4602,9 +4666,9 @@ Key Index
                                                               (line  54)
 * m.:                                    Marking.             (line  49)
 * m<:                                    Marking.             (line  49)
-* m<a-z> <1>:                            Yanking.             (line  38)
+* m<a-z> <1>:                            Move Commands.       (line 171)
 * m<a-z> <2>:                            Marking.             (line  49)
-* m<a-z>:                                Move Commands.       (line 171)
+* m<a-z>:                                Yanking.             (line  38)
 * m>:                                    Marking.             (line  49)
 * m^:                                    Marking.             (line  49)
 * meta button1up:                        Mouse-bound Commands.
@@ -4613,17 +4677,17 @@ Key Index
                                                               (line  22)
 * meta shift button1up:                  Viper Specials.      (line 311)
 * meta shift button2up:                  Viper Specials.      (line 311)
-* n:                                     Search and Replace.  (line  75)
-* N:                                     Search and Replace.  (line  75)
-* n:                                     Move Commands.       (line 171)
 * N:                                     Move Commands.       (line 171)
+* n:                                     Search and Replace.  (line  81)
+* N:                                     Search and Replace.  (line  81)
+* n:                                     Move Commands.       (line 171)
 * o:                                     Appending Text.      (line  72)
 * O:                                     Appending Text.      (line  72)
 * p:                                     Yanking.             (line  38)
-* P:                                     Yanking.             (line  38)
-* p:                                     Appending Text.      (line  72)
 * P:                                     Appending Text.      (line  72)
-* Q <1>:                                 Search and Replace.  (line  75)
+* p:                                     Appending Text.      (line  72)
+* P:                                     Yanking.             (line  38)
+* Q <1>:                                 Search and Replace.  (line  81)
 * Q:                                     New Commands.        (line  23)
 * R:                                     Changing Text.       (line  96)
 * r<char>:                               Changing Text.       (line  96)
@@ -4632,24 +4696,24 @@ Key Index
 * S-Mouse-1 <1>:                         Mouse-bound Commands.
                                                               (line  22)
 * S-Mouse-1:                             Viper Specials.      (line 311)
-* S-Mouse-2 <1>:                         Mouse-bound Commands.
+* S-Mouse-2 <1>:                         Viper Specials.      (line 311)
+* S-Mouse-2:                             Mouse-bound Commands.
                                                               (line  22)
-* S-Mouse-2:                             Viper Specials.      (line 311)
 * t<char>:                               Move Commands.       (line 171)
 * T<char>:                               Move Commands.       (line 171)
-* u:                                     Undoing.             (line  21)
 * U:                                     Undoing.             (line  21)
-* u:                                     Vi State.            (line  53)
-* V:                                     File and Buffer Handling.
-                                                              (line 148)
+* u <1>:                                 Vi State.            (line  53)
+* u:                                     Undoing.             (line  21)
+* v <1>:                                 New Commands.        (line  32)
 * v:                                     File and Buffer Handling.
                                                               (line 148)
+* V <1>:                                 File and Buffer Handling.
+                                                              (line 148)
 * V:                                     New Commands.        (line  32)
-* v:                                     New Commands.        (line  32)
-* w:                                     Move Commands.       (line 171)
 * W:                                     Move Commands.       (line 171)
-* x:                                     Deleting Text.       (line  39)
+* w:                                     Move Commands.       (line 171)
 * X:                                     Deleting Text.       (line  39)
+* x:                                     Deleting Text.       (line  39)
 * Y:                                     Yanking.             (line  38)
 * y<move>:                               Yanking.             (line  38)
 * yank:                                  Yanking.             (line  38)
@@ -4685,7 +4749,7 @@ Function Index
 * :<address>r <name>:                    Shell Commands.      (line  56)
 * :args <1>:                             File and Buffer Handling.
                                                               (line 148)
-* :args:                                 New Commands.        (line 145)
+* :args:                                 New Commands.        (line 151)
 * :cd [<dir>]:                           File and Buffer Handling.
                                                               (line 148)
 * :copy [z]:                             Changing Text.       (line  96)
@@ -4700,8 +4764,8 @@ Function Index
                                                               (line 148)
 * :f:                                    File and Buffer Handling.
                                                               (line 148)
-* :g:                                    Search and Replace.  (line  75)
-* :global:                               Search and Replace.  (line  75)
+* :g:                                    Search and Replace.  (line  81)
+* :global:                               Search and Replace.  (line  81)
 * :k:                                    Marking.             (line  49)
 * :make:                                 Shell Commands.      (line  56)
 * :map:                                  Key Bindings.        (line 124)
@@ -4709,22 +4773,22 @@ Function Index
 * :map! <char> <seq>:                    Mapping.             (line  59)
 * :mark:                                 Marking.             (line  49)
 * :move [z]:                             Changing Text.       (line  96)
-* :n:                                    New Commands.        (line 145)
+* :n:                                    New Commands.        (line 151)
 * :n [<count> | <file>]:                 File and Buffer Handling.
                                                               (line 148)
-* :pre <1>:                              File and Buffer Handling.
+* :pre <1>:                              New Commands.        (line 151)
+* :pre:                                  File and Buffer Handling.
                                                               (line 148)
-* :pre:                                  New Commands.        (line 145)
 * :PreviousRelatedFile <1>:              Viper Specials.      (line 208)
-* :PreviousRelatedFile:                  New Commands.        (line 150)
-* :pwd <1>:                              File and Buffer Handling.
+* :PreviousRelatedFile:                  New Commands.        (line 156)
+* :pwd <1>:                              New Commands.        (line 151)
+* :pwd:                                  File and Buffer Handling.
                                                               (line 148)
-* :pwd:                                  New Commands.        (line 145)
 * :q:                                    File and Buffer Handling.
                                                               (line 148)
-* :q! <1>:                               File and Buffer Handling.
+* :q! <1>:                               Undoing.             (line  21)
+* :q!:                                   File and Buffer Handling.
                                                               (line 148)
-* :q!:                                   Undoing.             (line  21)
 * :quit:                                 File and Buffer Handling.
                                                               (line 148)
 * :quit!:                                File and Buffer Handling.
@@ -4733,11 +4797,11 @@ Function Index
                                                               (line 148)
 * :read:                                 File and Buffer Handling.
                                                               (line 148)
-* :rec <1>:                              File and Buffer Handling.
+* :rec <1>:                              Undoing.             (line  21)
+* :rec:                                  File and Buffer Handling.
                                                               (line 148)
-* :rec:                                  Undoing.             (line  21)
-* :RelatedFile <1>:                      Viper Specials.      (line 208)
-* :RelatedFile:                          New Commands.        (line 150)
+* :RelatedFile <1>:                      New Commands.        (line 156)
+* :RelatedFile:                          Viper Specials.      (line 208)
 * :rew:                                  File and Buffer Handling.
                                                               (line 148)
 * :s/<pat>/<repl>/<f>:                   Changing Text.       (line  96)
@@ -4768,16 +4832,16 @@ Function Index
 * :sh:                                   Shell Commands.      (line  56)
 * :stop:                                 File and Buffer Handling.
                                                               (line 148)
-* :substitute/<pat>/<repl>/<f> <1>:      Search and Replace.  (line  75)
+* :substitute/<pat>/<repl>/<f> <1>:      Search and Replace.  (line  81)
 * :substitute/<pat>/<repl>/<f>:          Changing Text.       (line  96)
 * :suspend:                              File and Buffer Handling.
                                                               (line 148)
 * :t [z]:                                Changing Text.       (line  96)
-* :tag <name>:                           Search and Replace.  (line  75)
+* :tag <name>:                           Search and Replace.  (line  81)
 * :unmap <char>:                         Mapping.             (line  59)
 * :unmap! <char>:                        Mapping.             (line  59)
-* :v:                                    Search and Replace.  (line  75)
-* :vglobal:                              Search and Replace.  (line  75)
+* :v:                                    Search and Replace.  (line  81)
+* :vglobal:                              Search and Replace.  (line  81)
 * :W:                                    File and Buffer Handling.
                                                               (line 148)
 * :w !<cmd>:                             Shell Commands.      (line  56)
@@ -4816,9 +4880,9 @@ Function Index
 * viper-add-local-keys:                  Key Bindings.        (line 183)
 * viper-buffer-search-enable:            Viper Specials.      (line  21)
 * viper-describe-kbd-macros:             Vi Macros.           (line 253)
-* viper-glob-function:                   Rudimentary Changes. (line 206)
-* viper-go-away <1>:                     Viper Specials.      (line 188)
-* viper-go-away:                         States in Viper.     (line   6)
+* viper-glob-function:                   Rudimentary Changes. (line 180)
+* viper-go-away <1>:                     States in Viper.     (line   6)
+* viper-go-away:                         Viper Specials.      (line 188)
 * viper-harness-minor-mode:              Packages that Change Keymaps.
                                                               (line 108)
 * viper-mode:                            Packages that Change Keymaps.
@@ -4847,83 +4911,82 @@ Variable Index
  [index ]
 * Menu:
 
-* buffer-read-only:                      Rudimentary Changes. (line 370)
-* ex-cycle-other-window:                 Rudimentary Changes. (line 370)
-* ex-cycle-through-non-files:            Rudimentary Changes. (line 370)
+* buffer-read-only:                      Rudimentary Changes. (line 339)
+* ex-cycle-other-window:                 Rudimentary Changes. (line 339)
+* ex-cycle-through-non-files:            Rudimentary Changes. (line 339)
 * function-key-map:                      Key Bindings.        (line 183)
-* viper-allow-multiline-replace-regions: Rudimentary Changes. (line 370)
+* input-decode-map:                      Key Bindings.        (line 183)
+* viper-allow-multiline-replace-regions: Rudimentary Changes. (line 339)
 * viper-always <1>:                      Packages that Change Keymaps.
                                                               (line 108)
-* viper-always:                          Rudimentary Changes. (line 370)
-* viper-auto-indent:                     Rudimentary Changes. (line 370)
-* viper-buffer-search-char <1>:          Viper Specials.      (line  21)
-* viper-buffer-search-char:              Rudimentary Changes. (line 370)
-* viper-case-fold-search:                Rudimentary Changes. (line 370)
+* viper-always:                          Rudimentary Changes. (line 339)
+* viper-auto-indent:                     Rudimentary Changes. (line 339)
+* viper-buffer-search-char <1>:          Rudimentary Changes. (line 339)
+* viper-buffer-search-char:              Viper Specials.      (line  21)
+* viper-case-fold-search:                Rudimentary Changes. (line 339)
 * viper-command-ring-size:               Viper Specials.      (line 136)
-* viper-custom-file-name:                Rudimentary Changes. (line 370)
-* viper-delete-backwards-in-replace:     Rudimentary Changes. (line 370)
+* viper-custom-file-name:                Rudimentary Changes. (line 339)
+* viper-delete-backwards-in-replace:     Rudimentary Changes. (line 339)
 * viper-dired-modifier-map:              Viper Specials.      (line  67)
-* viper-electric-mode:                   Rudimentary Changes. (line 370)
+* viper-electric-mode:                   Rudimentary Changes. (line 339)
 * viper-emacs-global-user-map:           Key Bindings.        (line 183)
-* viper-emacs-state-cursor-color:        Rudimentary Changes. (line 291)
-* viper-emacs-state-hook:                Rudimentary Changes. (line 370)
+* viper-emacs-state-cursor-color:        Rudimentary Changes. (line 265)
+* viper-emacs-state-hook:                Rudimentary Changes. (line 339)
 * viper-emacs-state-mode-list:           Packages that Change Keymaps.
                                                               (line  68)
-* viper-ESC-key:                         Rudimentary Changes. (line 370)
-* viper-ESC-keyseq-timeout:              Rudimentary Changes. (line 370)
-* viper-ESC-moves-cursor-back:           Rudimentary Changes. (line 370)
-* viper-ex-style-editing:                Rudimentary Changes. (line 370)
-* viper-ex-style-motion:                 Rudimentary Changes. (line 370)
-* viper-fast-keyseq-timeout:             Rudimentary Changes. (line 370)
+* viper-ESC-moves-cursor-back:           Rudimentary Changes. (line 339)
+* viper-ex-style-editing:                Rudimentary Changes. (line 339)
+* viper-ex-style-motion:                 Rudimentary Changes. (line 339)
+* viper-fast-keyseq-timeout:             Rudimentary Changes. (line 339)
 * viper-insert-global-user-map:          Key Bindings.        (line 183)
-* viper-insert-state-cursor-color:       Rudimentary Changes. (line 287)
-* viper-insert-state-hook:               Rudimentary Changes. (line 370)
+* viper-insert-state-cursor-color:       Rudimentary Changes. (line 261)
+* viper-insert-state-hook:               Rudimentary Changes. (line 339)
 * viper-insert-state-mode-list:          Packages that Change Keymaps.
                                                               (line  68)
 * viper-insertion-ring-size:             Viper Specials.      (line 107)
-* viper-keep-point-on-repeat:            Rudimentary Changes. (line 370)
-* viper-keep-point-on-undo:              Rudimentary Changes. (line 370)
+* viper-keep-point-on-repeat:            Rudimentary Changes. (line 339)
+* viper-keep-point-on-undo:              Rudimentary Changes. (line 339)
 * viper-major-mode-modifier-list:        Key Bindings.        (line 113)
 * viper-mouse-insert-key:                Viper Specials.      (line 231)
 * viper-multiclick-timeout:              Viper Specials.      (line 311)
-* viper-no-multiple-ESC:                 Rudimentary Changes. (line 370)
+* viper-no-multiple-ESC:                 Rudimentary Changes. (line 339)
 * viper-parse-sexp-ignore-comments:      Move Commands.       (line 171)
-* viper-re-query-replace:                Rudimentary Changes. (line 370)
-* viper-re-search:                       Rudimentary Changes. (line 370)
+* viper-re-query-replace:                Rudimentary Changes. (line 339)
+* viper-re-search:                       Rudimentary Changes. (line 339)
 * VIPER-READ-BUFFER-FUNCTION:            File and Buffer Handling.
                                                               (line 136)
-* viper-replace-overlay-cursor-color:    Rudimentary Changes. (line 282)
-* viper-replace-overlay-face:            Rudimentary Changes. (line 370)
-* viper-replace-region-end-symbol:       Rudimentary Changes. (line 370)
-* viper-replace-region-start-symbol:     Rudimentary Changes. (line 370)
-* viper-replace-state-hook:              Rudimentary Changes. (line 370)
-* viper-search-face <1>:                 Rudimentary Changes. (line 370)
-* viper-search-face:                     Improved Search.     (line  42)
-* viper-search-scroll-threshold:         Rudimentary Changes. (line 370)
-* viper-search-wrap-around:              Rudimentary Changes. (line 370)
-* viper-shift-width:                     Rudimentary Changes. (line 370)
+* viper-replace-overlay-cursor-color:    Rudimentary Changes. (line 256)
+* viper-replace-overlay-face:            Rudimentary Changes. (line 339)
+* viper-replace-region-end-symbol:       Rudimentary Changes. (line 339)
+* viper-replace-region-start-symbol:     Rudimentary Changes. (line 339)
+* viper-replace-state-hook:              Rudimentary Changes. (line 339)
+* viper-search-face <1>:                 Improved Search.     (line  42)
+* viper-search-face:                     Rudimentary Changes. (line 339)
+* viper-search-scroll-threshold:         Rudimentary Changes. (line 339)
+* viper-search-wrap-around:              Rudimentary Changes. (line 339)
+* viper-shift-width:                     Rudimentary Changes. (line 339)
 * viper-slash-and-colon-map:             Viper Specials.      (line  67)
 * viper-smart-suffix-list:               Viper Specials.      (line  89)
-* viper-spell-function <1>:              Rudimentary Changes. (line 370)
+* viper-spell-function <1>:              Rudimentary Changes. (line 339)
 * viper-spell-function:                  New Commands.        (line  66)
-* viper-surrounding-word-function:       Rudimentary Changes. (line 370)
-* viper-syntax-preference <1>:           Groundwork.          (line 147)
-* viper-syntax-preference:               Movement and Markers.
+* viper-surrounding-word-function:       Rudimentary Changes. (line 339)
+* viper-syntax-preference <1>:           Movement and Markers.
                                                               (line  17)
-* viper-tags-file-name:                  Rudimentary Changes. (line 370)
-* viper-toggle-key:                      Rudimentary Changes. (line 370)
+* viper-syntax-preference:               Groundwork.          (line 147)
+* viper-tags-file-name:                  Rudimentary Changes. (line 339)
+* viper-toggle-key:                      Rudimentary Changes. (line 339)
 * viper-vi-global-user-map:              Key Bindings.        (line 183)
-* viper-vi-state-hook:                   Rudimentary Changes. (line 370)
+* viper-vi-state-hook:                   Rudimentary Changes. (line 339)
 * viper-vi-state-mode-list:              Packages that Change Keymaps.
                                                               (line  68)
-* viper-vi-style-in-minibuffer:          Rudimentary Changes. (line 370)
-* viper-want-ctl-h-help:                 Rudimentary Changes. (line 370)
+* viper-vi-style-in-minibuffer:          Rudimentary Changes. (line 339)
+* viper-want-ctl-h-help:                 Rudimentary Changes. (line 339)
 * viper-want-emacs-keys-in-insert <1>:   Packages that Change Keymaps.
                                                               (line 108)
-* viper-want-emacs-keys-in-insert:       Rudimentary Changes. (line 370)
-* viper-want-emacs-keys-in-vi <1>:       Packages that Change Keymaps.
+* viper-want-emacs-keys-in-insert:       Rudimentary Changes. (line 339)
+* viper-want-emacs-keys-in-vi <1>:       Rudimentary Changes. (line 339)
+* viper-want-emacs-keys-in-vi:           Packages that Change Keymaps.
                                                               (line 108)
-* viper-want-emacs-keys-in-vi:           Rudimentary Changes. (line 370)
 
 
 File: viper,  Node: Package Index,  Next: Concept Index,  Prev: Variable Index,  Up: Top
@@ -4951,12 +5014,12 @@ Concept Index
  [index ]
 * Menu:
 
-* # (Previous file) <1>:                 Shell Commands.      (line   8)
-* # (Previous file):                     Groundwork.          (line  72)
+* # (Previous file) <1>:                 Groundwork.          (line  72)
+* # (Previous file):                     Shell Commands.      (line   8)
 * % (Current file) <1>:                  Shell Commands.      (line   6)
 * % (Current file):                      Groundwork.          (line  68)
-* % (Ex address) <1>:                    Shell Commands.      (line   7)
-* % (Ex address):                        Groundwork.          (line  58)
+* % (Ex address) <1>:                    Groundwork.          (line  58)
+* % (Ex address):                        Shell Commands.      (line   7)
 * .emacs:                                Customization.       (line  12)
 * .viper:                                Customization.       (line   8)
 * :customize:                            Customization.       (line  19)
@@ -4978,8 +5041,8 @@ Concept Index
 * auto fill:                             Options.             (line  82)
 * auto save:                             Undo and Backups.    (line  12)
 * autoindent:                            Options.             (line   8)
-* backup files <1>:                      Undoing.             (line   6)
-* backup files:                          Undo and Backups.    (line  12)
+* backup files <1>:                      Undo and Backups.    (line  12)
+* backup files:                          Undoing.             (line   6)
 * buffer:                                Emacs Preliminaries. (line   6)
 * buffer (modified):                     Emacs Preliminaries. (line  46)
 * buffer information:                    Emacs Preliminaries. (line  46)
@@ -4987,21 +5050,21 @@ Concept Index
 * C-c and Viper:                         Packages that Change Keymaps.
                                                               (line   6)
 * case and searching:                    Options.             (line  26)
-* case-insensitive search <1>:           Move Commands.       (line 154)
-* case-insensitive search <2>:           New Commands.        (line 121)
-* case-insensitive search:               Vi State.            (line  71)
-* case-sensitive search <1>:             Move Commands.       (line 154)
+* case-insensitive search <1>:           Vi State.            (line  71)
+* case-insensitive search <2>:           Move Commands.       (line 154)
+* case-insensitive search:               New Commands.        (line 121)
+* case-sensitive search <1>:             Vi State.            (line  71)
 * case-sensitive search <2>:             New Commands.        (line 121)
-* case-sensitive search:                 Vi State.            (line  71)
-* changing case <1>:                     Changing Text.       (line   6)
-* changing case:                         New Commands.        (line  46)
+* case-sensitive search:                 Move Commands.       (line 154)
+* changing case <1>:                     New Commands.        (line  46)
+* changing case:                         Changing Text.       (line   6)
 * changing tab width:                    Options.             (line  72)
-* CHAR:                                  Groundwork.          (line  96)
 * char:                                  Groundwork.          (line  96)
+* CHAR:                                  Groundwork.          (line  96)
 * column movement:                       Move Commands.       (line   6)
-* Command history:                       New Commands.        (line 128)
+* Command history:                       New Commands.        (line 134)
 * command line:                          Emacs Preliminaries. (line  46)
-* Command ring:                          New Commands.        (line 128)
+* Command ring:                          New Commands.        (line 134)
 * compiling:                             Useful Packages.     (line  17)
 * completion:                            Completion.          (line   6)
 * Control keys:                          Emacs Preliminaries. (line  79)
@@ -5021,27 +5084,27 @@ Concept Index
 * end (of buffer):                       Emacs Preliminaries. (line   6)
 * end (of line):                         Emacs Preliminaries. (line   6)
 * Ex addresses:                          Groundwork.          (line  36)
-* Ex commands <1>:                       Groundwork.          (line 165)
+* Ex commands <1>:                       States in Viper.     (line   6)
 * Ex commands <2>:                       Vi State.            (line  74)
-* Ex commands:                           States in Viper.     (line   6)
+* Ex commands:                           Groundwork.          (line 165)
 * Ex style motion:                       Movement and Markers.
                                                               (line   6)
 * expanding (region):                    Basics.              (line  21)
 * font-lock:                             Useful Packages.     (line  48)
 * global keymap:                         Emacs Preliminaries. (line  61)
-* headings <1>:                          Move Commands.       (line   6)
-* headings:                              Viper Specials.      (line  81)
+* headings <1>:                          Viper Specials.      (line  81)
+* headings:                              Move Commands.       (line   6)
 * history:                               History.             (line   6)
 * incremental search:                    Improved Search.     (line  23)
 * initialization:                        Customization.       (line   8)
-* Insert state <1>:                      Editing in Insert State.
+* Insert state <1>:                      Insert State.        (line   6)
+* Insert state <2>:                      States in Viper.     (line   6)
+* Insert state:                          Editing in Insert State.
                                                               (line  11)
-* Insert state <2>:                      Insert State.        (line   6)
-* Insert state:                          States in Viper.     (line   6)
 * inserting:                             Appending Text.      (line  11)
-* Insertion history:                     New Commands.        (line 128)
-* Insertion ring <1>:                    Viper Specials.      (line 107)
-* Insertion ring:                        New Commands.        (line 128)
+* Insertion history:                     New Commands.        (line 134)
+* Insertion ring <1>:                    New Commands.        (line 134)
+* Insertion ring:                        Viper Specials.      (line 107)
 * interactive shell:                     Useful Packages.     (line  21)
 * ispell:                                Useful Packages.     (line  56)
 * joining lines:                         Changing Text.       (line   6)
@@ -5056,8 +5119,8 @@ Concept Index
 * last keyboard macro:                   Macros and Registers.
                                                               (line  24)
 * layout:                                Options.             (line  58)
-* line commands <1>:                     Groundwork.          (line  16)
-* line commands:                         Basics.              (line  16)
+* line commands <1>:                     Basics.              (line  16)
+* line commands:                         Groundwork.          (line  16)
 * line editor motion:                    Movement and Markers.
                                                               (line   6)
 * literal searching:                     Options.             (line  35)
@@ -5072,22 +5135,22 @@ Concept Index
                                                               (line   6)
 * mark:                                  Emacs Preliminaries. (line   6)
 * markers <1>:                           Move Commands.       (line   6)
-* markers <2>:                           Undo and Backups.    (line  17)
-* markers:                               Multiple Files in Viper.
+* markers <2>:                           Multiple Files in Viper.
                                                               (line  11)
+* markers:                               Undo and Backups.    (line  17)
 * marking:                               Marking.             (line  10)
-* matching parens <1>:                   Options.             (line  62)
-* matching parens:                       Move Commands.       (line   6)
-* Meta key <1>:                          Insert State.        (line  36)
-* Meta key <2>:                          Vi State.            (line  33)
-* Meta key:                              Emacs Preliminaries. (line  79)
+* matching parens <1>:                   Move Commands.       (line   6)
+* matching parens:                       Options.             (line  62)
+* Meta key <1>:                          Vi State.            (line  33)
+* Meta key <2>:                          Emacs Preliminaries. (line  79)
+* Meta key:                              Insert State.        (line  36)
 * Minibuffer <1>:                        History.             (line   6)
-* Minibuffer <2>:                        The Minibuffer.      (line   6)
-* Minibuffer:                            Emacs Preliminaries. (line  46)
+* Minibuffer <2>:                        Emacs Preliminaries. (line  46)
+* Minibuffer:                            The Minibuffer.      (line   6)
 * minor mode:                            Emacs Preliminaries. (line  61)
 * mode:                                  Emacs Preliminaries. (line  61)
-* mode line <1>:                         States in Viper.     (line  54)
-* mode line:                             Emacs Preliminaries. (line  46)
+* mode line <1>:                         Emacs Preliminaries. (line  46)
+* mode line:                             States in Viper.     (line  54)
 * mouse:                                 Viper Specials.      (line 230)
 * mouse search:                          Improved Search.     (line  33)
 * mouse-insert:                          Viper Specials.      (line 283)
@@ -5101,12 +5164,12 @@ Concept Index
 * multiple files:                        Multiple Files in Viper.
                                                               (line   6)
 * multiple undo:                         Vi State.            (line  56)
-* paragraphs <1>:                        Move Commands.       (line   6)
-* paragraphs:                            Viper Specials.      (line  81)
-* paren matching <1>:                    Options.             (line  62)
-* paren matching:                        Move Commands.       (line   6)
-* paste <1>:                             Yanking.             (line   6)
-* paste:                                 Appending Text.      (line  11)
+* paragraphs <1>:                        Viper Specials.      (line  81)
+* paragraphs:                            Move Commands.       (line   6)
+* paren matching <1>:                    Move Commands.       (line   6)
+* paren matching:                        Options.             (line  62)
+* paste <1>:                             Appending Text.      (line  11)
+* paste:                                 Yanking.             (line   6)
 * point:                                 Emacs Preliminaries. (line   6)
 * point commands <1>:                    Groundwork.          (line  11)
 * point commands:                        Basics.              (line  11)
@@ -5124,19 +5187,19 @@ Concept Index
 * register execution <1>:                New Commands.        (line  94)
 * register execution:                    Macros and Registers.
                                                               (line   6)
-* registers <1>:                         Macros and Registers.
-                                                              (line   6)
-* registers <2>:                         Undo and Backups.    (line  17)
-* registers:                             Multiple Files in Viper.
+* registers <1>:                         Multiple Files in Viper.
                                                               (line  27)
+* registers <2>:                         Macros and Registers.
+                                                              (line   6)
+* registers:                             Undo and Backups.    (line  17)
 * regular expressions:                   Vi State.            (line  71)
 * Replace state <1>:                     Replace State.       (line   6)
 * Replace state:                         States in Viper.     (line   6)
 * scrolling:                             Display.             (line   6)
-* searching <1>:                         Options.             (line  87)
-* searching:                             Move Commands.       (line   6)
-* sections <1>:                          Move Commands.       (line   6)
-* sections:                              Viper Specials.      (line  81)
+* searching <1>:                         Move Commands.       (line   6)
+* searching:                             Options.             (line  87)
+* sections <1>:                          Viper Specials.      (line  81)
+* sections:                              Move Commands.       (line   6)
 * sentences <1>:                         Move Commands.       (line   6)
 * sentences:                             Viper Specials.      (line  81)
 * setting variables:                     Rudimentary Changes. (line   6)
@@ -5146,100 +5209,100 @@ Concept Index
 * shifting text <1>:                     Options.             (line  58)
 * shifting text:                         Deleting Text.       (line  18)
 * substitution:                          Changing Text.       (line   6)
-* syntax table <1>:                      Groundwork.          (line 147)
-* syntax table:                          Movement and Markers.
+* syntax table <1>:                      Movement and Markers.
                                                               (line  17)
+* syntax table:                          Groundwork.          (line 147)
 * tabbing:                               Options.             (line  72)
 * text:                                  Emacs Preliminaries. (line   6)
-* text processing:                       Search and Replace.  (line  37)
-* textmarkers <1>:                       Move Commands.       (line   6)
-* textmarkers <2>:                       Movement and Markers.
+* text processing:                       Search and Replace.  (line  43)
+* textmarkers <1>:                       Movement and Markers.
                                                               (line  57)
-* textmarkers <3>:                       Undo and Backups.    (line  17)
-* textmarkers:                           Multiple Files in Viper.
+* textmarkers <2>:                       Multiple Files in Viper.
                                                               (line  11)
+* textmarkers <3>:                       Move Commands.       (line   6)
+* textmarkers:                           Undo and Backups.    (line  17)
 * transparent ftp:                       Useful Packages.     (line  37)
-* undo <1>:                              Undoing.             (line   6)
+* undo <1>:                              Vi State.            (line  56)
 * undo <2>:                              Undo and Backups.    (line   6)
-* undo:                                  Vi State.            (line  56)
-* vanilla search <1>:                    Move Commands.       (line 154)
-* vanilla search <2>:                    New Commands.        (line 121)
-* vanilla search:                        Vi State.            (line  71)
+* undo:                                  Undoing.             (line   6)
+* vanilla search <1>:                    New Commands.        (line 121)
+* vanilla search <2>:                    Vi State.            (line  71)
+* vanilla search:                        Move Commands.       (line 154)
 * variables for customization:           Rudimentary Changes. (line   6)
 * version maintenance:                   Useful Packages.     (line  41)
 * Vi macros:                             Vi Macros.           (line   6)
 * Vi options:                            Options.             (line   6)
 * Vi state <1>:                          Vi State.            (line   6)
 * Vi state:                              States in Viper.     (line   6)
-* viewing registers and markers <1>:     Macros and Registers.
+* viewing registers and markers <1>:     Undo and Backups.    (line  17)
+* viewing registers and markers:         Macros and Registers.
                                                               (line  21)
-* viewing registers and markers:         Undo and Backups.    (line  17)
 * Viper and C-c:                         Packages that Change Keymaps.
                                                               (line   6)
 * Viper as minor mode:                   Emacs Preliminaries. (line  79)
 * window:                                Emacs Preliminaries. (line  46)
 * word search:                           Improved Search.     (line   6)
 * word wrap:                             Options.             (line  82)
-* WORDS:                                 Groundwork.          (line  96)
 * words:                                 Groundwork.          (line  96)
+* WORDS:                                 Groundwork.          (line  96)
 
 
 
 Tag Table:
-Node: Top1392
-Node: Overview3877
-Node: Emacs Preliminaries5473
-Node: Loading Viper10828
-Node: States in Viper13014
-Node: Emacs State18078
-Node: Vi State19559
-Node: Insert State26435
-Node: Replace State29313
-Node: The Minibuffer30977
-Node: Multiple Files in Viper32634
-Node: Unimplemented Features36076
-Node: Improvements over Vi36799
-Node: Basics37885
-Node: Undo and Backups40336
-Node: History41509
-Node: Macros and Registers43115
-Node: Completion44799
-Node: Improved Search45233
-Node: Abbreviation Facilities47593
-Node: Movement and Markers48573
-Node: New Commands51624
-Node: Useful Packages57462
-Node: Customization59524
-Node: Rudimentary Changes61331
-Node: Key Bindings77946
-Node: Packages that Change Keymaps87791
-Node: Viper Specials93665
-Node: Vi Macros111379
-Node: Commands124783
-Node: Groundwork125520
-Node: Text Handling131988
-Node: Move Commands132550
-Node: Marking136303
-Node: Appending Text137545
-Node: Editing in Insert State139883
-Node: Deleting Text140473
-Node: Changing Text141817
-Node: Search and Replace144819
-Node: Yanking147083
-Node: Undoing148004
-Node: Display148347
-Node: File and Buffer Handling149659
-Node: Mapping154185
-Node: Shell Commands155883
-Node: Options157723
-Node: Emacs Related Commands159926
-Node: Mouse-bound Commands161502
-Node: Acknowledgments162369
-Node: GNU Free Documentation License165510
-Node: Key Index187692
-Node: Function Index205229
-Node: Variable Index216906
-Node: Package Index222645
-Node: Concept Index223299
+Node: Top1077
+Node: Overview4335
+Node: Emacs Preliminaries5931
+Node: Loading Viper11286
+Node: States in Viper13472
+Node: Emacs State18536
+Node: Vi State20017
+Node: Insert State26896
+Node: Replace State29774
+Node: The Minibuffer31438
+Node: Multiple Files in Viper33341
+Node: Unimplemented Features36783
+Node: Improvements over Vi37506
+Node: Basics38592
+Node: Undo and Backups41043
+Node: History42216
+Node: Macros and Registers43822
+Node: Completion45506
+Node: Improved Search45940
+Node: Abbreviation Facilities48300
+Node: Movement and Markers49280
+Node: New Commands52331
+Node: Useful Packages58419
+Node: Customization60481
+Node: Rudimentary Changes62288
+Node: Key Bindings77105
+Node: Packages that Change Keymaps86950
+Node: Viper Specials92824
+Node: Vi Macros110538
+Node: Commands123942
+Node: Groundwork124679
+Node: Text Handling131147
+Node: Move Commands131709
+Node: Marking135462
+Node: Appending Text136704
+Node: Editing in Insert State139042
+Node: Deleting Text139632
+Node: Changing Text140976
+Node: Search and Replace143978
+Node: Yanking146536
+Node: Undoing147457
+Node: Display147800
+Node: File and Buffer Handling149112
+Node: Mapping153638
+Node: Shell Commands155336
+Node: Options157176
+Node: Emacs Related Commands159379
+Node: Mouse-bound Commands160955
+Node: Acknowledgments161822
+Node: GNU Free Documentation License164963
+Node: Key Index190094
+Node: Function Index207704
+Node: Variable Index219381
+Node: Package Index225047
+Node: Concept Index225701
 
 End Tag Table

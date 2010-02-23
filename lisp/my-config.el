@@ -5,6 +5,9 @@
 
 (standard-display-ascii ?\t "    ")
 
+(require 'info)
+(setq Info-directory-list (cons (expand-file-name "~/.emacs.d/info") nil))
+
 ;; Shell Config
 ;; TODO Move to Easy Customization
   (setq shell-file-name "bash")
