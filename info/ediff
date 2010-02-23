@@ -1,29 +1,23 @@
-This is ../info/ediff, produced by makeinfo version 4.11 from
+This is ../../info/ediff, produced by makeinfo version 4.13 from
 ediff.texi.
 
 This file documents Ediff, a comprehensive visual interface to Unix diff
 and patch utilities.
 
    Copyright (C) 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003,
-2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
+2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
-     Version 1.2 or any later version published by the Free Software
+     Version 1.3 or any later version published by the Free Software
      Foundation; with no Invariant Sections, with the Front-Cover texts
      being "A GNU Manual", and with the Back-Cover Texts as in (a)
      below.  A copy of the license is included in the section entitled
-     "GNU Free Documentation License" in the Emacs manual.
+     "GNU Free Documentation License".
 
-     (a) The FSF's Back-Cover Text is: "You have freedom to copy and
-     modify this GNU Manual, like GNU software.  Copies published by
-     the Free Software Foundation raise funds for GNU development."
-
-     This document is part of a collection distributed under the GNU
-     Free Documentation License.  If you want to distribute this
-     document separately from the collection, you can do so by adding a
-     copy of the license to the document, as described in section 6 of
-     the license.
+     (a) The FSF's Back-Cover Text is: "You have the freedom to copy and
+     modify this GNU manual.  Buying copies from the FSF supports it in
+     developing GNU and promoting software freedom."
 
 INFO-DIR-SECTION Emacs
 START-INFO-DIR-ENTRY
@@ -32,6 +26,24 @@ END-INFO-DIR-ENTRY
 
 
 File: ediff,  Node: Top,  Next: Introduction,  Prev: (dir),  Up: (dir)
+
+   This file documents Ediff, a comprehensive visual interface to Unix
+diff and patch utilities.
+
+   Copyright (C) 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003,
+2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.3 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with the Front-Cover texts
+     being "A GNU Manual", and with the Back-Cover Texts as in (a)
+     below.  A copy of the license is included in the section entitled
+     "GNU Free Documentation License".
+
+     (a) The FSF's Back-Cover Text is: "You have the freedom to copy and
+     modify this GNU manual.  Buying copies from the FSF supports it in
+     developing GNU and promoting software freedom."
 
 * Menu:
 
@@ -122,6 +134,10 @@ Tools menu: Compare, Merge, and Apply Patch.
      Compare a file with its backup. If there are several numerical
      backups, use the latest. If the file is itself a backup, then
      compare it with its original.
+
+`ediff-current-file'
+     Compare the buffer with its file on disk. This function can be
+     used as a safe version of `revert-buffer'.
 
 `ediff-buffers'
      Compare two buffers.
@@ -348,7 +364,7 @@ window by typing `?' again.  The Quick Help commands are detailed below.
    Many Ediff commands take numeric prefix arguments.  For instance, if
 you type a number, say 3, and then `j' (`ediff-jump-to-difference'),
 Ediff moves to the third difference region.  Typing 3 and then `a'
-(`ediff-diff-to-diff') copies the 3d difference region from variant A
+(`ediff-diff-to-diff') copies the 3rd difference region from variant A
 to variant B.  Likewise, 4 followed by `ra' restores the 4th difference
 region in buffer A (if it was previously written over via the command
 `a').
@@ -1062,7 +1078,7 @@ compression and encryption packages also use this method).
    Regular files are treated by the `patch' utility in the usual manner,
 i.e., the original is renamed into `source-name.orig' and the result of
 the patch is placed into the file source-name (`_orig' is used on
-systems like VMS, DOS, etc.)
+systems like DOS, etc.)
 
 
 File: ediff,  Node: Customization,  Next: Credits,  Prev: Remote and Compressed Files,  Up: Top
@@ -2227,103 +2243,105 @@ customization package.
 advice.  Without them, Ediff would not be nearly as useful as it is
 today.  Here is a hopefully full list of contributors:
 
-     Adrian Aichner (aichner@ecf.teradyne.com),
-     Drew Adams (drew.adams@oracle.com),
-     Steve Baur (steve@xemacs.org),
-     Neal Becker (neal@ctd.comsat.com),
-     E. Jay Berkenbilt (ejb@ql.org),
-     Alastair Burt (burt@dfki.uni-kl.de),
-     Paul Bibilo (peb@delcam.co.uk),
-     Kevin Broadey (KevinB@bartley.demon.co.uk),
-     Harald Boegeholz (hwb@machnix.mathematik.uni-stuttgart.de),
-     Bradley A. Bosch (brad@lachman.com),
-     Michael D. Carney (carney@ltx-tr.com),
-     Jin S. Choi (jin@atype.com),
-     Scott Cummings (cummings@adc.com),
-     Albert Dvornik (bert@mit.edu),
-     Eric Eide (eeide@asylum.cs.utah.edu),
-     Paul Eggert (eggert@twinsun.com),
-     Urban Engberg (ue@cci.dk),
-     Kevin Esler (esler@ch.hp.com),
-     Robert Estes (estes@ece.ucdavis.edu),
-     Jay Finger (jayf@microsoft.com),
-     Xavier Fornari (xavier@europe.cma.fr),
-     Eric Freudenthal (freudent@jan.ultra.nyu.edu),
-     Job Ganzevoort (Job.Ganzevoort@cwi.nl),
-     Felix Heinrich Gatzemeier (felix.g@tzemeier.info),
-     Boris Goldowsky (boris@cs.rochester.edu),
-     Allan Gottlieb (gottlieb@allan.ultra.nyu.edu),
-     Aaron Gross (aaron@bfr.co.il),
-     Thorbjoern Hansen (thorbjoern.hansen@mchp.siemens.de),
-     Marcus Harnisch (marcus_harnisch@mint-tech.com),
-     Steven E. Harris (seh@panix.com),
-     Aaron S. Hawley (Aaron.Hawley@uvm.edu),
-     Xiaoli Huang (hxl@epic.com),
-     Andreas Jaeger (aj@suse.de),
-     Lars Magne Ingebrigtsen (larsi@ifi.uio.no),
-     Larry Gouge (larry@itginc.com),
-     Karl Heuer (kwzh@gnu.org),
-     (irvine@lks.csi.com),
-     (jaffe@chipmunk.cita.utoronto.ca),
-     David Karr (dkarr@nmo.gtegsc.com),
-     Norbert Kiesel (norbert@i3.informatik.rwth-aachen.de),
-     Steffen Kilb (skilb@gmx.net),
-     Leigh L Klotz (klotz@adoc.xerox.com),
-     Fritz Knabe (Fritz.Knabe@ecrc.de),
-     Heinz Knutzen (hk@informatik.uni-kiel.d400.de),
-     Andrew Koenig (ark@research.att.com),
-     Hannu Koivisto (azure@iki.fi),
-     Ken Laprade (laprade@dw3f.ess.harris.com),
-     Will C Lauer (wcl@cadre.com),
-     Richard Levitte (levitte@e.kth.se),
-     Mike Long (mike.long@analog.com),
-     Dave Love (d.love@dl.ac.uk),
-     Martin Maechler (maechler@stat.math.ethz.ch),
-     Simon Marshall (simon@gnu.org),
-     Paul C. Meuse (pmeuse@delcomsys.com),
-     Richard Mlynarik (mly@adoc.xerox.com),
-     Stefan Monnier (monnier@cs.yale.edu),
-     Chris Murphy (murphycm@sun.aston.ac.uk),
-     Erik Naggum (erik@naggum.no),
-     Eyvind Ness (Eyvind.Ness@hrp.no),
-     Ray Nickson (nickson@cs.uq.oz.au),
-     Dan Nicolaescu (dann@ics.uci.edu),
-     David Petchey (petchey_david@jpmorgan.com),
-     Benjamin Pierce (benjamin.pierce@cl.cam.ac.uk),
-     Francois Pinard (pinard@iro.umontreal.ca),
-     Tibor Polgar (tlp00@spg.amdahl.com),
-     David Prince (dave0d@fegs.co.uk),
-     Paul Raines (raines@slac.stanford.edu),
-     Stefan Reicher (xsteve@riic.at),
-     Charles Rich (rich@merl.com),
-     Bill Richter (richter@math.nwu.edu),
-     C.S. Roberson (roberson@aur.alcatel.com),
-     Kevin Rodgers (kevin.rodgers@ihs.com),
-     Sandy Rutherford (sandy@ibm550.sissa.it),
-     Heribert Schuetz (schuetz@ecrc.de),
-     Andy Scott (ascott@pcocd2.intel.com),
-     Axel Seibert (axel@tumbolia.ppp.informatik.uni-muenchen.de),
-     Vin Shelton (acs@xemacs.org),
-     Scott O. Sherman (Scott.Sherman@mci.com),
-     Richard Stallman (rms@gnu.org),
-     Richard Stanton (stanton@haas.berkeley.edu),
-     Sam Steingold (sds@goems.com),
-     Ake Stenhoff (etxaksf@aom.ericsson.se),
-     Stig (stig@hackvan.com),
-     Peter Stout (Peter_Stout@cs.cmu.edu),
-     Chuck Thompson (cthomp@cs.uiuc.edu),
-     Ray Tomlinson (tomlinso@bbn.com),
-     Raymond Toy (toy@rtp.ericsson.se),
-     Stephen J. Turnbull  (stephen@xemacs.org),
-     Jan Vroonhof (vroonhof@math.ethz.ch),
-     Colin Walters (walters@cis.ohio-state.edu),
-     Philippe Waroquiers (philippe.waroquiers@eurocontrol.be),
-     Klaus Weber (gizmo@zork.north.de),
-     Ben Wing (ben@xemacs.org),
-     Tom Wurgler (twurgler@goodyear.com),
-     Steve Youngs (youngs@xemacs.org),
-     Ilya Zakharevich (ilya@math.ohio-state.edu),
-     Eli Zaretskii (eliz@is.elta.co.il)
+     Adrian Aichner (aichner at ecf.teradyne.com),
+     Drew Adams (drew.adams at oracle.com),
+     Steve Baur (steve at xemacs.org),
+     Neal Becker (neal at ctd.comsat.com),
+     E. Jay Berkenbilt (ejb at ql.org),
+     Lennart Borgman (ennart.borgman at gmail.com)
+     Alastair Burt (burt at dfki.uni-kl.de),
+     Paul Bibilo (peb at delcam.co.uk),
+     Kevin Broadey (KevinB at bartley.demon.co.uk),
+     Harald Boegeholz (hwb at machnix.mathematik.uni-stuttgart.de),
+     Bradley A. Bosch (brad at lachman.com),
+     Michael D. Carney (carney at ltx-tr.com),
+     Jin S. Choi (jin at atype.com),
+     Scott Cummings (cummings at adc.com),
+     Albert Dvornik (bert at mit.edu),
+     Eric Eide (eeide at asylum.cs.utah.edu),
+     Paul Eggert (eggert at twinsun.com),
+     Urban Engberg (ue at cci.dk),
+     Kevin Esler (esler at ch.hp.com),
+     Robert Estes (estes at ece.ucdavis.edu),
+     Jay Finger (jayf at microsoft.com),
+     Xavier Fornari (xavier at europe.cma.fr),
+     Eric Freudenthal (freudent at jan.ultra.nyu.edu),
+     Job Ganzevoort (Job.Ganzevoort at cwi.nl),
+     Felix Heinrich Gatzemeier (felix.g at tzemeier.info),
+     Boris Goldowsky (boris at cs.rochester.edu),
+     Allan Gottlieb (gottlieb at allan.ultra.nyu.edu),
+     Aaron Gross (aaron at bfr.co.il),
+     Thorbjoern Hansen (thorbjoern.hansen at mchp.siemens.de),
+     Marcus Harnisch (marcus_harnisch at mint-tech.com),
+     Steven E. Harris (seh at panix.com),
+     Aaron S. Hawley (Aaron.Hawley at uvm.edu),
+     Xiaoli Huang (hxl at epic.com),
+     Andreas Jaeger (aj at suse.de),
+     Lars Magne Ingebrigtsen (larsi at ifi.uio.no),
+     Larry Gouge (larry at itginc.com),
+     Karl Heuer (kwzh at gnu.org),
+     (irvine at lks.csi.com),
+     (jaffe at chipmunk.cita.utoronto.ca),
+     David Karr (dkarr at nmo.gtegsc.com),
+     Norbert Kiesel (norbert at i3.informatik.rwth-aachen.de),
+     Steffen Kilb (skilb at gmx.net),
+     Leigh L Klotz (klotz at adoc.xerox.com),
+     Fritz Knabe (Fritz.Knabe at ecrc.de),
+     Heinz Knutzen (hk at informatik.uni-kiel.d400.de),
+     Andrew Koenig (ark at research.att.com),
+     Hannu Koivisto (azure at iki.fi),
+     Ken Laprade (laprade at dw3f.ess.harris.com),
+     Will C Lauer (wcl at cadre.com),
+     Richard Levitte (levitte at e.kth.se),
+     Mike Long (mike.long at analog.com),
+     Dave Love (d.love at dl.ac.uk),
+     Martin Maechler (maechler at stat.math.ethz.ch),
+     Simon Marshall (simon at gnu.org),
+     Paul C. Meuse (pmeuse at delcomsys.com),
+     Richard Mlynarik (mly at adoc.xerox.com),
+     Stefan Monnier (monnier at cs.yale.edu),
+     Chris Murphy (murphycm at sun.aston.ac.uk),
+     Erik Naggum (erik at naggum.no),
+     Eyvind Ness (Eyvind.Ness at hrp.no),
+     Ray Nickson (nickson at cs.uq.oz.au),
+     Dan Nicolaescu (dann at ics.uci.edu),
+     David Petchey (petchey_david at jpmorgan.com),
+     Benjamin Pierce (benjamin.pierce at cl.cam.ac.uk),
+     Francois Pinard (pinard at iro.umontreal.ca),
+     Tibor Polgar (tlp00 at spg.amdahl.com),
+     David Prince (dave0d at fegs.co.uk),
+     Paul Raines (raines at slac.stanford.edu),
+     Stefan Reicher (xsteve at riic.at),
+     Charles Rich (rich at merl.com),
+     Bill Richter (richter at math.nwu.edu),
+     C.S. Roberson (roberson at aur.alcatel.com),
+     Kevin Rodgers (kevin.rodgers at ihs.com),
+     Sandy Rutherford (sandy at ibm550.sissa.it),
+     Heribert Schuetz (schuetz at ecrc.de),
+     Andy Scott (ascott at pcocd2.intel.com),
+     Axel Seibert (axel at tumbolia.ppp.informatik.uni-muenchen.de),
+     Vin Shelton (acs at xemacs.org),
+     Scott O. Sherman (Scott.Sherman at mci.com),
+     Nikolaj Schumacher (n_schumacher at web.de),
+     Richard Stallman (rms at gnu.org),
+     Richard Stanton (stanton at haas.berkeley.edu),
+     Sam Steingold (sds at goems.com),
+     Ake Stenhoff (etxaksf at aom.ericsson.se),
+     Stig (stig at hackvan.com),
+     Peter Stout (Peter_Stout at cs.cmu.edu),
+     Chuck Thompson (cthomp at cs.uiuc.edu),
+     Ray Tomlinson (tomlinso at bbn.com),
+     Raymond Toy (toy at rtp.ericsson.se),
+     Stephen J. Turnbull  (stephen at xemacs.org),
+     Jan Vroonhof (vroonhof at math.ethz.ch),
+     Colin Walters (walters at cis.ohio-state.edu),
+     Philippe Waroquiers (philippe.waroquiers at eurocontrol.be),
+     Klaus Weber (gizmo at zork.north.de),
+     Ben Wing (ben at xemacs.org),
+     Tom Wurgler (twurgler at goodyear.com),
+     Steve Youngs (youngs at xemacs.org),
+     Ilya Zakharevich (ilya at math.ohio-state.edu),
+     Eli Zaretskii (eliz at is.elta.co.il)
 
 
 File: ediff,  Node: GNU Free Documentation License,  Next: Index,  Prev: Credits,  Up: Top
@@ -2331,14 +2349,13 @@ File: ediff,  Node: GNU Free Documentation License,  Next: Index,  Prev: Credits
 Appendix A GNU Free Documentation License
 *****************************************
 
-                      Version 1.2, November 2002
+                     Version 1.3, 3 November 2008
 
-     Copyright (C) 2000,2001,2002  Free Software Foundation, Inc.
-     51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+     Copyright (C) 2000, 2001, 2002, 2007, 2008, 2009 Free Software Foundation, Inc.
+     `http://fsf.org/'
 
      Everyone is permitted to copy and distribute verbatim copies
      of this license document, but changing it is not allowed.
-
 
   0. PREAMBLE
 
@@ -2350,7 +2367,7 @@ Appendix A GNU Free Documentation License
      author and publisher a way to get credit for their work, while not
      being considered responsible for modifications made by others.
 
-     This License is a kind of "copyleft," which means that derivative
+     This License is a kind of "copyleft", which means that derivative
      works of the document must themselves be free in the same sense.
      It complements the GNU General Public License, which is a copyleft
      license designed for free software.
@@ -2364,7 +2381,6 @@ Appendix A GNU Free Documentation License
      We recommend this License principally for works whose purpose is
      instruction or reference.
 
-
   1. APPLICABILITY AND DEFINITIONS
 
      This License applies to any manual or other work, in any medium,
@@ -2372,8 +2388,8 @@ Appendix A GNU Free Documentation License
      can be distributed under the terms of this License.  Such a notice
      grants a world-wide, royalty-free license, unlimited in duration,
      to use that work under the conditions stated herein.  The
-     "Document," below, refers to any such manual or work.  Any member
-     of the public is a licensee, and is addressed as "you."  You
+     "Document", below, refers to any such manual or work.  Any member
+     of the public is a licensee, and is addressed as "you".  You
      accept the license if you copy, modify or distribute the work in a
      way requiring permission under copyright law.
 
@@ -2381,16 +2397,16 @@ Appendix A GNU Free Documentation License
      Document or a portion of it, either copied verbatim, or with
      modifications and/or translated into another language.
 
-     A "Secondary Section" is a named appendix or a front-matter
-     section of the Document that deals exclusively with the
-     relationship of the publishers or authors of the Document to the
-     Document's overall subject (or to related matters) and contains
-     nothing that could fall directly within that overall subject.
-     (Thus, if the Document is in part a textbook of mathematics, a
-     Secondary Section may not explain any mathematics.)  The
-     relationship could be a matter of historical connection with the
-     subject or with related matters, or of legal, commercial,
-     philosophical, ethical or political position regarding them.
+     A "Secondary Section" is a named appendix or a front-matter section
+     of the Document that deals exclusively with the relationship of the
+     publishers or authors of the Document to the Document's overall
+     subject (or to related matters) and contains nothing that could
+     fall directly within that overall subject.  (Thus, if the Document
+     is in part a textbook of mathematics, a Secondary Section may not
+     explain any mathematics.)  The relationship could be a matter of
+     historical connection with the subject or with related matters, or
+     of legal, commercial, philosophical, ethical or political position
+     regarding them.
 
      The "Invariant Sections" are certain Secondary Sections whose
      titles are designated, as being those of Invariant Sections, in
@@ -2418,7 +2434,7 @@ Appendix A GNU Free Documentation License
      markup, has been arranged to thwart or discourage subsequent
      modification by readers is not Transparent.  An image format is
      not Transparent if used for any substantial amount of text.  A
-     copy that is not "Transparent" is called "Opaque."
+     copy that is not "Transparent" is called "Opaque".
 
      Examples of suitable formats for Transparent copies include plain
      ASCII without markup, Texinfo input format, LaTeX input format,
@@ -2426,8 +2442,8 @@ Appendix A GNU Free Documentation License
      standard-conforming simple HTML, PostScript or PDF designed for
      human modification.  Examples of transparent image formats include
      PNG, XCF and JPG.  Opaque formats include proprietary formats that
-     can be read and edited only by proprietary word processors, SGML
-     or XML for which the DTD and/or processing tools are not generally
+     can be read and edited only by proprietary word processors, SGML or
+     XML for which the DTD and/or processing tools are not generally
      available, and the machine-generated HTML, PostScript or PDF
      produced by some word processors for output purposes only.
 
@@ -2438,11 +2454,14 @@ Appendix A GNU Free Documentation License
      Page" means the text near the most prominent appearance of the
      work's title, preceding the beginning of the body of the text.
 
+     The "publisher" means any person or entity that distributes copies
+     of the Document to the public.
+
      A section "Entitled XYZ" means a named subunit of the Document
      whose title either is precisely XYZ or contains XYZ in parentheses
      following text that translates XYZ in another language.  (Here XYZ
      stands for a specific section name mentioned below, such as
-     "Acknowledgements," "Dedications," "Endorsements," or "History.")
+     "Acknowledgements", "Dedications", "Endorsements", or "History".)
      To "Preserve the Title" of such a section when you modify the
      Document means that it remains a section "Entitled XYZ" according
      to this definition.
@@ -2520,59 +2539,75 @@ Appendix A GNU Free Documentation License
      whoever possesses a copy of it.  In addition, you must do these
      things in the Modified Version:
 
-     A. Use in the Title Page (and on the covers, if any) a title
-     distinct    from that of the Document, and from those of previous
-     versions    (which should, if there were any, be listed in the
-     History section    of the Document).  You may use the same title
-     as a previous version    if the original publisher of that version
-     gives permission.
-     B. List on the Title Page, as authors, one or more persons or
-     entities    responsible for authorship of the modifications in the
-     Modified    Version, together with at least five of the principal
-     authors of the    Document (all of its principal authors, if it
-     has fewer than five),    unless they release you from this
-     requirement.
-     C. State on the Title page the name of the publisher of the
-     Modified Version, as the publisher.
-     D. Preserve all the copyright notices of the Document.
-     E. Add an appropriate copyright notice for your modifications
-     adjacent to the other copyright notices.
-     F. Include, immediately after the copyright notices, a license
-     notice    giving the public permission to use the Modified Version
-     under the    terms of this License, in the form shown in the
-     Addendum below.
-     G. Preserve in that license notice the full lists of Invariant
-     Sections    and required Cover Texts given in the Document's
-     license notice.
-     H. Include an unaltered copy of this License.
-     I. Preserve the section Entitled "History," Preserve its Title,
-     and add    to it an item stating at least the title, year, new
-     authors, and    publisher of the Modified Version as given on the
-     Title Page.  If    there is no section Entitled "History" in the
-     Document, create one    stating the title, year, authors, and
-     publisher of the Document as    given on its Title Page, then add
-     an item describing the Modified    Version as stated in the
-     previous sentence.
-     J. Preserve the network location, if any, given in the Document for
-       public access to a Transparent copy of the Document, and likewise
-       the network locations given in the Document for previous versions
-       it was based on.  These may be placed in the "History" section.
-       You may omit a network location for a work that was published at
-       least four years before the Document itself, or if the original
-      publisher of the version it refers to gives permission.
-     K. For any section Entitled "Acknowledgements" or "Dedications,"
-     Preserve the Title of the section, and preserve in the section all
-       the substance and tone of each of the contributor
-     acknowledgements    and/or dedications given therein.
-     L. Preserve all the Invariant Sections of the Document,
-     unaltered in their text and in their titles.  Section numbers
-     or the equivalent are not considered part of the section titles.
-     M. Delete any section Entitled "Endorsements."  Such a section
-     may not be included in the Modified Version.
-     N. Do not retitle any existing section to be Entitled
-     "Endorsements"    or to conflict in title with any Invariant
-     Section.
-     O. Preserve any Warranty Disclaimers.
+       A. Use in the Title Page (and on the covers, if any) a title
+          distinct from that of the Document, and from those of
+          previous versions (which should, if there were any, be listed
+          in the History section of the Document).  You may use the
+          same title as a previous version if the original publisher of
+          that version gives permission.
+
+       B. List on the Title Page, as authors, one or more persons or
+          entities responsible for authorship of the modifications in
+          the Modified Version, together with at least five of the
+          principal authors of the Document (all of its principal
+          authors, if it has fewer than five), unless they release you
+          from this requirement.
+
+       C. State on the Title page the name of the publisher of the
+          Modified Version, as the publisher.
+
+       D. Preserve all the copyright notices of the Document.
+
+       E. Add an appropriate copyright notice for your modifications
+          adjacent to the other copyright notices.
+
+       F. Include, immediately after the copyright notices, a license
+          notice giving the public permission to use the Modified
+          Version under the terms of this License, in the form shown in
+          the Addendum below.
+
+       G. Preserve in that license notice the full lists of Invariant
+          Sections and required Cover Texts given in the Document's
+          license notice.
+
+       H. Include an unaltered copy of this License.
+
+       I. Preserve the section Entitled "History", Preserve its Title,
+          and add to it an item stating at least the title, year, new
+          authors, and publisher of the Modified Version as given on
+          the Title Page.  If there is no section Entitled "History" in
+          the Document, create one stating the title, year, authors,
+          and publisher of the Document as given on its Title Page,
+          then add an item describing the Modified Version as stated in
+          the previous sentence.
+
+       J. Preserve the network location, if any, given in the Document
+          for public access to a Transparent copy of the Document, and
+          likewise the network locations given in the Document for
+          previous versions it was based on.  These may be placed in
+          the "History" section.  You may omit a network location for a
+          work that was published at least four years before the
+          Document itself, or if the original publisher of the version
+          it refers to gives permission.
+
+       K. For any section Entitled "Acknowledgements" or "Dedications",
+          Preserve the Title of the section, and preserve in the
+          section all the substance and tone of each of the contributor
+          acknowledgements and/or dedications given therein.
+
+       L. Preserve all the Invariant Sections of the Document,
+          unaltered in their text and in their titles.  Section numbers
+          or the equivalent are not considered part of the section
+          titles.
+
+       M. Delete any section Entitled "Endorsements".  Such a section
+          may not be included in the Modified Version.
+
+       N. Do not retitle any existing section to be Entitled
+          "Endorsements" or to conflict in title with any Invariant
+          Section.
+
+       O. Preserve any Warranty Disclaimers.
 
      If the Modified Version includes new front-matter sections or
      appendices that qualify as Secondary Sections and contain no
@@ -2582,11 +2617,11 @@ Appendix A GNU Free Documentation License
      Version's license notice.  These titles must be distinct from any
      other section titles.
 
-     You may add a section Entitled "Endorsements," provided it contains
+     You may add a section Entitled "Endorsements", provided it contains
      nothing but endorsements of your Modified Version by various
-     parties-for example, statements of peer review or that the text has
-     been approved by an organization as the authoritative definition
-     of a standard.
+     parties--for example, statements of peer review or that the text
+     has been approved by an organization as the authoritative
+     definition of a standard.
 
      You may add a passage of up to five words as a Front-Cover Text,
      and a passage of up to 25 words as a Back-Cover Text, to the end
@@ -2626,7 +2661,7 @@ Appendix A GNU Free Documentation License
      In the combination, you must combine any sections Entitled
      "History" in the various original documents, forming one section
      Entitled "History"; likewise combine any sections Entitled
-     "Acknowledgements," and any sections Entitled "Dedications."  You
+     "Acknowledgements", and any sections Entitled "Dedications".  You
      must delete all sections Entitled "Endorsements."
 
   6. COLLECTIONS OF DOCUMENTS
@@ -2679,20 +2714,37 @@ Appendix A GNU Free Documentation License
      this License or a notice or disclaimer, the original version will
      prevail.
 
-     If a section in the Document is Entitled "Acknowledgements,"
-     "Dedications," or "History," the requirement (section 4) to
+     If a section in the Document is Entitled "Acknowledgements",
+     "Dedications", or "History", the requirement (section 4) to
      Preserve its Title (section 1) will typically require changing the
      actual title.
 
   9. TERMINATION
 
      You may not copy, modify, sublicense, or distribute the Document
-     except as expressly provided for under this License.  Any other
-     attempt to copy, modify, sublicense or distribute the Document is
-     void, and will automatically terminate your rights under this
-     License.  However, parties who have received copies, or rights,
-     from you under this License will not have their licenses
-     terminated so long as such parties remain in full compliance.
+     except as expressly provided under this License.  Any attempt
+     otherwise to copy, modify, sublicense, or distribute it is void,
+     and will automatically terminate your rights under this License.
+
+     However, if you cease all violation of this License, then your
+     license from a particular copyright holder is reinstated (a)
+     provisionally, unless and until the copyright holder explicitly
+     and finally terminates your license, and (b) permanently, if the
+     copyright holder fails to notify you of the violation by some
+     reasonable means prior to 60 days after the cessation.
+
+     Moreover, your license from a particular copyright holder is
+     reinstated permanently if the copyright holder notifies you of the
+     violation by some reasonable means, this is the first time you have
+     received notice of violation of this License (for any work) from
+     that copyright holder, and you cure the violation prior to 30 days
+     after your receipt of the notice.
+
+     Termination of your rights under this section does not terminate
+     the licenses of parties who have received copies or rights from
+     you under this License.  If your rights have been terminated and
+     not permanently reinstated, receipt of a copy of some or all of
+     the same material does not give you any rights to use it.
 
  10. FUTURE REVISIONS OF THIS LICENSE
 
@@ -2700,7 +2752,7 @@ Appendix A GNU Free Documentation License
      the GNU Free Documentation License from time to time.  Such new
      versions will be similar in spirit to the present version, but may
      differ in detail to address new problems or concerns.  See
-     http://www.gnu.org/copyleft/.
+     `http://www.gnu.org/copyleft/'.
 
      Each version of the License is given a distinguishing version
      number.  If the Document specifies that a particular numbered
@@ -2710,7 +2762,40 @@ Appendix A GNU Free Documentation License
      published (not as a draft) by the Free Software Foundation.  If
      the Document does not specify a version number of this License,
      you may choose any version ever published (not as a draft) by the
-     Free Software Foundation.
+     Free Software Foundation.  If the Document specifies that a proxy
+     can decide which future versions of this License can be used, that
+     proxy's public statement of acceptance of a version permanently
+     authorizes you to choose that version for the Document.
+
+ 11. RELICENSING
+
+     "Massive Multiauthor Collaboration Site" (or "MMC Site") means any
+     World Wide Web server that publishes copyrightable works and also
+     provides prominent facilities for anybody to edit those works.  A
+     public wiki that anybody can edit is an example of such a server.
+     A "Massive Multiauthor Collaboration" (or "MMC") contained in the
+     site means any set of copyrightable works thus published on the MMC
+     site.
+
+     "CC-BY-SA" means the Creative Commons Attribution-Share Alike 3.0
+     license published by Creative Commons Corporation, a not-for-profit
+     corporation with a principal place of business in San Francisco,
+     California, as well as future copyleft versions of that license
+     published by that same organization.
+
+     "Incorporate" means to publish or republish a Document, in whole or
+     in part, as part of another Document.
+
+     An MMC is "eligible for relicensing" if it is licensed under this
+     License, and if all works that were first published under this
+     License somewhere other than this MMC, and subsequently
+     incorporated in whole or in part into the MMC, (1) had no cover
+     texts or invariant sections, and (2) were thus incorporated prior
+     to November 1, 2008.
+
+     The operator of an MMC Site may republish an MMC contained in the
+     site under CC-BY-SA on the same site at any time before August 1,
+     2009, provided the MMC is eligible for relicensing.
 
 
 ADDENDUM: How to use this License for your documents
@@ -2720,20 +2805,20 @@ To use this License in a document you have written, include a copy of
 the License in the document and put the following copyright and license
 notices just after the title page:
 
-     Copyright (C)  YEAR  YOUR NAME.
-     Permission is granted to copy, distribute and/or modify this document
-     under the terms of the GNU Free Documentation License, Version 1.2
-     or any later version published by the Free Software Foundation;
-     with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
-     A copy of the license is included in the section entitled ``GNU
-     Free Documentation License.''
+       Copyright (C)  YEAR  YOUR NAME.
+       Permission is granted to copy, distribute and/or modify this document
+       under the terms of the GNU Free Documentation License, Version 1.3
+       or any later version published by the Free Software Foundation;
+       with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+       Texts.  A copy of the license is included in the section entitled ``GNU
+       Free Documentation License''.
 
    If you have Invariant Sections, Front-Cover Texts and Back-Cover
 Texts, replace the "with...Texts." line with this:
 
-     with the Invariant Sections being LIST THEIR TITLES, with the
-     Front-Cover Texts being LIST, and with the Back-Cover Texts being
-     LIST.
+         with the Invariant Sections being LIST THEIR TITLES, with
+         the Front-Cover Texts being LIST, and with the Back-Cover Texts
+         being LIST.
 
    If you have Invariant Sections without Cover Texts, or some other
 combination of the three, merge those two alternatives to suit the
@@ -2770,8 +2855,8 @@ Index
 * >:                                     Quick Help Commands. (line  29)
 * ?:                                     Quick Help Commands. (line   7)
 * @:                                     Quick Help Commands. (line 181)
-* A:                                     Quick Help Commands. (line 260)
 * a:                                     Quick Help Commands. (line  51)
+* A:                                     Quick Help Commands. (line 260)
 * ab:                                    Quick Help Commands. (line  71)
 * ac:                                    Quick Help Commands. (line  78)
 * B:                                     Quick Help Commands. (line 265)
@@ -2800,8 +2885,8 @@ Index
 * ediff-auto-refine-limit:               Refinement of Difference Regions.
                                                               (line  30)
 * ediff-autostore-merges <1>:            Merging and diff3.   (line 166)
-* ediff-autostore-merges <2>:            Hooks.               (line  62)
-* ediff-autostore-merges:                Session Groups.      (line  64)
+* ediff-autostore-merges <2>:            Session Groups.      (line  64)
+* ediff-autostore-merges:                Hooks.               (line  62)
 * ediff-backup:                          Major Entry Points.  (line  26)
 * ediff-before-flag-bol:                 Highlighting Difference Regions.
                                                               (line  13)
@@ -2813,8 +2898,8 @@ Index
 * ediff-before-setup-windows-hook:       Hooks.               (line  24)
 * ediff-brief-help-message-function:     Notes on Heavy-duty Customization.
                                                               (line  27)
-* ediff-buffers:                         Major Entry Points.  (line  31)
-* ediff-buffers3:                        Major Entry Points.  (line  38)
+* ediff-buffers:                         Major Entry Points.  (line  35)
+* ediff-buffers3:                        Major Entry Points.  (line  42)
 * ediff-cleanup-hook:                    Hooks.               (line  49)
 * ediff-coding-system-for-read:          Patch and Diff Programs.
                                                               (line  25)
@@ -2833,6 +2918,7 @@ Index
                                                               (line  22)
 * ediff-current-diff-face-C:             Highlighting Difference Regions.
                                                               (line  22)
+* ediff-current-file:                    Major Entry Points.  (line  31)
 * ediff-custom-diff-options:             Patch and Diff Programs.
                                                               (line  78)
 * ediff-custom-diff-program:             Patch and Diff Programs.
@@ -2840,19 +2926,19 @@ Index
 * ediff-default-variant:                 Merging and diff3.   (line  21)
 * ediff-diff-options:                    Patch and Diff Programs.
                                                               (line  17)
-* ediff-diff-program <1>:                Patch and Diff Programs.
-                                                              (line  12)
-* ediff-diff-program:                    Refinement of Difference Regions.
+* ediff-diff-program <1>:                Refinement of Difference Regions.
                                                               (line  42)
+* ediff-diff-program:                    Patch and Diff Programs.
+                                                              (line  12)
 * ediff-diff3-options:                   Patch and Diff Programs.
                                                               (line  17)
 * ediff-diff3-program:                   Patch and Diff Programs.
                                                               (line  12)
-* ediff-directories:                     Major Entry Points.  (line  42)
-* ediff-directories3:                    Major Entry Points.  (line  46)
-* ediff-directory-revisions:             Major Entry Points.  (line  50)
+* ediff-directories:                     Major Entry Points.  (line  46)
+* ediff-directories3:                    Major Entry Points.  (line  50)
+* ediff-directory-revisions:             Major Entry Points.  (line  54)
 * ediff-display-help-hook:               Hooks.               (line  93)
-* ediff-documentation:                   Major Entry Points.  (line 165)
+* ediff-documentation:                   Major Entry Points.  (line 169)
 * ediff-even-diff-face-A:                Highlighting Difference Regions.
                                                               (line  40)
 * ediff-even-diff-face-B:                Highlighting Difference Regions.
@@ -2860,7 +2946,7 @@ Index
 * ediff-even-diff-face-C:                Highlighting Difference Regions.
                                                               (line  40)
 * ediff-files:                           Major Entry Points.  (line  23)
-* ediff-files3:                          Major Entry Points.  (line  35)
+* ediff-files3:                          Major Entry Points.  (line  39)
 * ediff-fine-diff-face-A:                Highlighting Difference Regions.
                                                               (line  31)
 * ediff-fine-diff-face-B:                Highlighting Difference Regions.
@@ -2872,7 +2958,7 @@ Index
 * ediff-forward-word:                    Refinement of Difference Regions.
                                                               (line  42)
 * ediff-forward-word-function:           Refinement of Difference Regions.
-                                                              (line  38)
+                                                              (line  42)
 * ediff-grab-mouse:                      Miscellaneous.       (line  98)
 * ediff-help-message:                    Quick Help Customization.
                                                               (line   6)
@@ -2880,8 +2966,8 @@ Index
                                                               (line  53)
 * ediff-ignore-case <1>:                 Selective Browsing.  (line  87)
 * ediff-ignore-case:                     Quick Help Commands. (line 231)
-* ediff-ignore-case-option <1>:          Selective Browsing.  (line  87)
-* ediff-ignore-case-option:              Quick Help Commands. (line 231)
+* ediff-ignore-case-option <1>:          Quick Help Commands. (line 231)
+* ediff-ignore-case-option:              Selective Browsing.  (line  87)
 * ediff-ignore-case-option3 <1>:         Selective Browsing.  (line  87)
 * ediff-ignore-case-option3:             Quick Help Commands. (line 231)
 * ediff-ignore-similar-regions:          Selective Browsing.  (line  70)
@@ -2898,24 +2984,24 @@ Index
 * ediff-make-frame-position:             Window and Frame Configuration.
                                                               (line  55)
 * ediff-make-wide-display-function:      Miscellaneous.       (line  32)
-* ediff-maybe-save-and-delete-merge <1>: Merging and diff3.   (line 166)
-* ediff-maybe-save-and-delete-merge:     Hooks.               (line  62)
-* ediff-merge:                           Major Entry Points.  (line 136)
-* ediff-merge-buffers:                   Major Entry Points.  (line 143)
-* ediff-merge-buffers-with-ancestor:     Major Entry Points.  (line 146)
-* ediff-merge-directories:               Major Entry Points.  (line 150)
-* ediff-merge-directories-with-ancestor: Major Entry Points.  (line 154)
-* ediff-merge-directory-revisions:       Major Entry Points.  (line  55)
+* ediff-maybe-save-and-delete-merge <1>: Hooks.               (line  62)
+* ediff-maybe-save-and-delete-merge:     Merging and diff3.   (line 166)
+* ediff-merge:                           Major Entry Points.  (line 140)
+* ediff-merge-buffers:                   Major Entry Points.  (line 147)
+* ediff-merge-buffers-with-ancestor:     Major Entry Points.  (line 150)
+* ediff-merge-directories:               Major Entry Points.  (line 154)
+* ediff-merge-directories-with-ancestor: Major Entry Points.  (line 158)
+* ediff-merge-directory-revisions:       Major Entry Points.  (line  59)
 * ediff-merge-directory-revisions-with-ancestor: Major Entry Points.
-                                                              (line  60)
+                                                              (line  64)
 * ediff-merge-filename-prefix:           Merging and diff3.   (line 183)
-* ediff-merge-files:                     Major Entry Points.  (line 136)
-* ediff-merge-files-with-ancestor:       Major Entry Points.  (line 140)
-* ediff-merge-revisions:                 Major Entry Points.  (line 159)
-* ediff-merge-revisions-with-ancestor:   Major Entry Points.  (line 162)
+* ediff-merge-files:                     Major Entry Points.  (line 140)
+* ediff-merge-files-with-ancestor:       Major Entry Points.  (line 144)
+* ediff-merge-revisions:                 Major Entry Points.  (line 163)
+* ediff-merge-revisions-with-ancestor:   Major Entry Points.  (line 166)
 * ediff-merge-split-window-function:     Miscellaneous.       (line  26)
 * ediff-merge-window-share:              Merging and diff3.   (line 135)
-* ediff-merge-with-ancestor:             Major Entry Points.  (line 140)
+* ediff-merge-with-ancestor:             Major Entry Points.  (line 144)
 * ediff-meta-buffer-keymap-setup-hook:   Hooks.               (line 119)
 * ediff-meta-buffer-map:                 Hooks.               (line 119)
 * ediff-mode-hook:                       Hooks.               (line  98)
@@ -2929,10 +3015,10 @@ Index
                                                               (line  40)
 * ediff-odd-diff-face-C:                 Highlighting Difference Regions.
                                                               (line  40)
-* ediff-patch-buffer:                    Major Entry Points.  (line 119)
+* ediff-patch-buffer:                    Major Entry Points.  (line 123)
 * ediff-patch-default-directory:         Patch and Diff Programs.
                                                               (line  97)
-* ediff-patch-file:                      Major Entry Points.  (line  88)
+* ediff-patch-file:                      Major Entry Points.  (line  92)
 * ediff-patch-options:                   Patch and Diff Programs.
                                                               (line  17)
 * ediff-patch-program:                   Patch and Diff Programs.
@@ -2949,12 +3035,12 @@ Index
 * ediff-quit-merge-hook:                 Hooks.               (line  62)
 * ediff-quit-session-group-hook:         Hooks.               (line 116)
 * ediff-quit-widened:                    Narrowing.           (line  27)
-* ediff-regions-linewise:                Major Entry Points.  (line  79)
-* ediff-regions-wordwise:                Major Entry Points.  (line  71)
+* ediff-regions-linewise:                Major Entry Points.  (line  83)
+* ediff-regions-wordwise:                Major Entry Points.  (line  75)
 * ediff-registry-setup-hook:             Hooks.               (line 103)
 * ediff-revert-buffers-then-recompute-diffs: Other Session Commands.
                                                               (line  46)
-* ediff-revision:                        Major Entry Points.  (line  83)
+* ediff-revision:                        Major Entry Points.  (line  87)
 * ediff-save-buffer:                     Patch and Diff Programs.
                                                               (line  78)
 * ediff-select-hook:                     Hooks.               (line  82)
@@ -2977,16 +3063,16 @@ Index
                                                               (line   6)
 * ediff-startup-hook:                    Hooks.               (line  79)
 * ediff-suspend-hook:                    Hooks.               (line  31)
-* ediff-toggle-multiframe <1>:           Window and Frame Configuration.
-                                                              (line 103)
-* ediff-toggle-multiframe:               Other Session Commands.
+* ediff-toggle-multiframe <1>:           Other Session Commands.
                                                               (line  21)
+* ediff-toggle-multiframe:               Window and Frame Configuration.
+                                                              (line 103)
 * ediff-toggle-read-only-function:       Miscellaneous.       (line  59)
 * ediff-toggle-use-toolbar:              Other Session Commands.
                                                               (line  33)
 * ediff-unselect-hook:                   Hooks.               (line  85)
-* ediff-use-last-dir <1>:                Miscellaneous.       (line  45)
-* ediff-use-last-dir:                    Major Entry Points.  (line 188)
+* ediff-use-last-dir <1>:                Major Entry Points.  (line 192)
+* ediff-use-last-dir:                    Miscellaneous.       (line  45)
 * ediff-use-long-help-message:           Quick Help Customization.
                                                               (line   6)
 * ediff-use-toolbar-p:                   Other Session Commands.
@@ -2997,8 +3083,8 @@ Index
                                                               (line  65)
 * ediff-window-setup-function:           Window and Frame Configuration.
                                                               (line  96)
-* ediff-windows-linewise:                Major Entry Points.  (line  68)
-* ediff-windows-wordwise:                Major Entry Points.  (line  65)
+* ediff-windows-linewise:                Major Entry Points.  (line  72)
+* ediff-windows-wordwise:                Major Entry Points.  (line  69)
 * ediff-word-1:                          Refinement of Difference Regions.
                                                               (line  54)
 * ediff-word-2:                          Refinement of Difference Regions.
@@ -3009,16 +3095,16 @@ Index
                                                               (line  54)
 * ediff-word-mode:                       Notes on Heavy-duty Customization.
                                                               (line  27)
-* ediff3:                                Major Entry Points.  (line  35)
-* edir-merge-revisions:                  Major Entry Points.  (line  55)
-* edir-merge-revisions-with-ancestor:    Major Entry Points.  (line  60)
-* edir-revisions:                        Major Entry Points.  (line  50)
-* edirs:                                 Major Entry Points.  (line  42)
-* edirs-merge:                           Major Entry Points.  (line 150)
-* edirs-merge-with-ancestor:             Major Entry Points.  (line 154)
-* edirs3:                                Major Entry Points.  (line  46)
-* epatch:                                Major Entry Points.  (line  88)
-* epatch-buffer:                         Major Entry Points.  (line 119)
+* ediff3:                                Major Entry Points.  (line  39)
+* edir-merge-revisions:                  Major Entry Points.  (line  59)
+* edir-merge-revisions-with-ancestor:    Major Entry Points.  (line  64)
+* edir-revisions:                        Major Entry Points.  (line  54)
+* edirs:                                 Major Entry Points.  (line  46)
+* edirs-merge:                           Major Entry Points.  (line 154)
+* edirs-merge-with-ancestor:             Major Entry Points.  (line 158)
+* edirs3:                                Major Entry Points.  (line  50)
+* epatch:                                Major Entry Points.  (line  92)
+* epatch-buffer:                         Major Entry Points.  (line 123)
 * eregistry:                             Other Session Commands.
                                                               (line  11)
 * Finding differences:                   Introduction.        (line   6)
@@ -3069,31 +3155,31 @@ Index
 
 
 Tag Table:
-Node: Top1422
-Node: Introduction2092
-Node: Major Entry Points4482
-Node: Session Commands14391
-Node: Quick Help Commands15909
-Node: Other Session Commands34359
-Node: Registry of Ediff Sessions37159
-Node: Session Groups38715
-Node: Remote and Compressed Files44880
-Node: Customization46112
-Node: Hooks48065
-Node: Quick Help Customization53364
-Node: Window and Frame Configuration54375
-Node: Selective Browsing60340
-Node: Highlighting Difference Regions65436
-Node: Narrowing70178
-Node: Refinement of Difference Regions71456
-Node: Patch and Diff Programs74391
-Node: Merging and diff378958
-Node: Support for Version Control88761
-Node: Customizing the Mode Line90386
-Node: Miscellaneous91240
-Node: Notes on Heavy-duty Customization96488
-Node: Credits99073
-Node: GNU Free Documentation License104084
-Node: Index126296
+Node: Top1107
+Node: Introduction2666
+Node: Major Entry Points5056
+Node: Session Commands15103
+Node: Quick Help Commands16622
+Node: Other Session Commands35072
+Node: Registry of Ediff Sessions37872
+Node: Session Groups39428
+Node: Remote and Compressed Files45593
+Node: Customization46820
+Node: Hooks48773
+Node: Quick Help Customization54072
+Node: Window and Frame Configuration55083
+Node: Selective Browsing61048
+Node: Highlighting Difference Regions66144
+Node: Narrowing70886
+Node: Refinement of Difference Regions72164
+Node: Patch and Diff Programs75099
+Node: Merging and diff379666
+Node: Support for Version Control89469
+Node: Customizing the Mode Line91094
+Node: Miscellaneous91948
+Node: Notes on Heavy-duty Customization97196
+Node: Credits99781
+Node: GNU Free Documentation License105184
+Node: Index130345
 
 End Tag Table
