@@ -35,6 +35,7 @@ The Info Directory
 * ELisp Intro: (eintr). A simple introduction to Emacs Lisp programming.
 * Elisp: (elisp).       The Emacs Lisp Reference Manual.
 * CL: (cl).             Partial Common Lisp support for Emacs Lisp.
+* Wizard Book: (sicp).  Structure and Interpretation of Computer Programs.
 
 ### Dev Tools ###
 
