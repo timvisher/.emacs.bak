@@ -133,15 +133,34 @@ determines which characters these are."
 (require 'column-marker)
 
 (defun mail-buffer ()
-"Create a buffer to edit e-mail."
-(interactive)
-(kill-matching-buffers "mail[0-9]+\.markdown")
-(find-file (concat "~/tmp/" "mail" (format-time-string "%Y%m%d%H%M%S") ".markdown"))
-(longlines-mode)
-(yank)
-(beginning-of-buffer))
+  "Create a buffer to edit e-mail."
+  (interactive)
+  (kill-matching-timestamped-buffers "mail")
+  (find-timestamped-tmp-file "mail")
+  (longlines-mode)
+  (yank)
+  (beginning-of-buffer))
 
-(format-time-string "%Y%m%d%H%M%S")
+(defun markdown-buffer ()
+  "Create a buffer to quick edit markdown text."
+  (interactive)
+  (kill-matching-timestamped-buffers "markdown")
+  (find-timestamped-tmp-file "markdown")
+  (longlines-mode)
+  (yank)
+  (beginning-of-buffer))
+
+(defun find-timestamped-tmp-file (prefix)
+  "Visit timestamped-tmp-file prefixed with PREFIX."
+  (find-file (timestamped-tmp-file prefix)))
+
+(defun kill-matching-timestamped-buffers (prefix)
+  "Kill timestamped-tmp-file buffers prefixed with PREFIX."
+  (kill-matching-buffers (concat prefix "[0-9]+\.markdown")))
+
+(defun timestamped-tmp-file (prefix)
+  "Get a tmp file prefixed with PREFIX."
+  (concat "~/tmp/" prefix (format-time-string "%Y%m%d%H%M%S") ".markdown"))
 
 (defadvice yank (after indent-region activate)
   (if (member major-mode
