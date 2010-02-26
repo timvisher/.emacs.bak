@@ -1,5 +1,6 @@
 ;; Specialty Buffers
 (global-set-key (kbd "M-<f2>") 'mail-buffer)
+(global-set-key (kbd "C-M-<f2>") 'markdown-buffer)
 
 ;; Defaults Remapping
 (global-set-key (kbd "M-<f3>") 'kmacro-start-macro-or-insert-counter)
