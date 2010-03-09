@@ -100,7 +100,7 @@
  '(font-lock-constant-face ((((class color) (min-colors 88) (background light)) (:foreground "#3333ff"))))
  '(font-lock-string-face ((((class color) (min-colors 88) (background light)) (:foreground "Brown"))))
  '(fringe ((nil (:background "#333333"))))
- '(hl-line ((t (:inherit highlight :background "#333333"))))
+ '(hl-line ((t (:inherit highlight :background "#111c1c"))))
  '(isearch ((nil (:background "yellow" :foreground "black" :box (:line-width 2 :color "yellow")))))
  '(lazy-highlight ((nil (:background "yellow" :foreground "black"))))
  '(mode-line ((t (:background "#aaaaaa" :foreground "black" :box (:line-width 2 :color "#aaaaaa") :height 1.05))))
