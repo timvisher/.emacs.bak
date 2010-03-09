@@ -13,6 +13,8 @@
 
 (windmove-default-keybindings)
 
+(define-key Info-mode-map "`" 'Info-scroll-down)
+
 (require 'uniquify) ;; Emacs-Fu: p4abl0
 
 ;; Groovy Mode
