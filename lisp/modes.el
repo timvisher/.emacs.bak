@@ -73,3 +73,6 @@ If there is no expansion the command returned by
 
 ;; ECB Mode
 (require 'ecb)
+
+;; ido Mode
+(load "ido")
