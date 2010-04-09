@@ -11,14 +11,14 @@
               (add-to-list 'load-path (concat emacs-root (car p)))
               (add-path (cdr p)))))
 
-    (add-path '("lisp"            ;; My own ELisp
-                "site-lisp"       ;; Interweb ELisp
-                "color-theme"     ;; Theming Support
-                "cedet-1.0pre6"   ;; General IDE-like support
-                "jdee/lisp"       ;; Java Development
-                "elib"
-                "nxml-mode"       ;; XML Support
-                "ecb-2.40"        ;; General IDE-like support
+    (add-path '("lisp"                      ;; My own ELisp
+                "site-lisp"                 ;; Interweb ELisp
+                "site-lisp/color-theme"     ;; Theming Support
+                "site-lisp/cedet-1.0pre6"   ;; General IDE-like support
+                "site-lisp/jdee/lisp"       ;; Java Development
+                "site-lisp/elib"
+                "site-lisp/nxml-mode"       ;; XML Support
+                "site-lisp/ecb-2.40"        ;; General IDE-like support
                )
     )
 )

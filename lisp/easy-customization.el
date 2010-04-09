@@ -36,6 +36,7 @@
  '(show-paren-mode t)
  '(show-trailing-whitespace t)
  '(tab-width 4)
+ '(temporary-file-directory "~/tmp")
  '(transient-mark-mode nil)
  '(uniquify-buffer-name-style (quote post-forward) nil (uniquify))
  '(whitespace-empty (quote whitespace-empty))
