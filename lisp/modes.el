@@ -51,14 +51,11 @@ If there is no expansion the command returned by
 
 ;; CEDET
 
-(load-file (expand-file-name (concat emacs-root "site-lisp/cedet/common/cedet.el")))
-
-(semantic-load-enable-excessive-code-helpers)
-(require 'semantic-ia)
+;;(load-file (expand-file-name (concat emacs-root "site-lisp/cedet/common/cedet.el")))
 
 ;; JDEE
 
-(load "jde-autoload")
+;;(load "jde-autoload")
 
 ;; NXML Mode
 
@@ -71,24 +68,6 @@ If there is no expansion the command returned by
 (add-to-list 'auto-mode-alist
 	     '("\\.php[345]?\\|\\.phtml" . php-mode))
 
-;; ECB Mode
-(require 'ecb)
-
 ;; ido Mode
 (ido-mode)
-
-(defun zap-to-char (arg char)
-  "Kill up to and including ARGth occurrence of CHAR.
-Case is ignored if `case-fold-search' is non-nil in the current buffer.
-Goes backward if ARG is negative; error if CHAR not found."
-  (interactive "p\ncZap to char: ")
-  ;; Avoid "obsolete" warnings for translation-table-for-input.
-  (with-no-warnings
-    (if (char-table-p translation-table-for-input)
-	(setq char (or (aref translation-table-for-input char) char))))
-  (kill-region (point) (progn
-			 (search-forward (char-to-string char) nil nil arg)
-;			 (goto-char (if (> arg 0) (1- (point)) (1+ (point))))
-             (backward-char)
-			 (point))))
 

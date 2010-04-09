@@ -202,6 +202,7 @@ determines which characters these are."
                       (floor (* 0.9
                                 (face-attribute 'default :height))))
   (maximize-frame))
+
 (global-set-key (kbd "C-+") 'sacha.increase-font-size)
 (global-set-key (kbd "C-=") 'sacha.increase-font-size)
 (global-set-key (kbd "C--") 'sacha.decrease-font-size)
@@ -212,3 +213,20 @@ determines which characters these are."
                   (display-pixel-width)
                   (display-pixel-height))
   (set-frame-position (selected-frame) 0 0))
+
+(defun zap-to-char (arg char)
+  "Kill up to and including ARGth occurrence of CHAR.
+Case is ignored if `case-fold-search' is non-nil in the current buffer.
+Goes backward if ARG is negative; error if CHAR not found."
+  (interactive "p\ncZap to char: ")
+  ;; Avoid "obsolete" warnings for translation-table-for-input.
+  (with-no-warnings
+    (if (char-table-p translation-table-for-input)
+        (setq char (or (aref translation-table-for-input char) char))))
+  (kill-region (point) (progn
+                         (search-forward (char-to-string char) nil nil arg)
+                                        ;			 (goto-char (if (> arg 0) (1- (point)) (1+ (point))))
+                         (backward-char)
+                         (point))))
+
+
