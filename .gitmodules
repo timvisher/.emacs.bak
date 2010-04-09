@@ -4,3 +4,6 @@
 [submodule "sandbox/site-lisp/textmate-minormode"]
 	path = sandbox/site-lisp/textmate-minormode
 	url = git://github.com/defunkt/textmate.el.git
+[submodule "site-lisp/cedet"]
+	path = site-lisp/cedet
+	url = git://github.com/emacsmirror/cedet.git

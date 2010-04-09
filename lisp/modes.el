@@ -51,7 +51,7 @@ If there is no expansion the command returned by
 
 ;; CEDET
 
-(load-file (expand-file-name (concat emacs-root "site-lisp/cedet-1.0pre6/common/cedet.el")))
+(load-file (expand-file-name (concat emacs-root "site-lisp/cedet/common/cedet.el")))
 
 (semantic-load-enable-excessive-code-helpers)
 (require 'semantic-ia)
