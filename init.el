@@ -18,7 +18,7 @@
                 "site-lisp/jdee/lisp"       ;; Java Development
                 "site-lisp/elib"
                 "site-lisp/nxml-mode"       ;; XML Support
-                "site-lisp/ecb-2.40"        ;; General IDE-like support
+                "site-lisp/ecb"        ;; General IDE-like support
                )
     )
 )
