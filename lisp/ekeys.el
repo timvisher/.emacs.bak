@@ -17,19 +17,33 @@
       (global-unset-key "\C-z")))
 
 ;; Shortcuts
+
+;; Buffer Operations
 (global-set-key (kbd "M-<f12>") 'view-buffer)
 (global-set-key (kbd "C-<tab>") 'bury-buffer) ;; Emacs-Fu
+
+;; Kill Operations
 (global-set-key (kbd "C-w") 'backward-kill-word) ;; Yegge
 (global-set-key (kbd "M-w") 'kill-region) ;; Yegge
 (global-set-key (kbd "M-C-w") 'kill-ring-save) ;; Yegge
+
+;; Searching Operations
 (global-set-key (kbd "M-s") 'isearch-forward-regexp) ;; Yegge
 (global-set-key (kbd "M-r") 'isearch-backward-regexp) ;; Yegge
+
+;; Filling Operations
 (global-set-key (kbd "M-p") 'fill-paragraph) ;; Yegge
 (global-set-key (kbd "M-q") 'fill-region) ;; Yegge
-(global-set-key (kbd "C-c =") 'count-words-region) ;; Intro to ELisp
+
+;; .emacs editing convenience
 (global-set-key (kbd "C-c C-r") 'dot-emacs-reload) ;; Emacs-Fu
 (global-set-key (kbd "C-c C-e") 'dot-emacs-edit) ;; Emacs-Fu
+
+;; Miscellaneous
+(global-set-key (kbd "C-c =") 'count-words-region) ;; Intro to ELisp
 (global-set-key (kbd "C-c m") 'column-marker-1) ;; http://www.emacswiki.org/emacs/column-marker.el
+
+;; Dev
 (global-set-key (kbd "C-<return>") 'newline-and-indent)
 
 (defalias 'qrr 'query-replace-regexp) ;; Yegge

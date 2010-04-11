@@ -20,8 +20,14 @@
 (require 'uniquify) ;; Emacs-Fu: p4abl0
 
 ;; Groovy Mode
-(require 'groovy-mode)
-(add-to-list 'auto-mode-alist '("\\.groovy" . groovy-mode))
+(autoload 'groovy-mode "groovy-mode" "Major mode for editing Groovy code." t)
+(add-to-list 'auto-mode-alist '("\.groovy$" . groovy-mode))
+(add-to-list 'interpreter-mode-alist '("groovy" . groovy-mode))
+
+(add-hook 'groovy-mode-hook
+          '(lambda ()
+             (require 'groovy-electric)
+             (groovy-electric-mode)))
 
 ;; Predictive-Expansion from Nathanial Flath @ http://nflath.com/2009/04/predictive-expansion-for-emacs/
 (defun pabbrev-expand-maybe-no-buffer()
