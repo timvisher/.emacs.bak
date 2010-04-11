@@ -21,6 +21,7 @@
                 "site-lisp/nxml"            ;; XML Support
                 "site-lisp/ecb"             ;; General IDE-like support
                 "site-lisp/php"             ;; PHP Mode
+                "site-lisp/groovy-mode"     ;; Groovy Mode
                )))
 
 ; Emacs Flavor Specific Setup

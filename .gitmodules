@@ -25,3 +25,6 @@
 [submodule "site-lisp/php"]
 	path = site-lisp/php
 	url = git://github.com/emacsmirror/php-mode.git
+[submodule "site-lisp/groovy-mode"]
+	path = site-lisp/groovy-mode
+	url = git@github.com:timvisher/emacs-groovy-mode-mirror.git
