@@ -22,3 +22,6 @@
 [submodule "site-lisp/nxml"]
 	path = site-lisp/nxml
 	url = git://github.com/emacsmirror/nxml.git
+[submodule "site-lisp/php"]
+	path = site-lisp/php
+	url = git://github.com/emacsmirror/php-mode.git

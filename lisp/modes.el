@@ -71,3 +71,11 @@ If there is no expansion the command returned by
 ;; ido Mode
 (ido-mode)
 
+;; GTags
+
+(autoload 'gtags-mode "gtags" "" t)
+
+(setq c-mode-hook
+      '(lambda ()
+         (gtags-mode 1)
+         ))
