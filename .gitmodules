@@ -1,33 +1,36 @@
 [submodule "site-lisp/zen-and-art"]
-	path = site-lisp/zen-and-art
+    path = site-lisp/zen-and-art
     url = git://github.com/irfn/zen-and-art.git
 [submodule "sandbox/site-lisp/textmate-minormode"]
-	path = sandbox/site-lisp/textmate-minormode
-	url = git://github.com/defunkt/textmate.el.git
+    path = sandbox/site-lisp/textmate-minormode
+    url = git://github.com/defunkt/textmate.el.git
 [submodule "site-lisp/cedet"]
-	path = site-lisp/cedet
-	url = git://github.com/emacsmirror/cedet.git
+    path = site-lisp/cedet
+    url = git://github.com/emacsmirror/cedet.git
 [submodule "site-lisp/ecb"]
-	path = site-lisp/ecb
-	url = git://github.com/emacsmirror/ecb.git
+    path = site-lisp/ecb
+    url = git://github.com/emacsmirror/ecb.git
 [submodule "site-lisp/color-theme"]
-	path = site-lisp/color-theme
-	url = git://github.com/emacsmirror/color-theme.git
+    path = site-lisp/color-theme
+    url = git://github.com/emacsmirror/color-theme.git
 [submodule "site-lisp/elib"]
-	path = site-lisp/elib
-	url = git://github.com/emacsmirror/elib.git
+    path = site-lisp/elib
+    url = git://github.com/emacsmirror/elib.git
 [submodule "site-lisp/jdee"]
-	path = site-lisp/jdee
-	url = git://github.com/emacsmirror/jdee.git
+    path = site-lisp/jdee
+    url = git://github.com/emacsmirror/jdee.git
 [submodule "site-lisp/nxml"]
-	path = site-lisp/nxml
-	url = git://github.com/emacsmirror/nxml.git
+    path = site-lisp/nxml
+    url = git://github.com/emacsmirror/nxml.git
 [submodule "site-lisp/php"]
-	path = site-lisp/php
-	url = git://github.com/emacsmirror/php-mode.git
+    path = site-lisp/php
+    url = git://github.com/emacsmirror/php-mode.git
 [submodule "site-lisp/groovy-mode"]
-	path = site-lisp/groovy-mode
-	url = git@github.com:timvisher/emacs-groovy-mode-mirror.git
+    path = site-lisp/groovy-mode
+    url = git@github.com:timvisher/emacs-groovy-mode-mirror.git
 [submodule "site-lisp/markdown-mode"]
-	path = site-lisp/markdown-mode
-	url = git://github.com/emacsmirror/markdown-mode.git
+    path = site-lisp/markdown-mode
+    url = git://github.com/emacsmirror/markdown-mode.git
+[submodule "site-lisp/ahk-mode"]
+    path = site-lisp/ahk-mode
+    url = git://github.com/emacsmirror/ahk-mode.git
