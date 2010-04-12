@@ -76,6 +76,7 @@ If there is no expansion the command returned by
 
 ;; ido Mode
 (ido-mode)
+(setq ido-enable-flex-matching t) ;; enable fuzzy matching
 
 ;; GTags
 

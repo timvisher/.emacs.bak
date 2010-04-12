@@ -1,15 +1,15 @@
 (defun kill-all-buffers ()   ;; Emacs-Fu: rejeep
-"Kill all buffers, leaving *scratch* only."
-(interactive)
-(mapcar (lambda (x) (kill-buffer x)) (buffer-list)) (delete-other-windows))
+  "Kill all buffers, leaving *scratch* only."
+  (interactive)
+  (mapcar (lambda (x) (kill-buffer x)) (buffer-list)) (delete-other-windows))
 
 (defun dot-emacs-reload ()
-(interactive)
-(load-file "~/.emacs.d/init.el"))
+  (interactive)
+  (load-file "~/.emacs.d/init.el"))
 
 (defun dot-emacs-edit ()
-(interactive)
-(find-file "~/.emacs.d/init.el"))
+  (interactive)
+  (find-file "~/.emacs.d/init.el"))
 
 ;; Straight from Intro To ELisp
 (defun recursive-count-words (region-end)
@@ -20,7 +20,7 @@
     0))
 
 (defun count-words-region (beginning end)
-"Print number of words in the region.
+  "Print number of words in the region.
 
 Words are defined as at least one word-constituent
 character followed by at least one character that is
@@ -42,89 +42,85 @@ determines which characters these are."
 
 ;; Yegge
 (defun swap-windows ()
- "If you have 2 windows, it swaps them."
- (interactive)
- (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
-       (t
-       (let* ((w1 (first (window-list)))
-              (w2 (second (window-list)))
-              (b1 (window-buffer w1))
-              (b2 (window-buffer w2))
-              (s1 (window-start w1))
-              (s2 (window-start w2)))
-         (set-window-buffer w1 b2)
-         (set-window-buffer w2 b1)
-         (set-window-start w1 s2)
-         (set-window-start w2 s1)))))
+  "If you have 2 windows, it swaps them."
+  (interactive)
+  (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
+        (t
+         (let* ((w1 (first (window-list)))
+                (w2 (second (window-list)))
+                (b1 (window-buffer w1))
+                (b2 (window-buffer w2))
+                (s1 (window-start w1))
+                (s2 (window-start w2)))
+           (set-window-buffer w1 b2)
+           (set-window-buffer w2 b1)
+           (set-window-start w1 s2)
+           (set-window-start w2 s1)))))
 
 ;; Yegge
 (defun rename-file-and-buffer (new-name)
- "Renames both current buffer and file it's visiting to NEW-NAME."
- (interactive "sNew name: ")
- (let ((name (buffer-name))
-       (filename (buffer-file-name)))
-   (if (not filename)
-       (message "Buffer '%s' is not visiting a file!" name)
-       (if (get-buffer new-name)
-           (message "A buffer named '%s' already exists!" new-name)
-           (progn
-             (rename-file name new-name 1)
-             (rename-buffer new-name)
-             (set-visited-file-name new-name)
-             (set-buffer-modified-p nil))))))
+  "Renames both current buffer and file it's visiting to NEW-NAME."
+  (interactive "sNew name: ")
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (not filename)
+        (message "Buffer '%s' is not visiting a file!" name)
+      (if (get-buffer new-name)
+          (message "A buffer named '%s' already exists!" new-name)
+        (progn
+          (rename-file name new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil))))))
 
 ;; Yegge
 (defun move-buffer-file (dir)
- "Moves both current buffer and file it's visiting to DIR."
- (interactive "DNew directory: ")
- (let* ((name (buffer-name))
-        (filename (buffer-file-name))
-        (dir
+  "Moves both current buffer and file it's visiting to DIR."
+  (interactive "DNew directory: ")
+  (let* ((name (buffer-name))
+         (filename (buffer-file-name))
+         (dir
           (if (string-match dir "\\(?:/\\|\\\\)$")
               (substring dir 0 -1) dir))
-        (newname (concat dir "/" name)))
-   (if (not filename)
-       (message "Buffer '%s' is not visiting a file!" name)
-       (progn
-         (copy-file filename newname 1)
-         (delete-file filename)
-         (set-visited-file-name newname)
-         (set-buffer-modified-p nil)
-         t))))
+         (newname (concat dir "/" name)))
+    (if (not filename)
+        (message "Buffer '%s' is not visiting a file!" name)
+      (progn
+        (copy-file filename newname 1)
+        (delete-file filename)
+        (set-visited-file-name newname)
+        (set-buffer-modified-p nil)
+        t))))
 
 ;; http://www.ftrain.com/util_emacs_hints.html
 (defun insert-time-stamp ()
-"Inserts a time stamp 'YYYY-MM-DD HH:MM AM/PM'"
-(interactive)
-(insert (format-time-string "%Y-%m-%d - %I:%M %p")))
+  "Inserts a time stamp 'YYYY-MM-DD HH:MM AM/PM'"
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d - %I:%M %p")))
 
 (defun insert-reflection-stamp (reflection-type)
-(interactive "sReflection type: ")
-"Inserts a string reflection yesterday 'YYYY-MM-DD REFLECTION-TYPE Reflections'."
-(insert (yesterday-string))
-(if reflection-type
-    (insert " " reflection-type))
-(insert " Reflections")
-(newline))
+  (interactive "sReflection type: ")
+  "Inserts a string reflection yesterday 'YYYY-MM-DD REFLECTION-TYPE Reflections'."
+  (insert (yesterday-string))
+  (if reflection-type
+      (insert " " reflection-type))
+  (insert " Reflections")
+  (newline))
 
 (defun yesterday-string ()
-"Inserts yesterday's date stamp 'YYYY-MM-DD'"
-(format-time-string "%Y-%m-%d" (yesterday)))
+  "Inserts yesterday's date stamp 'YYYY-MM-DD'"
+  (format-time-string "%Y-%m-%d" (yesterday)))
 
 (defun yesterday ()
-"Provide the date/time 24 hours before the time now in the format of current-time."
-(setq
-    now-time (current-time) ; get the time now
-    hi (car now-time) ; save off the high word
-    lo (car (cdr now-time)) ; save off the low word
-    msecs (nth 2 now-time) ; save off the milliseconds
-)
-(if (< lo 20864) ; if the low word is too small for subtracting
-    (setq hi (- hi 2) lo (+ lo 44672)) ; take 2 from the high word and add to the low
-    (setq hi (- hi 1) lo (- lo 20864)) ; else, add 86400 seconds (in two parts)
-)
-(list hi lo msecs) ; regurgitate the new values
-)
+  "Provide the date/time 24 hours before the time now in the format of current-time."
+  (setq now-time (current-time)            ;; get the time now
+        hi (car now-time)                  ;; save off the high word
+        lo (car (cdr now-time))            ;; save off the low word
+        msecs (nth 2 now-time))            ;; save off the milliseconds
+  (if (< lo 20864)                         ;; if the low word is too small for subtracting
+      (setq hi (- hi 2) lo (+ lo 44672))   ;; take 2 from the high word and add to the low
+      (setq hi (- hi 1) lo (- lo 20864)))  ;; else, add 86400 seconds (in two parts)
+  (list hi lo msecs))                      ;; regurgitate the new values
 
 ;;(current-time-zone)
 
@@ -217,7 +213,7 @@ determines which characters these are."
 (defun zap-to-char (arg char)
   "Kill up to and including ARGth occurrence of CHAR.
 Case is ignored if `case-fold-search' is non-nil in the current buffer.
-Goes backward if ARG is negative; error if CHAR not found."
+Goes backward if ARG is negative; error if CHAR not found." ;
   (interactive "p\ncZap to char: ")
   ;; Avoid "obsolete" warnings for translation-table-for-input.
   (with-no-warnings
