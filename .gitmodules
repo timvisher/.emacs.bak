@@ -28,3 +28,6 @@
 [submodule "site-lisp/groovy-mode"]
 	path = site-lisp/groovy-mode
 	url = git@github.com:timvisher/emacs-groovy-mode-mirror.git
+[submodule "site-lisp/markdown-mode"]
+	path = site-lisp/markdown-mode
+	url = git://github.com/emacsmirror/markdown-mode.git

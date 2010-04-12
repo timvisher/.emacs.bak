@@ -22,6 +22,7 @@
                 "site-lisp/ecb"             ;; General IDE-like support
                 "site-lisp/php"             ;; PHP Mode
                 "site-lisp/groovy-mode"     ;; Groovy Mode
+                "site-lisp/markdown-mode"   ;; Markdown Mode
                )))
 
 ; Emacs Flavor Specific Setup

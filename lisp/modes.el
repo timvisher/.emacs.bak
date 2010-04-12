@@ -48,7 +48,7 @@ If there is no expansion the command returned by
 (setq pabbrev-read-only-error nil)
 
 ;; Markdown... Hurray!
-(autoload 'markdown-mode "markdown-mode.elc" "Major mode for editing Markdown files" t)
+(autoload 'markdown-mode "markdown-mode" "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.markdown" . markdown-mode))
 
 ;; VB Mode - ech!
