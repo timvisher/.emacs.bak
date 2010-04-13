@@ -4,3 +4,4 @@ history
 semantic.cache
 server
 .#*
+*.elc
