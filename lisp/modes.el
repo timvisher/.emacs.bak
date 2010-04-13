@@ -19,6 +19,10 @@
 
 (require 'uniquify) ;; Emacs-Fu: p4abl0
 
+;; LaTeX Mode
+(add-hook 'latex-mode-hook
+          (lambda () (setq skeleton-pair t)))
+
 ;; Groovy Mode
 (autoload 'groovy-mode "groovy-mode" "Major mode for editing Groovy code." t)
 (add-to-list 'auto-mode-alist '("\.groovy$" . groovy-mode))
@@ -26,8 +30,15 @@
 
 (add-hook 'groovy-mode-hook
           '(lambda ()
-             (require 'groovy-electric)
+             (require 'groovy-electric)))
+(add-hook 'groovy-mode-hook
+          '(lambda ()
              (groovy-electric-mode)))
+
+;; Java Mode
+(add-hook 'java-mode-hook
+          '(lambda ()
+             (setq compile-command "ant -find build.xml -emacs")))
 
 ;; Predictive-Expansion from Nathanial Flath @ http://nflath.com/2009/04/predictive-expansion-for-emacs/
 (defun pabbrev-expand-maybe-no-buffer()
@@ -81,8 +92,10 @@ If there is no expansion the command returned by
 ;; GTags
 
 (autoload 'gtags-mode "gtags" "" t)
+(add-hook 'c-mode-hook
+          '(lambda () (gtags-mode 1)))
 
-(setq c-mode-hook
-      '(lambda ()
-         (gtags-mode 1)
-         ))
+;; Help Mode
+
+(add-hook 'help-mode-hook
+          '(lambda () (local-set-key (kbd "C-<Tab>") 'backward-button)))

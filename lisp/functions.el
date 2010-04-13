@@ -225,4 +225,11 @@ Goes backward if ARG is negative; error if CHAR not found." ;
                          (backward-char)
                          (point))))
 
+(defun kill-buffer-file-name ()
+  (interactive)
+  (kill-new (buffer-name)))
 
+;; (defun temp-function (body key-sequence)
+;;   "Bind BODY as lambda to KEY-SEQUENCE"
+;;   (global-set-key (kbd key-sequence)
+;;                   (lamdba () body)))
