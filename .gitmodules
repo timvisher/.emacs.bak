@@ -30,7 +30,7 @@
     url = git@github.com:timvisher/emacs-groovy-mode-mirror.git
 [submodule "site-lisp/markdown-mode"]
     path = site-lisp/markdown-mode
-    url = git://github.com/emacsmirror/markdown-mode.git
+    url = git://jblevins.org/git/markdown-mode.git
 [submodule "site-lisp/ahk-mode"]
     path = site-lisp/ahk-mode
     url = git://github.com/emacsmirror/ahk-mode.git
