@@ -8,7 +8,6 @@
  '(bookmark-save-flag 1)
  '(column-number-mode t)
  '(display-time-day-and-date t)
- '(ecb-options-version "2.40")
  '(echo-keystrokes 0.1)
  '(fill-column 80)
  '(global-hl-line-mode t)
@@ -19,7 +18,6 @@
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(ispell-program-name "aspell")
- '(jde-jdk-registry (quote (("1.6" . "c:/sun/sdk/jdk"))))
  '(lazy-highlight-max-at-a-time 20)
  '(mouse-avoidance-animation-delay 0)
  '(mouse-avoidance-mode (quote banish) nil (avoid))
@@ -34,7 +32,6 @@
  '(search-slow-window-lines 1)
  '(search-whitespace-regexp "\\s-+")
  '(show-paren-mode t)
- '(show-trailing-whitespace t)
  '(tab-width 4)
  '(temporary-file-directory "~/tmp")
  '(transient-mark-mode nil)
@@ -77,7 +74,7 @@
          :underline nil
          :slant normal
          :weight normal
-         :height 130
+         :height 150
          :width normal
          :foundry "apple"
          :family "Inconsolata"))))
@@ -92,21 +89,10 @@
          :underline nil
          :slant normal
          :weight normal
-         :height 100
+         :height 110
          :width normal
          :family "outline-inconsolata")))))
- '(cursor ((t (:background "indian red"))))
- '(font-lock-comment-delimiter-face ((default (:inherit font-lock-comment-face :foreground "darkgreen")) (((class color) (min-colors 16)) nil)))
- '(font-lock-comment-face ((((class color) (min-colors 88) (background light)) (:foreground "darkgreen"))))
- '(font-lock-constant-face ((((class color) (min-colors 88) (background light)) (:foreground "#3333ff"))))
- '(font-lock-string-face ((((class color) (min-colors 88) (background light)) (:foreground "Brown"))))
- '(fringe ((nil (:background "#333333"))))
  '(hl-line ((t (:inherit highlight :background "#111c1c"))))
  '(isearch ((nil (:background "yellow" :foreground "black" :box (:line-width 2 :color "yellow")))))
  '(lazy-highlight ((nil (:background "yellow" :foreground "black"))))
- '(mode-line ((t (:background "#aaaaaa" :foreground "black" :box (:line-width 2 :color "#aaaaaa") :height 1.05))))
- '(mode-line-buffer-id ((t (:foreground "black"))))
- '(mode-line-inactive ((default (:inherit mode-line :background "#aaaaaa" :box (:line-width 2 :color "#cccccc" :style pressed-button))) (((class color) (min-colors 88) (background light)) (:background "grey90" :foreground "grey20" :box (:line-width -1 :color "grey75") :weight light))))
- '(paren-face-match-light ((t (:background "#222222"))))
- '(region ((t (:background "grey" :foreground "black"))))
  '(whitespace-tab ((((class color) (background light)) (:background "red" :foreground "white")))))

@@ -1,7 +1,13 @@
-(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1)) ;; Yegge
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1)) ;; Yegge
-(if (not (and (emacs-is-mac) (emacs-is-windowed)))
-    (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))) ;; Yegge/Emacs-Fu: ieure
+(if (fboundp 'scroll-bar-mode)       ;; Yegge
+    (scroll-bar-mode -1))
+(if (fboundp 'tool-bar-mode)         ;; Yegge
+    (tool-bar-mode -1))
+(if (not                             ;; Yegge/Emacs-Fu: ieure
+     (and
+      (emacs-is-mac)
+      (emacs-is-windowed)))
+    (if (fboundp 'menu-bar-mode)
+        (menu-bar-mode -1)))
 
 (standard-display-ascii ?\t "    ")
 
@@ -30,7 +36,9 @@
 (load-file "~/.emacs.d/site-lisp/zen-and-art/zen-and-art.el")
 (color-theme-zen-and-art)
 
-(if (emacs-is-windowed)
+(if (and
+     (emacs-is-windowed)
+     (emacs-is-mac))
     (maximize-frame))
 
 ;; Mac Specific Configuration
