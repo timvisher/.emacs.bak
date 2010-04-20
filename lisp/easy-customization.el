@@ -62,7 +62,38 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 110 :width normal :family "outline-inconsolata"))))
+ (if (emacs-is-mac)
+     '(default
+        ((t
+          (:stipple nil
+           :background "black"
+           :foreground "white"
+           :inverse-video nil
+           :box nil
+           :strike-through nil
+           :overline nil
+           :underline nil
+           :slant normal
+           :weight normal
+           :height 150
+           :width normal
+           :foundry "apple"
+           :family "Inconsolata"))))
+     '(default
+        ((t
+          (:stipple nil
+           :background "black"
+           :foreground "white"
+           :inverse-video nil
+           :box nil
+           :strike-through nil
+           :overline nil
+           :underline nil
+           :slant normal
+           :weight normal
+           :height 110
+           :width normal
+           :family "outline-inconsolata")))))
  '(hl-line ((t (:inherit highlight :background "#2c2020"))))
  '(isearch ((nil (:background "yellow" :foreground "black" :box (:line-width 2 :color "yellow")))))
  '(lazy-highlight ((nil (:background "yellow" :foreground "black"))))
