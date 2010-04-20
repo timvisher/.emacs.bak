@@ -91,7 +91,7 @@
            :underline nil
            :slant normal
            :weight normal
-           :height 110
+           :height 105
            :width normal
            :family "outline-inconsolata")))))
  '(hl-line ((t (:inherit highlight :background "#2c2020"))))
