@@ -31,6 +31,8 @@
 
 (setq visible-bell t)
 
+(setq compilation-scroll-output t)
+
 (require 'color-theme)
 (color-theme-initialize)
 (load-file "~/.emacs.d/site-lisp/zen-and-art/zen-and-art.el")
