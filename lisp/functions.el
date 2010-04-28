@@ -128,21 +128,25 @@ determines which characters these are."
 ;; http://www.emacswiki.org/emacs/column-marker.el
 (require 'column-marker)
 
-(defun mail-buffer ()
+(defun mail-frame ()
   "Create a buffer to edit e-mail."
   (interactive)
-  (kill-matching-timestamped-buffers "mail")
-  (find-timestamped-tmp-file "mail")
-  (longlines-mode)
-  (yank)
-  (beginning-of-buffer))
+  (create-tmp-frame "mail"))
 
-(defun markdown-buffer ()
+(defun markdown-frame ()
   "Create a buffer to quick edit markdown text."
   (interactive)
-  (kill-matching-timestamped-buffers "markdown")
-  (find-timestamped-tmp-file "markdown")
-  (longlines-mode)
+  (create-tmp-frame "markdown"))
+
+(defun create-tmp-frame (prefix)
+  "Create a frame PREFIXtimestamp."
+  (kill-matching-timestamped-buffers prefix)
+  (make-frame)
+  (set-frame-size (selected-frame)
+                  80
+                  (/ (height-from-display) 2))
+  (find-timestamped-tmp-file prefix)
+  (visual-line-mode)
   (yank)
   (beginning-of-buffer))
 
@@ -206,9 +210,15 @@ determines which characters these are."
 (defun maximize-frame () ;; http://github.com/asenchi/emacs/blob/master/dot.emacs.d/functions.el#L75
   (interactive)
   (set-frame-size (selected-frame)
-                  (display-pixel-width)
-                  (display-pixel-height))
+                  (width-from-display)
+                  (height-from-display))
   (set-frame-position (selected-frame) 0 0))
+
+(defun width-from-display ()
+  (/ (display-pixel-width) (frame-char-width)))
+
+(defun height-from-display ()
+  (/ (display-pixel-height) (frame-char-height)))
 
 (defun zap-to-char (arg char)
   "Kill up to and including ARGth occurrence of CHAR.
