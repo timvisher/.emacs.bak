@@ -37,3 +37,6 @@
 [submodule "site-lisp/auctex-mode"]
 	path = site-lisp/auctex-mode
 	url = git://github.com/emacsmirror/auctex.git
+[submodule "site-lisp/yasnippet"]
+	path = site-lisp/yasnippet
+	url = git@github.com:timvisher/yasnippet.git
