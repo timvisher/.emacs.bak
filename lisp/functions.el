@@ -141,9 +141,9 @@ determines which characters these are."
 (defun create-tmp-frame (prefix)
   "Create a frame PREFIXtimestamp."
   (kill-matching-timestamped-buffers prefix)
-  (make-frame)
+  (select-frame-set-input-focus (make-frame))
   (set-frame-size (selected-frame)
-                  80
+                  85
                   (/ (height-from-display) 2))
   (find-timestamped-tmp-file prefix)
   (visual-line-mode)

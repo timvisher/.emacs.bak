@@ -6,9 +6,8 @@
 (global-set-key (kbd "M-<f3>") 'kmacro-start-macro-or-insert-counter)
 (global-set-key (kbd "M-<f4>") 'kmacro-end-or-call-macro)
 (global-set-key (kbd "C-x C-m") 'execute-extended-command) ;; Yegge
-(global-set-key (kbd "M-h") 'help-command) ;; Luke Gorrie (http://steve.yegge.googlepages.com/effective-emacs)
-(global-set-key (kbd "M-h M-h") 'help-for-help) ;; Luke Gorrie (http://steve.yegge.googlepages.com/effective-emacs)
 (global-set-key (kbd "C-h") 'backward-delete-char-untabify) ;; Luke Gorrie (http://steve.yegge.googlepages.com/effective-emacs)
+(global-set-key (kbd "M-h") 'backward-kill-word)
 (global-unset-key (kbd "DEL")) ;; Luke Gorrie (http://steve.yegge.googlepages.com/effective-emacs)
 
 (if window-system ;; Emacs-Fu: Bill
