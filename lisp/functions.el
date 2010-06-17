@@ -215,10 +215,10 @@ determines which characters these are."
   (set-frame-position (selected-frame) 0 0))
 
 (defun width-from-display ()
-  (/ (display-pixel-width) (frame-char-width)))
+  (- (/ (display-pixel-width) (frame-char-width)) 4))
 
 (defun height-from-display ()
-  (/ (display-pixel-height) (frame-char-height)))
+  (- (/ (display-pixel-height) (frame-char-height)) 5))
 
 (defun zap-to-char (arg char)
   "Kill up to and including ARGth occurrence of CHAR.

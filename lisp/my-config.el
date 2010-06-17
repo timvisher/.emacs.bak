@@ -38,9 +38,7 @@
 (load-file "~/.emacs.d/site-lisp/zen-and-art/zen-and-art.el")
 (color-theme-zen-and-art)
 
-(if (and
-     (emacs-is-windowed)
-     (emacs-is-mac))
+(if (emacs-is-windowed)
     (maximize-frame))
 
 ;; Mac Specific Configuration
